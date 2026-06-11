@@ -64,7 +64,7 @@ func _do_chase(_delta: float) -> void:
 	if _target == null:
 		current_state = EnemyState.PATROL
 		return
-	var dir := sign(_target.global_position.x - global_position.x)
+	var dir = sign(_target.global_position.x - global_position.x)
 	velocity.x = dir * enemy_data.move_speed
 	sprite.flip_h = dir < 0
 
@@ -96,7 +96,7 @@ func _request_damage_rpc(amount: int, attacker_peer_id: int) -> void:
 func take_damage(amount: int, attacker_peer_id: int) -> void:
 	if current_state == EnemyState.DEAD:
 		return
-	var mitigated := max(1, amount - (enemy_data.defense if enemy_data else 0))
+	var mitigated = max(1, amount - (enemy_data.defense if enemy_data else 0))
 	current_hp = max(0, current_hp - mitigated)
 	if current_hp == 0:
 		_die_synced.rpc(attacker_peer_id)

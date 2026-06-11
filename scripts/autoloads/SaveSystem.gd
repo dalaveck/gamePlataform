@@ -41,7 +41,7 @@ func load_account() -> void:
 		return
 	var text := file.get_as_text()
 	file.close()
-	var result := JSON.parse_string(text)
+	var result = JSON.parse_string(text)
 	if result == null:
 		push_error("Failed to parse save file")
 		return

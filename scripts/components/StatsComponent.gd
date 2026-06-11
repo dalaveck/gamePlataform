@@ -76,7 +76,7 @@ func _apply_equipment_bonuses(data: CharacterData) -> void:
 
 # ─── Dano e Cura ───────────────────────────────────────────
 func take_damage(amount: int) -> void:
-	var mitigated := max(1, amount - defense)
+	var mitigated = max(1, amount - defense)
 	current_hp = max(0, current_hp - mitigated)
 	hp_changed.emit(current_hp, max_hp)
 	if current_hp == 0:

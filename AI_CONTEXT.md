@@ -154,7 +154,7 @@ scripts/ui/
 ```
 MainMenu (nome + IP) → Lobby (classe + pronto) → MapSelect (host escolhe)
   → Mapa (BaseMap spawna jogadores) → derrota o Boss → Victory
-                                    → todos mortos  → GameOver
+									→ todos mortos  → GameOver
 ```
 
 ---

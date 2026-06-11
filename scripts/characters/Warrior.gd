@@ -76,6 +76,6 @@ func _use_skill_2() -> void:
 	var damage := int(stats.atk * _shield_bash_data.damage_multiplier)
 	for enemy: Node2D in get_tree().get_nodes_in_group("enemies"):
 		var to_enemy := enemy.global_position - global_position
-		var in_front := sign(to_enemy.x) == movement.facing_direction
+		var in_front = sign(to_enemy.x) == movement.facing_direction
 		if in_front and to_enemy.length() <= SHIELD_BASH_RANGE:
 			(enemy as BaseEnemy).request_damage(damage, peer_id)
