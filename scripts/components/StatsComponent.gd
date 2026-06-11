@@ -27,13 +27,22 @@ var current_hp: int = 0
 var current_mp: int = 0
 var current_sp: int = 0
 
-# ─── SP regeneração ────────────────────────────────────────
-const SP_REGEN_RATE: float = 10.0   ## SP por segundo em repouso
-const MP_REGEN_RATE: float = 2.0    ## MP por segundo em repouso
+# ─── Regeneração (só ocorre longe de inimigos) ─────────────
+const HP_REGEN_RATE: float = 5.0    ## HP por segundo fora de combate
+const SP_REGEN_RATE: float = 10.0   ## SP por segundo fora de combate
+const MP_REGEN_RATE: float = 2.0    ## MP por segundo fora de combate
+
+## Controlado pelo dono (BaseCharacter) conforme proximidade de inimigos
+var regen_enabled: bool = true
+
+var _hp_regen_timer: float = 0.0
 var _sp_regen_timer: float = 0.0
 var _mp_regen_timer: float = 0.0
 
 func _process(delta: float) -> void:
+	if not regen_enabled:
+		return
+	_regenerate_hp(delta)
 	_regenerate_sp(delta)
 	_regenerate_mp(delta)
 
@@ -99,6 +108,15 @@ func consume_mp(amount: int) -> bool:
 	current_mp -= amount
 	mp_changed.emit(current_mp, max_mp)
 	return true
+
+func _regenerate_hp(delta: float) -> void:
+	if current_hp <= 0 or current_hp >= max_hp:
+		return
+	_hp_regen_timer += delta
+	if _hp_regen_timer >= 1.0:
+		_hp_regen_timer = 0.0
+		current_hp = min(max_hp, current_hp + int(HP_REGEN_RATE))
+		hp_changed.emit(current_hp, max_hp)
 
 func _regenerate_sp(delta: float) -> void:
 	if current_sp >= max_sp:

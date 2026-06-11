@@ -3,11 +3,21 @@ extends Node
 const PORT: int = 7777
 const MAX_PLAYERS: int = 4
 
+# ─── Descoberta de salas na LAN (broadcast UDP) ────────────
+const DISCOVERY_PORT: int = 7778
+const DISCOVERY_INTERVAL: float = 1.0
+const DISCOVERY_MAGIC: String = "PLATCOOP_V1"
+
 signal server_created
 signal joined_server
 signal player_connected(peer_id: int)
 signal player_disconnected(peer_id: int)
 signal connection_failed
+signal room_discovered(address: String, room_name: String)
+
+var _broadcast_socket: PacketPeerUDP = null
+var _listen_socket: PacketPeerUDP = null
+var _broadcast_timer: float = 0.0
 
 func _ready() -> void:
 	multiplayer.peer_connected.connect(_on_peer_connected)
@@ -25,6 +35,8 @@ func create_server() -> void:
 	SessionData.is_host = true
 	SessionData.local_peer_id = 1
 	SessionData.player_names[1] = SessionData.player_name
+	stop_room_discovery()
+	start_room_broadcast()
 	server_created.emit()
 	EventBus.lobby_player_joined.emit(1, SessionData.player_name)
 
@@ -40,6 +52,59 @@ func join_server(address: String) -> void:
 func disconnect_from_game() -> void:
 	multiplayer.multiplayer_peer = null
 	SessionData.is_host = false
+	stop_room_broadcast()
+
+# ─── Descoberta de salas ───────────────────────────────────
+func start_room_broadcast() -> void:
+	_broadcast_socket = PacketPeerUDP.new()
+	_broadcast_socket.set_broadcast_enabled(true)
+	_broadcast_socket.set_dest_address("255.255.255.255", DISCOVERY_PORT)
+	_broadcast_timer = 0.0
+
+func stop_room_broadcast() -> void:
+	if _broadcast_socket != null:
+		_broadcast_socket.close()
+		_broadcast_socket = null
+
+func start_room_discovery() -> void:
+	if _listen_socket != null:
+		return
+	_listen_socket = PacketPeerUDP.new()
+	if _listen_socket.bind(DISCOVERY_PORT) != OK:
+		push_warning("Não foi possível escutar a porta %d (outra instância aberta?)" % DISCOVERY_PORT)
+		_listen_socket = null
+
+func stop_room_discovery() -> void:
+	if _listen_socket != null:
+		_listen_socket.close()
+		_listen_socket = null
+
+func _process(delta: float) -> void:
+	_process_broadcast(delta)
+	_process_discovery()
+
+func _process_broadcast(delta: float) -> void:
+	if _broadcast_socket == null:
+		return
+	# Anuncia a sala apenas enquanto estiver no lobby
+	if GameManager.current_state != GameManager.GameState.LOBBY:
+		return
+	_broadcast_timer -= delta
+	if _broadcast_timer > 0.0:
+		return
+	_broadcast_timer = DISCOVERY_INTERVAL
+	var message := "%s|Sala de %s" % [DISCOVERY_MAGIC, SessionData.player_name]
+	_broadcast_socket.put_packet(message.to_utf8_buffer())
+
+func _process_discovery() -> void:
+	if _listen_socket == null:
+		return
+	while _listen_socket.get_available_packet_count() > 0:
+		var packet := _listen_socket.get_packet().get_string_from_utf8()
+		var address := _listen_socket.get_packet_ip()
+		var parts := packet.split("|")
+		if parts.size() == 2 and parts[0] == DISCOVERY_MAGIC:
+			room_discovered.emit(address, parts[1])
 
 # ─── Callbacks internos ────────────────────────────────────
 func _on_peer_connected(peer_id: int) -> void:

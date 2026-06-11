@@ -8,6 +8,7 @@ extends BaseCharacter
 
 @export var holy_bolt_scene: PackedScene = null
 
+const ATTACK_MP_COST: int = 5
 const HEAL_RADIUS: float = 160.0
 
 var _heal_spell_data: SkillData = null
@@ -34,8 +35,8 @@ func _setup_skills() -> void:
 	_holy_bolt_data.damage_multiplier = 1.5
 
 func _perform_attack() -> void:
-	## Ataque básico: projétil mágico fraco
-	if not combat.try_attack():
+	## Ataque básico: projétil mágico fraco (gasta MP)
+	if not combat.try_attack(SkillData.ResourceCost.MP, ATTACK_MP_COST):
 		return
 	if animation:
 		animation.play("attack")

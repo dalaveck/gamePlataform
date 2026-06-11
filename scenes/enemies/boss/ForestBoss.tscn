@@ -114,6 +114,11 @@ offset_bottom = -46.0
 show_percentage = false
 value = 100.0
 
+[node name="EdgeRay" type="RayCast2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(34, 0)
+target_position = Vector2(0, 58)
+
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 root_path = NodePath("..")
 replication_config = SubResource("repl_config")

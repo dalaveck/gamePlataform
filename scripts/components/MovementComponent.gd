@@ -25,6 +25,7 @@ var _dash_direction: float = 1.0
 
 var _is_running: bool = false
 var _is_wall_sliding: bool = false
+var _run_cost_accumulator: float = 0.0
 
 var facing_direction: float = 1.0
 
@@ -56,9 +57,14 @@ func move(direction: float, delta: float) -> void:
 	var speed := _get_current_speed()
 	_body.velocity.x = direction * speed * _stats.agility
 
-	# Consome SP ao correr
+	# Consome SP ao correr (acumula frações até completar 1 ponto)
 	if _is_running and direction != 0.0:
-		_stats.consume_sp(int(RUN_SP_COST_PER_SEC * delta))
+		_run_cost_accumulator += RUN_SP_COST_PER_SEC * delta
+		if _run_cost_accumulator >= 1.0:
+			var cost := int(_run_cost_accumulator)
+			_run_cost_accumulator -= float(cost)
+			if not _stats.consume_sp(cost):
+				_is_running = false
 
 func set_running(running: bool) -> void:
 	_is_running = running and _stats.current_sp > 0

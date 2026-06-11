@@ -4,8 +4,6 @@ extends BaseEnemy
 ## Inimigo básico: patrulha andando de um lado para o outro,
 ## virando ao encontrar parede ou beirada de plataforma.
 
-@onready var edge_ray: RayCast2D = %EdgeRay
-
 var _patrol_direction: float = 1.0
 
 func _ready() -> void:

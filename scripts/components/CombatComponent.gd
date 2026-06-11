@@ -19,9 +19,16 @@ func _process(delta: float) -> void:
 	for key: String in _skill_cooldowns.keys():
 		_skill_cooldowns[key] = max(0.0, _skill_cooldowns[key] - delta)
 
-func try_attack() -> bool:
+func try_attack(cost_type: SkillData.ResourceCost = SkillData.ResourceCost.NONE, cost_amount: int = 0) -> bool:
 	if _attack_cooldown > 0.0:
 		return false
+	match cost_type:
+		SkillData.ResourceCost.SP:
+			if not _stats.consume_sp(cost_amount):
+				return false
+		SkillData.ResourceCost.MP:
+			if not _stats.consume_mp(cost_amount):
+				return false
 	_attack_cooldown = BASE_ATTACK_COOLDOWN
 	attack_performed.emit(_stats.atk)
 	return true

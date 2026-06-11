@@ -16,8 +16,12 @@ extends CharacterBody2D
 @onready var camera: Camera2D            = %Camera2D
 @onready var name_label: Label           = %NameLabel
 
+const REGEN_SAFE_DISTANCE: float = 280.0  ## Sem regen com inimigo mais perto que isso
+const REGEN_CHECK_INTERVAL: float = 0.5
+
 var peer_id: int = 0
 var _is_local_player: bool = false
+var _regen_check_timer: float = 0.0
 
 func _ready() -> void:
 	add_to_group("players")
@@ -32,6 +36,20 @@ func _initialize() -> void:
 	_is_local_player = (peer_id == multiplayer.get_unique_id())
 	camera.enabled = _is_local_player
 	name_label.text = character_data.character_name
+
+func _process(delta: float) -> void:
+	# Roda em todas as instâncias (locais e remotas) para manter
+	# a regeneração consistente entre os peers
+	_regen_check_timer -= delta
+	if _regen_check_timer <= 0.0:
+		_regen_check_timer = REGEN_CHECK_INTERVAL
+		stats.regen_enabled = not _is_enemy_nearby()
+
+func _is_enemy_nearby() -> bool:
+	for enemy: Node2D in get_tree().get_nodes_in_group("enemies"):
+		if global_position.distance_to(enemy.global_position) < REGEN_SAFE_DISTANCE:
+			return true
+	return false
 
 func _physics_process(delta: float) -> void:
 	if not _is_local_player:

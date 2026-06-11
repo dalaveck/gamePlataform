@@ -121,7 +121,7 @@ shape = SubResource("hurt_shape")
 
 [node name="ArrowSpawnPoint" type="Marker2D" parent="."]
 unique_name_in_owner = true
-position = Vector2(20, -4)
+position = Vector2(20, 8)
 
 [node name="NameLabel" type="Label" parent="."]
 unique_name_in_owner = true

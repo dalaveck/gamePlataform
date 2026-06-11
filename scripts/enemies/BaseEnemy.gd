@@ -15,6 +15,7 @@ enum EnemyState { IDLE, PATROL, CHASE, ATTACK, DEAD }
 @onready var detection_area: Area2D      = %DetectionArea
 @onready var attack_area: Area2D         = %AttackArea
 @onready var health_bar: ProgressBar     = %HealthBar
+@onready var edge_ray: RayCast2D         = get_node_or_null("%EdgeRay")
 
 var current_state: EnemyState = EnemyState.IDLE
 var current_hp: int = 0:
@@ -65,8 +66,19 @@ func _do_chase(_delta: float) -> void:
 		current_state = EnemyState.PATROL
 		return
 	var dir = sign(_target.global_position.x - global_position.x)
-	velocity.x = dir * enemy_data.move_speed
 	sprite.flip_h = dir < 0
+	# Para na beirada da plataforma em vez de cair
+	if _would_fall(dir):
+		velocity.x = 0.0
+		return
+	velocity.x = dir * enemy_data.move_speed
+
+func _would_fall(direction: float) -> bool:
+	if edge_ray == null or direction == 0.0 or not is_on_floor():
+		return false
+	edge_ray.position.x = abs(edge_ray.position.x) * direction
+	edge_ray.force_raycast_update()
+	return not edge_ray.is_colliding()
 
 func _do_attack() -> void:
 	velocity.x = 0.0

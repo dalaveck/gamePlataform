@@ -6,6 +6,7 @@ extends BaseCharacter
 
 @onready var sword_hitbox: Area2D = %SwordHitbox
 
+const ATTACK_SP_COST: int = 5
 const WHIRLWIND_SP_COST: int = 35
 const SHIELD_BASH_SP_COST: int = 25
 const WHIRLWIND_RADIUS: float = 90.0
@@ -38,7 +39,7 @@ func _setup_skills() -> void:
 	_shield_bash_data.damage_multiplier = 1.2
 
 func _perform_attack() -> void:
-	if not combat.try_attack():
+	if not combat.try_attack(SkillData.ResourceCost.SP, ATTACK_SP_COST):
 		return
 	if animation:
 		animation.play("attack")

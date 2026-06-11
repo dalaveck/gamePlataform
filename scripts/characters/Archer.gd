@@ -8,6 +8,7 @@ extends BaseCharacter
 
 @export var arrow_scene: PackedScene = null
 
+const ATTACK_SP_COST: int = 8
 const RAIN_ARROW_COUNT: int = 6
 const RAIN_SPREAD: float = 180.0
 const RAIN_HEIGHT: float = 140.0
@@ -37,7 +38,7 @@ func _setup_skills() -> void:
 	_rain_arrow_data.damage_multiplier = 0.5  ## Várias flechas em área
 
 func _perform_attack() -> void:
-	if not combat.try_attack():
+	if not combat.try_attack(SkillData.ResourceCost.SP, ATTACK_SP_COST):
 		return
 	if animation:
 		animation.play("attack")
