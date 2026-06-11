@@ -1,0 +1,150 @@
+[gd_scene load_steps=19 format=3 uid="uid://char_warrior"]
+
+[ext_resource type="Script" path="res://scripts/characters/Warrior.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/components/StatsComponent.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/components/MovementComponent.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/components/CombatComponent.gd" id="4"]
+[ext_resource type="Texture2D" path="res://assets/art/warrior.svg" id="5"]
+
+[sub_resource type="RectangleShape2D" id="body_shape"]
+size = Vector2(24, 44)
+
+[sub_resource type="RectangleShape2D" id="hurt_shape"]
+size = Vector2(26, 46)
+
+[sub_resource type="RectangleShape2D" id="sword_shape"]
+size = Vector2(40, 32)
+
+[sub_resource type="Animation" id="anim_idle"]
+resource_name = "idle"
+length = 0.2
+
+[sub_resource type="Animation" id="anim_run"]
+resource_name = "run"
+length = 0.2
+
+[sub_resource type="Animation" id="anim_jump"]
+resource_name = "jump"
+length = 0.2
+
+[sub_resource type="Animation" id="anim_dash"]
+resource_name = "dash"
+length = 0.2
+
+[sub_resource type="Animation" id="anim_attack"]
+resource_name = "attack"
+length = 0.2
+
+[sub_resource type="Animation" id="anim_skill_whirlwind"]
+resource_name = "skill_whirlwind"
+length = 0.3
+
+[sub_resource type="Animation" id="anim_skill_shield_bash"]
+resource_name = "skill_shield_bash"
+length = 0.3
+
+[sub_resource type="Animation" id="anim_die"]
+resource_name = "die"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0.2)]
+}
+
+[sub_resource type="AnimationLibrary" id="anim_lib"]
+_data = {
+"attack": SubResource("anim_attack"),
+"dash": SubResource("anim_dash"),
+"die": SubResource("anim_die"),
+"idle": SubResource("anim_idle"),
+"jump": SubResource("anim_jump"),
+"run": SubResource("anim_run"),
+"skill_shield_bash": SubResource("anim_skill_shield_bash"),
+"skill_whirlwind": SubResource("anim_skill_whirlwind")
+}
+
+[sub_resource type="SceneReplicationConfig" id="repl_config"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:velocity")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath("Sprite2D:flip_h")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+
+[node name="Warrior" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("body_shape")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+texture = ExtResource("5")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+unique_name_in_owner = true
+libraries = {
+"": SubResource("anim_lib")
+}
+
+[node name="StatsComponent" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("2")
+
+[node name="MovementComponent" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("3")
+
+[node name="CombatComponent" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("4")
+
+[node name="Hurtbox" type="Area2D" parent="."]
+unique_name_in_owner = true
+collision_layer = 2
+collision_mask = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("hurt_shape")
+
+[node name="SwordHitbox" type="Area2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(24, 0)
+collision_layer = 0
+collision_mask = 4
+monitoring = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SwordHitbox"]
+shape = SubResource("sword_shape")
+
+[node name="NameLabel" type="Label" parent="."]
+unique_name_in_owner = true
+offset_left = -50.0
+offset_top = -48.0
+offset_right = 50.0
+offset_bottom = -32.0
+theme_override_font_sizes/font_size = 10
+horizontal_alignment = 1
+
+[node name="Camera2D" type="Camera2D" parent="."]
+unique_name_in_owner = true
+enabled = false
+zoom = Vector2(1.5, 1.5)
+position_smoothing_enabled = true
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+root_path = NodePath("..")
+replication_config = SubResource("repl_config")

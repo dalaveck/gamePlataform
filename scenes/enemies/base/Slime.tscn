@@ -1,0 +1,125 @@
+[gd_scene load_steps=15 format=3 uid="uid://enemy_slime"]
+
+[ext_resource type="Script" path="res://scripts/enemies/Slime.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/components/XPComponent.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/components/LootComponent.gd" id="3"]
+[ext_resource type="Texture2D" path="res://assets/art/slime.svg" id="4"]
+[ext_resource type="Resource" path="res://data/enemies/slime.tres" id="5"]
+
+[sub_resource type="RectangleShape2D" id="body_shape"]
+size = Vector2(28, 18)
+
+[sub_resource type="CircleShape2D" id="detect_shape"]
+radius = 170.0
+
+[sub_resource type="RectangleShape2D" id="attack_shape"]
+size = Vector2(44, 24)
+
+[sub_resource type="Animation" id="anim_idle"]
+resource_name = "idle"
+length = 0.2
+
+[sub_resource type="Animation" id="anim_walk"]
+resource_name = "walk"
+length = 0.2
+
+[sub_resource type="Animation" id="anim_attack"]
+resource_name = "attack"
+length = 0.2
+
+[sub_resource type="Animation" id="anim_die"]
+resource_name = "die"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="anim_lib"]
+_data = {
+"attack": SubResource("anim_attack"),
+"die": SubResource("anim_die"),
+"idle": SubResource("anim_idle"),
+"walk": SubResource("anim_walk")
+}
+
+[sub_resource type="SceneReplicationConfig" id="repl_config"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:current_hp")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+properties/2/path = NodePath("Sprite2D:flip_h")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+
+[node name="Slime" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1")
+enemy_data = ExtResource("5")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 3)
+shape = SubResource("body_shape")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+texture = ExtResource("4")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+unique_name_in_owner = true
+libraries = {
+"": SubResource("anim_lib")
+}
+
+[node name="XPComponent" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("2")
+
+[node name="LootComponent" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("3")
+
+[node name="DetectionArea" type="Area2D" parent="."]
+unique_name_in_owner = true
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
+shape = SubResource("detect_shape")
+
+[node name="AttackArea" type="Area2D" parent="."]
+unique_name_in_owner = true
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
+shape = SubResource("attack_shape")
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+unique_name_in_owner = true
+offset_left = -16.0
+offset_top = -24.0
+offset_right = 16.0
+offset_bottom = -20.0
+show_percentage = false
+value = 100.0
+
+[node name="EdgeRay" type="RayCast2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(16, 0)
+target_position = Vector2(0, 28)
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+root_path = NodePath("..")
+replication_config = SubResource("repl_config")

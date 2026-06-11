@@ -29,9 +29,9 @@ func set_player_ready(peer_id: int, is_ready: bool) -> void:
 	ready_states[peer_id] = is_ready
 
 func all_players_ready() -> bool:
-	if ready_states.is_empty():
+	if player_names.is_empty():
 		return false
-	for state: bool in ready_states.values():
-		if not state:
+	for peer_id: int in player_names.keys():
+		if not ready_states.get(peer_id, false):
 			return false
 	return true

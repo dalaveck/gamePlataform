@@ -88,6 +88,12 @@ func _apply_class_base_stats(data: CharacterData) -> void:
 			data.spirit = 2
 
 # ─── Serialização ──────────────────────────────────────────
+func serialize_character(c: CharacterData) -> Dictionary:
+	return _serialize_character(c)
+
+func deserialize_character(d: Dictionary) -> CharacterData:
+	return _deserialize_character(d)
+
 func _serialize_character(c: CharacterData) -> Dictionary:
 	return {
 		"character_id": c.character_id,

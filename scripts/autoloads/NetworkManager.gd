@@ -24,6 +24,7 @@ func create_server() -> void:
 	multiplayer.multiplayer_peer = peer
 	SessionData.is_host = true
 	SessionData.local_peer_id = 1
+	SessionData.player_names[1] = SessionData.player_name
 	server_created.emit()
 	EventBus.lobby_player_joined.emit(1, SessionData.player_name)
 
@@ -44,16 +45,24 @@ func disconnect_from_game() -> void:
 func _on_peer_connected(peer_id: int) -> void:
 	player_connected.emit(peer_id)
 	EventBus.lobby_player_joined.emit(peer_id, "Player_%d" % peer_id)
+	# Reenvia nossos dados para o peer que acabou de entrar
+	sync_player_name.rpc_id(peer_id, SessionData.player_name)
+	var my_char: CharacterData = SessionData.active_characters.get(multiplayer.get_unique_id(), null)
+	if my_char != null:
+		sync_character_data.rpc_id(peer_id, SaveSystem.serialize_character(my_char))
 
 func _on_peer_disconnected(peer_id: int) -> void:
 	player_disconnected.emit(peer_id)
 	SessionData.active_characters.erase(peer_id)
 	SessionData.player_names.erase(peer_id)
+	SessionData.ready_states.erase(peer_id)
 	EventBus.lobby_player_left.emit(peer_id)
 
 func _on_connected_to_server() -> void:
 	SessionData.local_peer_id = multiplayer.get_unique_id()
+	SessionData.player_names[SessionData.local_peer_id] = SessionData.player_name
 	joined_server.emit()
+	sync_player_name.rpc(SessionData.player_name)
 
 func _on_connection_failed() -> void:
 	connection_failed.emit()
@@ -63,14 +72,31 @@ func _on_connection_failed() -> void:
 func sync_player_name(player_name: String) -> void:
 	var peer_id := multiplayer.get_remote_sender_id()
 	SessionData.player_names[peer_id] = player_name
+	EventBus.lobby_player_joined.emit(peer_id, player_name)
 
 @rpc("any_peer", "reliable")
-func sync_character_choice(character_id: String) -> void:
+func sync_character_data(char_dict: Dictionary) -> void:
 	var peer_id := multiplayer.get_remote_sender_id()
-	EventBus.lobby_character_selected.emit(peer_id, character_id)
+	var char_data := SaveSystem.deserialize_character(char_dict)
+	SessionData.active_characters[peer_id] = char_data
+	EventBus.lobby_character_selected.emit(peer_id, char_data.character_id)
 
 @rpc("any_peer", "reliable")
 func sync_ready_state(is_ready: bool) -> void:
 	var peer_id := multiplayer.get_remote_sender_id()
 	SessionData.set_player_ready(peer_id, is_ready)
 	EventBus.lobby_ready_changed.emit(peer_id, is_ready)
+
+@rpc("authority", "call_local", "reliable")
+func go_to_map_select() -> void:
+	GameManager.change_state(GameManager.GameState.MAP_SELECT)
+
+@rpc("authority", "call_local", "reliable")
+func start_game(map_resource_path: String) -> void:
+	var map_data: MapData = load(map_resource_path)
+	if map_data == null:
+		push_error("Invalid map resource: %s" % map_resource_path)
+		return
+	SessionData.current_map = map_data
+	EventBus.lobby_map_selected.emit(map_data)
+	GameManager.change_state(GameManager.GameState.IN_GAME)

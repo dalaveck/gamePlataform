@@ -132,7 +132,49 @@ scripts/characters/
   Archer.gd
 
 scripts/enemies/
-  BaseEnemy.gd
+  BaseEnemy.gd      ← IA roda no servidor; dano via request_damage (RPC)
+  Slime.gd          ← inimigo básico com patrulha
   MiniBoss.gd
   Boss.gd
+
+scripts/projectiles/
+  Projectile.gd     ← flechas e magias (Arrow.tscn / HolyBolt.tscn)
+
+scripts/maps/
+  BaseMap.gd        ← spawn de jogadores, killzone, HUD
+
+scripts/ui/
+  MainMenu.gd  LobbyRoom.gd  MapSelect.gd  HUD.gd  EndScreen.gd
 ```
+
+---
+
+## Fluxo de Jogo
+
+```
+MainMenu (nome + IP) → Lobby (classe + pronto) → MapSelect (host escolhe)
+  → Mapa (BaseMap spawna jogadores) → derrota o Boss → Victory
+                                    → todos mortos  → GameOver
+```
+
+---
+
+## Modelo Multiplayer
+- Cada peer simula o próprio personagem; posição replicada via
+  MultiplayerSynchronizer (position, velocity, flip_h)
+- Inimigos: IA somente no servidor; posição/HP replicados
+- Dano em inimigo: `BaseEnemy.request_damage()` → RPC para o host
+- Dano/cura em jogador: `receive_damage`/`receive_heal` com call_local
+- Morte de inimigo: `_die_synced` RPC (authority, call_local) distribui
+  recompensas em todos os peers (cada um persiste o próprio save)
+
+---
+
+## Camadas de Física
+| # | Nome            | Uso                                   |
+|---|-----------------|---------------------------------------|
+| 1 | world           | Terreno                               |
+| 2 | players         | Corpo dos jogadores                   |
+| 3 | enemies         | Corpo dos inimigos                    |
+| 4 | player_attacks  | Hitbox de espada, flechas, magias     |
+| 5 | enemy_attacks   | (reservado para projéteis inimigos)   |

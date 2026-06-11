@@ -45,5 +45,10 @@ func _on_boss_defeated(_map_id: String) -> void:
 	change_state(GameState.VICTORY)
 
 func _on_player_died(_peer_id: int) -> void:
-	# Verifica se todos os jogadores morreram
-	pass
+	if current_state != GameState.IN_GAME:
+		return
+	await get_tree().process_frame
+	for player: Node in get_tree().get_nodes_in_group("players"):
+		if player.stats.current_hp > 0:
+			return
+	change_state(GameState.GAME_OVER)

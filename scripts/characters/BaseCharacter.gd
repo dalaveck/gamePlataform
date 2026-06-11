@@ -13,11 +13,14 @@ extends CharacterBody2D
 @onready var sprite: Sprite2D            = %Sprite2D
 @onready var animation: AnimationPlayer  = %AnimationPlayer
 @onready var hurtbox: Area2D             = %Hurtbox
+@onready var camera: Camera2D            = %Camera2D
+@onready var name_label: Label           = %NameLabel
 
 var peer_id: int = 0
 var _is_local_player: bool = false
 
 func _ready() -> void:
+	add_to_group("players")
 	if character_data != null:
 		_initialize()
 
@@ -27,6 +30,8 @@ func _initialize() -> void:
 	stats.recalculate_from(character_data)
 	stats.died.connect(_on_died)
 	_is_local_player = (peer_id == multiplayer.get_unique_id())
+	camera.enabled = _is_local_player
+	name_label.text = character_data.character_name
 
 func _physics_process(delta: float) -> void:
 	if not _is_local_player:
@@ -88,14 +93,24 @@ func _use_skill_1() -> void:
 func _use_skill_2() -> void:
 	pass
 
-# ─── Dano recebido ─────────────────────────────────────────
-func receive_damage(amount: int, attacker_peer_id: int) -> void:
+# ─── Dano e cura (executam em todos os peers via call_local) ─
+@rpc("any_peer", "call_local", "reliable")
+func receive_damage(amount: int, _attacker_peer_id: int) -> void:
+	if stats.current_hp <= 0:
+		return
 	stats.take_damage(amount)
 	EventBus.player_damaged.emit(peer_id, amount)
 
+@rpc("any_peer", "call_local", "reliable")
+func receive_heal(amount: int) -> void:
+	if stats.current_hp <= 0:
+		return
+	stats.heal(amount)
+	EventBus.player_healed.emit(peer_id, amount)
+
 func _on_died() -> void:
 	EventBus.player_died.emit(peer_id)
-	# Animação de morte e desabilitar input
 	set_physics_process(false)
+	hurtbox.set_deferred("monitoring", false)
 	if animation:
 		animation.play("die")

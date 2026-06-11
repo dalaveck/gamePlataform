@@ -8,6 +8,10 @@ extends BaseCharacter
 
 @export var arrow_scene: PackedScene = null
 
+const RAIN_ARROW_COUNT: int = 6
+const RAIN_SPREAD: float = 180.0
+const RAIN_HEIGHT: float = 140.0
+
 var _multishot_data: SkillData  = null
 var _rain_arrow_data: SkillData = null
 
@@ -35,30 +39,43 @@ func _setup_skills() -> void:
 func _perform_attack() -> void:
 	if not combat.try_attack():
 		return
-	_fire_arrow(1.0)
 	if animation:
 		animation.play("attack")
+	_fire_arrow(1.0)
 
 func _use_skill_1() -> void:
 	## Tiro Múltiplo: 3 flechas em leque
 	if not combat.try_use_skill(_multishot_data):
 		return
-	for i: int in 3:
-		_fire_arrow(_multishot_data.damage_multiplier, (i - 1) * 15.0)
 	if animation:
 		animation.play("skill_multishot")
+	for i: int in 3:
+		_fire_arrow(_multishot_data.damage_multiplier, (i - 1) * 15.0)
 
 func _use_skill_2() -> void:
-	## Chuva de Flechas: área acima
+	## Chuva de Flechas: flechas caem em área à frente
 	if not combat.try_use_skill(_rain_arrow_data):
 		return
 	if animation:
 		animation.play("skill_rain_arrows")
+	if arrow_scene == null:
+		return
+	var center_x := global_position.x + movement.facing_direction * (RAIN_SPREAD * 0.8)
+	var damage := int(stats.atk * _rain_arrow_data.damage_multiplier)
+	for i: int in RAIN_ARROW_COUNT:
+		var arrow: Projectile = arrow_scene.instantiate()
+		get_tree().current_scene.add_child(arrow)
+		var offset_x := (float(i) / float(RAIN_ARROW_COUNT - 1) - 0.5) * RAIN_SPREAD
+		arrow.global_position = Vector2(center_x + offset_x, global_position.y - RAIN_HEIGHT)
+		arrow.gravity_scale = 0.4
+		arrow.setup(Vector2.DOWN, damage, peer_id)
 
 func _fire_arrow(dmg_mult: float, angle_offset_deg: float = 0.0) -> void:
-	if arrow_scene == null or arrow_spawn_point == null:
+	if arrow_scene == null:
 		return
-	var arrow: Node2D = arrow_scene.instantiate()
+	var arrow: Projectile = arrow_scene.instantiate()
 	get_tree().current_scene.add_child(arrow)
 	arrow.global_position = arrow_spawn_point.global_position
-	# Configura direção e dano — implementar em Arrow.gd
+	var direction := Vector2(movement.facing_direction, 0.0)
+	direction = direction.rotated(deg_to_rad(angle_offset_deg))
+	arrow.setup(direction, int(stats.atk * dmg_mult), peer_id)

@@ -28,3 +28,8 @@ func _enter_phase_2() -> void:
 	if enemy_data:
 		enemy_data.move_speed *= 1.4
 	_attack_cooldown = max(0.5, _attack_cooldown * 0.6)
+	_set_phase_2_visual.rpc()
+
+@rpc("authority", "call_local", "reliable")
+func _set_phase_2_visual() -> void:
+	sprite.modulate = Color(1.2, 0.8, 1.2)
