@@ -1,0 +1,76 @@
+extends Node
+
+const PORT: int = 7777
+const MAX_PLAYERS: int = 4
+
+signal server_created
+signal joined_server
+signal player_connected(peer_id: int)
+signal player_disconnected(peer_id: int)
+signal connection_failed
+
+func _ready() -> void:
+	multiplayer.peer_connected.connect(_on_peer_connected)
+	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
+	multiplayer.connected_to_server.connect(_on_connected_to_server)
+	multiplayer.connection_failed.connect(_on_connection_failed)
+
+func create_server() -> void:
+	var peer := ENetMultiplayerPeer.new()
+	var error := peer.create_server(PORT, MAX_PLAYERS)
+	if error != OK:
+		push_error("Failed to create server: %s" % error)
+		return
+	multiplayer.multiplayer_peer = peer
+	SessionData.is_host = true
+	SessionData.local_peer_id = 1
+	server_created.emit()
+	EventBus.lobby_player_joined.emit(1, SessionData.player_name)
+
+func join_server(address: String) -> void:
+	var peer := ENetMultiplayerPeer.new()
+	var error := peer.create_client(address, PORT)
+	if error != OK:
+		push_error("Failed to join server: %s" % error)
+		connection_failed.emit()
+		return
+	multiplayer.multiplayer_peer = peer
+
+func disconnect_from_game() -> void:
+	multiplayer.multiplayer_peer = null
+	SessionData.is_host = false
+
+# ─── Callbacks internos ────────────────────────────────────
+func _on_peer_connected(peer_id: int) -> void:
+	player_connected.emit(peer_id)
+	EventBus.lobby_player_joined.emit(peer_id, "Player_%d" % peer_id)
+
+func _on_peer_disconnected(peer_id: int) -> void:
+	player_disconnected.emit(peer_id)
+	SessionData.active_characters.erase(peer_id)
+	SessionData.player_names.erase(peer_id)
+	EventBus.lobby_player_left.emit(peer_id)
+
+func _on_connected_to_server() -> void:
+	SessionData.local_peer_id = multiplayer.get_unique_id()
+	joined_server.emit()
+
+func _on_connection_failed() -> void:
+	connection_failed.emit()
+
+# ─── RPCs ──────────────────────────────────────────────────
+@rpc("any_peer", "reliable")
+func sync_player_name(player_name: String) -> void:
+	var peer_id := multiplayer.get_remote_sender_id()
+	SessionData.player_names[peer_id] = player_name
+
+@rpc("any_peer", "reliable")
+func sync_character_choice(character_id: String) -> void:
+	var peer_id := multiplayer.get_remote_sender_id()
+	EventBus.lobby_character_selected.emit(peer_id, character_id)
+
+@rpc("any_peer", "reliable")
+func sync_ready_state(is_ready: bool) -> void:
+	var peer_id := multiplayer.get_remote_sender_id()
+	SessionData.set_player_ready(peer_id, is_ready)
+	EventBus.lobby_ready_changed.emit(peer_id, is_ready)
