@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://char_cleric"]
+[gd_scene load_steps=22 format=3 uid="uid://char_cleric"]
 
 [ext_resource type="Script" path="res://scripts/characters/Cleric.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/components/StatsComponent.gd" id="2"]
@@ -6,6 +6,8 @@
 [ext_resource type="Script" path="res://scripts/components/CombatComponent.gd" id="4"]
 [ext_resource type="Texture2D" path="res://assets/art/cleric.svg" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/projectiles/HolyBolt.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/projectiles/Fireball.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/projectiles/CursedBolt.tscn" id="8"]
 
 [sub_resource type="RectangleShape2D" id="body_shape"]
 size = Vector2(24, 44)
@@ -85,6 +87,8 @@ collision_layer = 2
 collision_mask = 1
 script = ExtResource("1")
 holy_bolt_scene = ExtResource("6")
+fireball_scene = ExtResource("7")
+cursed_bolt_scene = ExtResource("8")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("body_shape")

@@ -2,19 +2,20 @@ class_name Warrior
 extends BaseCharacter
 
 ## Guerreiro: melee, depende de STR e CON.
-## Habilidades usam SP. Ataques com espada em hitbox próxima.
+## Skill 1: Ataque Giratório (ambos os lados) — SP + MP
+## Skill 2: Super Ataque 3× dano          — SP + MP
+## Skill 3: Buff Proteção 10s 50% redução  — apenas MP
 
 @onready var sword_hitbox: Area2D = %SwordHitbox
 
-const ATTACK_SP_COST: int = 5
-const WHIRLWIND_SP_COST: int = 35
-const SHIELD_BASH_SP_COST: int = 25
-const WHIRLWIND_RADIUS: float = 90.0
-const SHIELD_BASH_RANGE: float = 60.0
+const ATTACK_SP_COST  : int   = 5
+const SPIN_RADIUS     : float = 90.0
 
-var _whirlwind_data: SkillData = null
-var _shield_bash_data: SkillData = null
-var _current_damage_multiplier: float = 1.0
+var _spin_data   : SkillData = null
+var _strike_data : SkillData = null
+var _protect_data: SkillData = null
+
+var _current_dmg_mult: float = 1.0
 
 func _ready() -> void:
 	super._ready()
@@ -22,28 +23,43 @@ func _ready() -> void:
 	sword_hitbox.body_entered.connect(_on_sword_hit)
 
 func _setup_skills() -> void:
-	_whirlwind_data = SkillData.new()
-	_whirlwind_data.skill_id      = "warrior_whirlwind"
-	_whirlwind_data.skill_name    = "Redemoinho"
-	_whirlwind_data.cost_type     = SkillData.ResourceCost.SP
-	_whirlwind_data.cost_amount   = WHIRLWIND_SP_COST
-	_whirlwind_data.cooldown      = 4.0
-	_whirlwind_data.damage_multiplier = 1.8
+	_spin_data              = SkillData.new()
+	_spin_data.skill_id     = "warrior_spin"
+	_spin_data.skill_name   = "Ataque Giratório"
+	_spin_data.cost_type    = SkillData.ResourceCost.SP
+	_spin_data.cost_amount  = 15
+	_spin_data.cost_type_2  = SkillData.ResourceCost.MP
+	_spin_data.cost_amount_2 = 10
+	_spin_data.cooldown     = 5.0
+	_spin_data.damage_multiplier = 1.5
 
-	_shield_bash_data = SkillData.new()
-	_shield_bash_data.skill_id    = "warrior_shield_bash"
-	_shield_bash_data.skill_name  = "Golpe de Escudo"
-	_shield_bash_data.cost_type   = SkillData.ResourceCost.SP
-	_shield_bash_data.cost_amount = SHIELD_BASH_SP_COST
-	_shield_bash_data.cooldown    = 3.0
-	_shield_bash_data.damage_multiplier = 1.2
+	_strike_data              = SkillData.new()
+	_strike_data.skill_id     = "warrior_power_strike"
+	_strike_data.skill_name   = "Super Ataque"
+	_strike_data.cost_type    = SkillData.ResourceCost.SP
+	_strike_data.cost_amount  = 20
+	_strike_data.cost_type_2  = SkillData.ResourceCost.MP
+	_strike_data.cost_amount_2 = 15
+	_strike_data.cooldown     = 6.0
+	_strike_data.damage_multiplier = 3.0
 
+	_protect_data              = SkillData.new()
+	_protect_data.skill_id     = "warrior_protection"
+	_protect_data.skill_name   = "Proteção"
+	_protect_data.cost_type    = SkillData.ResourceCost.MP
+	_protect_data.cost_amount  = 30
+	_protect_data.cooldown     = 15.0
+
+func get_skill_datas() -> Array:
+	return [_spin_data, _strike_data, _protect_data]
+
+# ─── Ataque básico ─────────────────────────────────────────
 func _perform_attack() -> void:
 	if not combat.try_attack(SkillData.ResourceCost.SP, ATTACK_SP_COST):
 		return
 	if animation:
 		animation.play("attack")
-	_current_damage_multiplier = 1.0
+	_current_dmg_mult = 1.0
 	_activate_sword_hitbox()
 
 func _activate_sword_hitbox() -> void:
@@ -54,29 +70,41 @@ func _activate_sword_hitbox() -> void:
 
 func _on_sword_hit(body: Node2D) -> void:
 	if body is BaseEnemy:
-		var damage := int(stats.atk * _current_damage_multiplier)
+		var damage := int(stats.atk * _current_dmg_mult)
 		(body as BaseEnemy).request_damage(damage, peer_id)
 
-func _use_skill_1() -> void:
-	## Redemoinho: dano em área ao redor
-	if not combat.try_use_skill(_whirlwind_data):
-		return
+# ─── Skill 1: Ataque Giratório ─────────────────────────────
+func _use_skill_1() -> bool:
+	if not combat.try_use_skill(_spin_data):
+		return false
 	if animation:
 		animation.play("skill_whirlwind")
-	var damage := int(stats.atk * _whirlwind_data.damage_multiplier)
-	for enemy: Node2D in get_tree().get_nodes_in_group("enemies"):
-		if global_position.distance_to(enemy.global_position) <= WHIRLWIND_RADIUS:
-			(enemy as BaseEnemy).request_damage(damage, peer_id)
+	var dmg := int(stats.atk * _spin_data.damage_multiplier)
+	# Acerta ambos os lados (360°) dentro do raio
+	for enemy in get_tree().get_nodes_in_group("enemies"):
+		if global_position.distance_to((enemy as Node2D).global_position) <= SPIN_RADIUS:
+			(enemy as BaseEnemy).request_damage(dmg, peer_id)
+	return true
 
-func _use_skill_2() -> void:
-	## Golpe de Escudo: dano forte nos inimigos à frente
-	if not combat.try_use_skill(_shield_bash_data):
-		return
+# ─── Skill 2: Super Ataque 3× ──────────────────────────────
+func _use_skill_2() -> bool:
+	if not combat.try_use_skill(_strike_data):
+		return false
 	if animation:
 		animation.play("skill_shield_bash")
-	var damage := int(stats.atk * _shield_bash_data.damage_multiplier)
-	for enemy: Node2D in get_tree().get_nodes_in_group("enemies"):
-		var to_enemy := enemy.global_position - global_position
-		var in_front = sign(to_enemy.x) == movement.facing_direction
-		if in_front and to_enemy.length() <= SHIELD_BASH_RANGE:
-			(enemy as BaseEnemy).request_damage(damage, peer_id)
+	_current_dmg_mult = _strike_data.damage_multiplier
+	_activate_sword_hitbox()
+	return true
+
+# ─── Skill 3: Buff Proteção ────────────────────────────────
+func _use_skill_3() -> bool:
+	if not combat.try_use_skill(_protect_data):
+		return false
+	if animation:
+		animation.play("skill_shield_bash")
+	_broadcast_protection.rpc()
+	return true
+
+@rpc("call_local", "reliable")
+func _broadcast_protection() -> void:
+	apply_protection_buff(0.5, 10.0)

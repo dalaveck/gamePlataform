@@ -36,13 +36,27 @@ func try_attack(cost_type: SkillData.ResourceCost = SkillData.ResourceCost.NONE,
 func try_use_skill(skill_data: SkillData) -> bool:
 	if _is_skill_on_cooldown(skill_data.skill_id):
 		return false
-	match skill_data.cost_type:
-		SkillData.ResourceCost.SP:
-			if not _stats.consume_sp(skill_data.cost_amount):
-				return false
-		SkillData.ResourceCost.MP:
-			if not _stats.consume_mp(skill_data.cost_amount):
-				return false
+	# Agrega custo por tipo (evita consumir mais do que o disponível)
+	var total_sp := 0
+	var total_mp := 0
+	if skill_data.cost_type == SkillData.ResourceCost.SP:
+		total_sp += skill_data.cost_amount
+	elif skill_data.cost_type == SkillData.ResourceCost.MP:
+		total_mp += skill_data.cost_amount
+	if skill_data.cost_type_2 == SkillData.ResourceCost.SP:
+		total_sp += skill_data.cost_amount_2
+	elif skill_data.cost_type_2 == SkillData.ResourceCost.MP:
+		total_mp += skill_data.cost_amount_2
+	# Verifica
+	if total_sp > 0 and _stats.current_sp < total_sp:
+		return false
+	if total_mp > 0 and _stats.current_mp < total_mp:
+		return false
+	# Consome
+	if total_sp > 0:
+		_stats.consume_sp(total_sp)
+	if total_mp > 0:
+		_stats.consume_mp(total_mp)
 	_skill_cooldowns[skill_data.skill_id] = skill_data.cooldown
 	skill_used.emit(skill_data)
 	return true

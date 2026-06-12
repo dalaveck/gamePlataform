@@ -28,11 +28,10 @@ var current_mp: int = 0
 var current_sp: int = 0
 
 # ─── Regeneração (só ocorre longe de inimigos) ─────────────
-const HP_REGEN_RATE: float = 5.0    ## HP por segundo fora de combate
-const SP_REGEN_RATE: float = 10.0   ## SP por segundo fora de combate
-const MP_REGEN_RATE: float = 2.0    ## MP por segundo fora de combate
+const HP_REGEN_RATE: float = 5.0
+const SP_REGEN_RATE: float = 10.0
+const MP_REGEN_RATE: float = 2.0
 
-## Controlado pelo dono (BaseCharacter) conforme proximidade de inimigos
 var regen_enabled: bool = true
 
 var _hp_regen_timer: float = 0.0
@@ -53,7 +52,6 @@ func recalculate_from(data: CharacterData) -> void:
 	spirit       = data.spirit
 	_apply_equipment_bonuses(data)
 	_derive_stats()
-	# Restaura totalmente ao recalcular (ex: troca de equipamento)
 	current_hp = max_hp
 	current_mp = max_mp
 	current_sp = max_sp
@@ -108,6 +106,14 @@ func consume_mp(amount: int) -> bool:
 	current_mp -= amount
 	mp_changed.emit(current_mp, max_mp)
 	return true
+
+func restore_sp(amount: int) -> void:
+	current_sp = min(max_sp, current_sp + amount)
+	sp_changed.emit(current_sp, max_sp)
+
+func restore_mp(amount: int) -> void:
+	current_mp = min(max_mp, current_mp + amount)
+	mp_changed.emit(current_mp, max_mp)
 
 func _regenerate_hp(delta: float) -> void:
 	if current_hp <= 0 or current_hp >= max_hp:
