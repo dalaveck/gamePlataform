@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://char_archer"]
+[gd_scene load_steps=22 format=3 uid="uid://char_archer"]
 
 [ext_resource type="Script" path="res://scripts/characters/Archer.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/components/StatsComponent.gd" id="2"]
@@ -6,6 +6,8 @@
 [ext_resource type="Script" path="res://scripts/components/CombatComponent.gd" id="4"]
 [ext_resource type="Texture2D" path="res://assets/art/archer.svg" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/projectiles/Arrow.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/projectiles/PenetratingArrow.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/projectiles/ExplosiveArrow.tscn" id="8"]
 
 [sub_resource type="RectangleShape2D" id="body_shape"]
 size = Vector2(24, 44)
@@ -85,6 +87,8 @@ collision_layer = 2
 collision_mask = 1
 script = ExtResource("1")
 arrow_scene = ExtResource("6")
+penetrating_arrow_scene = ExtResource("7")
+explosive_arrow_scene = ExtResource("8")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("body_shape")

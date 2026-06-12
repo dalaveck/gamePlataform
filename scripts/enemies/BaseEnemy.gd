@@ -8,14 +8,14 @@ enum EnemyState { IDLE, PATROL, CHASE, ATTACK, DEAD }
 
 @export var enemy_data: EnemyData = null
 
-@onready var xp_component: XPComponent   = %XPComponent
+@onready var xp_component: XPComponent    = %XPComponent
 @onready var loot_component: LootComponent = %LootComponent
-@onready var animation: AnimationPlayer  = %AnimationPlayer
-@onready var sprite: Sprite2D            = %Sprite2D
-@onready var detection_area: Area2D      = %DetectionArea
-@onready var attack_area: Area2D         = %AttackArea
-@onready var health_bar: ProgressBar     = %HealthBar
-@onready var edge_ray: RayCast2D         = get_node_or_null("%EdgeRay")
+@onready var animation: AnimationPlayer   = %AnimationPlayer
+@onready var sprite: Sprite2D             = %Sprite2D
+@onready var detection_area: Area2D       = %DetectionArea
+@onready var attack_area: Area2D          = %AttackArea
+@onready var health_bar: ProgressBar      = %HealthBar
+@onready var edge_ray: RayCast2D          = get_node_or_null("%EdgeRay")
 
 var current_state: EnemyState = EnemyState.IDLE
 var current_hp: int = 0:
@@ -23,7 +23,11 @@ var current_hp: int = 0:
 		current_hp = value
 		_update_health_bar()
 var _target: CharacterBody2D = null
-var _attack_cooldown: float = 0.0
+var _attack_cooldown: float  = 0.0
+
+# ─── Maldição Imperdoável ──────────────────────────────────
+var _curse_timer: float     = 0.0
+var _curse_drain_rate: float = 0.0  ## HP/s drenado
 
 const GRAVITY: float = 980.0
 
@@ -47,6 +51,14 @@ func _physics_process(delta: float) -> void:
 		return
 	velocity.y += GRAVITY * delta
 	_tick_state(delta)
+	# Dreno de maldição (servidor)
+	if _curse_timer > 0.0:
+		_curse_timer -= delta
+		var drain := int(_curse_drain_rate * delta)
+		if drain > 0:
+			current_hp = max(0, current_hp - drain)
+			if current_hp == 0:
+				_die_synced.rpc(0)
 	move_and_slide()
 	_update_animation()
 
@@ -59,23 +71,25 @@ func _tick_state(delta: float) -> void:
 		EnemyState.ATTACK: _do_attack()
 
 func _do_patrol(_delta: float) -> void:
-	pass  ## Sobrescrever em subclasses
+	pass
 
 func _do_chase(_delta: float) -> void:
 	if _target == null:
 		current_state = EnemyState.PATROL
 		return
-	var dir = sign(_target.global_position.x - global_position.x)
+	var dir := sign(_target.global_position.x - global_position.x)
 	sprite.flip_h = dir < 0
-	# Para na beirada da plataforma em vez de cair
 	if _would_fall(dir):
 		velocity.x = 0.0
 		return
 	velocity.x = dir * enemy_data.move_speed
 
 func _would_fall(direction: float) -> bool:
-	if edge_ray == null or direction == 0.0 or not is_on_floor():
+	if edge_ray == null or direction == 0.0:
 		return false
+	# Se já está no ar, trata como "cairia" para parar o movimento horizontal
+	if not is_on_floor():
+		return true
 	edge_ray.position.x = abs(edge_ray.position.x) * direction
 	edge_ray.force_raycast_update()
 	return not edge_ray.is_colliding()
@@ -94,7 +108,7 @@ func _execute_attack() -> void:
 		if body is BaseCharacter:
 			(body as BaseCharacter).receive_damage.rpc(enemy_data.atk, 0)
 
-# ─── Dano (servidor é autoridade) ──────────────────────────
+# ─── Dano ──────────────────────────────────────────────────
 func request_damage(amount: int, attacker_peer_id: int) -> void:
 	if multiplayer.is_server():
 		take_damage(amount, attacker_peer_id)
@@ -108,21 +122,39 @@ func _request_damage_rpc(amount: int, attacker_peer_id: int) -> void:
 func take_damage(amount: int, attacker_peer_id: int) -> void:
 	if current_state == EnemyState.DEAD:
 		return
-	var mitigated = max(1, amount - (enemy_data.defense if enemy_data else 0))
+	var mitigated := max(1, amount - (enemy_data.defense if enemy_data else 0))
 	current_hp = max(0, current_hp - mitigated)
 	if current_hp == 0:
 		_die_synced.rpc(attacker_peer_id)
 	elif current_state == EnemyState.IDLE or current_state == EnemyState.PATROL:
 		current_state = EnemyState.CHASE
 
+# ─── Maldição ──────────────────────────────────────────────
+func request_curse(drain_percent: float, duration: float) -> void:
+	if multiplayer.is_server():
+		apply_curse(drain_percent, duration)
+	else:
+		_request_curse_rpc.rpc_id(1, drain_percent, duration)
+
+@rpc("any_peer", "call_remote", "reliable")
+func _request_curse_rpc(drain_percent: float, duration: float) -> void:
+	apply_curse(drain_percent, duration)
+
+func apply_curse(drain_percent: float, duration: float) -> void:
+	if enemy_data == null:
+		return
+	_curse_timer      = duration
+	_curse_drain_rate = (enemy_data.max_hp * drain_percent) / duration
+
+# ─── Morte ────────────────────────────────────────────────
 @rpc("authority", "call_local", "reliable")
 func _die_synced(killer_peer_id: int) -> void:
 	_die(killer_peer_id)
 
 func _die(killer_peer_id: int) -> void:
 	current_state = EnemyState.DEAD
-	current_hp = 0
-	velocity = Vector2.ZERO
+	current_hp    = 0
+	velocity      = Vector2.ZERO
 	xp_component.distribute_rewards(killer_peer_id)
 	EventBus.enemy_killed.emit(enemy_data, killer_peer_id)
 	if animation:
@@ -144,7 +176,7 @@ func _update_animation() -> void:
 		EnemyState.CHASE:
 			animation.play("walk")
 		EnemyState.ATTACK:
-			pass  ## Gerenciado em _execute_attack
+			pass
 
 func _on_body_entered_detection(body: Node2D) -> void:
 	if body is BaseCharacter:

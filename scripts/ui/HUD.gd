@@ -1,12 +1,13 @@
 extends CanvasLayer
 
-## HUD do jogador local: barras de HP/MP/SP, nível, XP e dinheiro.
+## HUD do jogador local: barras de HP/MP/SP, nível, dinheiro e barra de habilidades.
 
 @onready var hp_bar: ProgressBar    = %HPBar
 @onready var mp_bar: ProgressBar    = %MPBar
 @onready var sp_bar: ProgressBar    = %SPBar
 @onready var level_label: Label     = %LevelLabel
 @onready var money_label: Label     = %MoneyLabel
+@onready var skill_bar: SkillBar    = %SkillBar
 
 var _player: BaseCharacter = null
 
@@ -24,18 +25,20 @@ func bind(player: BaseCharacter) -> void:
 	_on_mp_changed(player.stats.current_mp, player.stats.max_mp)
 	_on_sp_changed(player.stats.current_sp, player.stats.max_sp)
 	_update_level()
+	if skill_bar:
+		skill_bar.bind(player)
 
 func _on_hp_changed(current: int, maximum: int) -> void:
 	hp_bar.max_value = maximum
-	hp_bar.value = current
+	hp_bar.value     = current
 
 func _on_mp_changed(current: int, maximum: int) -> void:
 	mp_bar.max_value = maximum
-	mp_bar.value = current
+	mp_bar.value     = current
 
 func _on_sp_changed(current: int, maximum: int) -> void:
 	sp_bar.max_value = maximum
-	sp_bar.value = current
+	sp_bar.value     = current
 
 func _on_money_gained(_amount: int) -> void:
 	_update_money()

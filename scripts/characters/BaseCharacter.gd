@@ -16,12 +16,16 @@ extends CharacterBody2D
 @onready var camera: Camera2D            = %Camera2D
 @onready var name_label: Label           = %NameLabel
 
-const REGEN_SAFE_DISTANCE: float = 280.0  ## Sem regen com inimigo mais perto que isso
+const REGEN_SAFE_DISTANCE: float = 280.0
 const REGEN_CHECK_INTERVAL: float = 0.5
 
 var peer_id: int = 0
+var selected_skill: int = 1  ## 1=ataque, 2=skill1, 3=skill2, 4=skill3
+
 var _is_local_player: bool = false
 var _regen_check_timer: float = 0.0
+var _damage_reduction: float = 0.0
+var _damage_reduction_timer: float = 0.0
 
 func _ready() -> void:
 	add_to_group("players")
@@ -38,8 +42,6 @@ func _initialize() -> void:
 	name_label.text = character_data.character_name
 
 func _process(delta: float) -> void:
-	# Roda em todas as instâncias (locais e remotas) para manter
-	# a regeneração consistente entre os peers
 	_regen_check_timer -= delta
 	if _regen_check_timer <= 0.0:
 		_regen_check_timer = REGEN_CHECK_INTERVAL
@@ -59,6 +61,11 @@ func _physics_process(delta: float) -> void:
 	_check_wall_slide()
 	move_and_slide()
 	_update_animation()
+	# Tick buff de proteção
+	if _damage_reduction_timer > 0.0:
+		_damage_reduction_timer -= delta
+		if _damage_reduction_timer <= 0.0:
+			_damage_reduction = 0.0
 
 func _handle_input(delta: float) -> void:
 	var direction: float = Input.get_axis("move_left", "move_right")
@@ -67,22 +74,47 @@ func _handle_input(delta: float) -> void:
 
 	if Input.is_action_just_pressed("jump"):
 		if movement._is_wall_sliding:
-			var wall_normal := get_wall_normal()
-			movement.try_wall_jump(wall_normal)
+			movement.try_wall_jump(get_wall_normal())
 		else:
 			movement.try_jump()
 
 	if Input.is_action_just_pressed("dash"):
 		movement.try_dash()
 
+	# Teclas de seleção rápida (1–4 numpad ou teclado)
+	if Input.is_key_pressed(KEY_1): selected_skill = 1
+	elif Input.is_key_pressed(KEY_2): selected_skill = 2
+	elif Input.is_key_pressed(KEY_3): selected_skill = 3
+	elif Input.is_key_pressed(KEY_4): selected_skill = 4
+
+	# Ataque / habilidade selecionada
 	if Input.is_action_just_pressed("attack"):
-		_perform_attack()
+		_execute_selected_skill()
 
+	# Atalhos diretos legados (X, C) + novo V para skill 3
 	if Input.is_action_just_pressed("skill_1"):
-		_use_skill_1()
-
+		if _use_skill_1():
+			selected_skill = 1
 	if Input.is_action_just_pressed("skill_2"):
-		_use_skill_2()
+		if _use_skill_2():
+			selected_skill = 1
+	if InputMap.has_action("skill_3") and Input.is_action_just_pressed("skill_3"):
+		if _use_skill_3():
+			selected_skill = 1
+
+func _execute_selected_skill() -> void:
+	match selected_skill:
+		1:
+			_perform_attack()
+		2:
+			if _use_skill_1():
+				selected_skill = 1
+		3:
+			if _use_skill_2():
+				selected_skill = 1
+		4:
+			if _use_skill_3():
+				selected_skill = 1
 
 func _check_wall_slide() -> void:
 	var on_wall := is_on_wall() and not is_on_floor()
@@ -99,25 +131,51 @@ func _update_animation() -> void:
 		animation.play("run")
 	else:
 		animation.play("idle")
-	sprite.flip_h = movement.facing_direction < 0.0
+	# Sprite vira em direção ao mouse (apenas jogador local)
+	if _is_local_player:
+		var face_right := get_global_mouse_position().x >= global_position.x
+		sprite.flip_h = not face_right
+		movement.facing_direction = 1.0 if face_right else -1.0
+	else:
+		sprite.flip_h = movement.facing_direction < 0.0
+
+# ─── Direção de mira (mouse) ───────────────────────────────
+func _get_aim_direction() -> Vector2:
+	if not _is_local_player:
+		return Vector2(movement.facing_direction, 0.0)
+	var dir := (get_global_mouse_position() - global_position).normalized()
+	return dir if dir.length() > 0.01 else Vector2(movement.facing_direction, 0.0)
+
+# ─── Buff de Proteção ──────────────────────────────────────
+func apply_protection_buff(reduction: float, duration: float) -> void:
+	_damage_reduction       = reduction
+	_damage_reduction_timer = duration
 
 # ─── Sobrescrever nas subclasses ───────────────────────────
 func _perform_attack() -> void:
 	pass
 
-func _use_skill_1() -> void:
-	pass
+func _use_skill_1() -> bool:
+	return false
 
-func _use_skill_2() -> void:
-	pass
+func _use_skill_2() -> bool:
+	return false
+
+func _use_skill_3() -> bool:
+	return false
+
+## Retorna lista de SkillData para a SkillBar (sobrescrever nas subclasses)
+func get_skill_datas() -> Array:
+	return []
 
 # ─── Dano e cura (executam em todos os peers via call_local) ─
 @rpc("any_peer", "call_local", "reliable")
 func receive_damage(amount: int, _attacker_peer_id: int) -> void:
 	if stats.current_hp <= 0:
 		return
-	stats.take_damage(amount)
-	EventBus.player_damaged.emit(peer_id, amount)
+	var final := int(amount * (1.0 - _damage_reduction))
+	stats.take_damage(final)
+	EventBus.player_damaged.emit(peer_id, final)
 
 @rpc("any_peer", "call_local", "reliable")
 func receive_heal(amount: int) -> void:
