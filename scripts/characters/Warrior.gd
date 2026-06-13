@@ -11,11 +11,19 @@ extends BaseCharacter
 const ATTACK_SP_COST  : int   = 5
 const SPIN_RADIUS     : float = 90.0
 
+# ─── Knockback ─────────────────────────────────────────────
+const COMMON_KNOCKBACK : float = 340.0  ## ataque comum: empurra forte os comuns
+const SUPER_KNOCKBACK  : float = 230.0  ## super ataque: base menor...
+const SUPER_KB_PENETR  : float = 0.25   ## ...porém ignora 75% da resistência (bosses)
+const SPIN_KNOCKBACK   : float = 260.0  ## giratório: empurrão radial
+
 var _spin_data   : SkillData = null
 var _strike_data : SkillData = null
 var _protect_data: SkillData = null
 
 var _current_dmg_mult: float = 1.0
+var _current_knockback: float = COMMON_KNOCKBACK
+var _current_kb_penetr: float = 1.0
 
 func _ready() -> void:
 	super._ready()
@@ -59,7 +67,9 @@ func _perform_attack() -> void:
 		return
 	if animation:
 		animation.play("attack")
-	_current_dmg_mult = 1.0
+	_current_dmg_mult  = 1.0
+	_current_knockback = COMMON_KNOCKBACK
+	_current_kb_penetr = 1.0
 	_activate_sword_hitbox()
 
 func _activate_sword_hitbox() -> void:
@@ -70,8 +80,11 @@ func _activate_sword_hitbox() -> void:
 
 func _on_sword_hit(body: Node2D) -> void:
 	if body is BaseEnemy:
+		var enemy := body as BaseEnemy
 		var damage := int(stats.atk * _current_dmg_mult)
-		(body as BaseEnemy).request_damage(damage, peer_id)
+		enemy.request_damage(damage, peer_id)
+		var dir := Vector2(movement.facing_direction, -0.2).normalized()
+		enemy.request_knockback(dir, _current_knockback, _current_kb_penetr)
 
 # ─── Skill 1: Ataque Giratório ─────────────────────────────
 func _use_skill_1() -> bool:
@@ -80,10 +93,15 @@ func _use_skill_1() -> bool:
 	if animation:
 		animation.play("skill_whirlwind")
 	var dmg := int(stats.atk * _spin_data.damage_multiplier)
-	# Acerta ambos os lados (360°) dentro do raio
+	# Acerta ambos os lados (360°) dentro do raio e empurra radialmente
 	for enemy in get_tree().get_nodes_in_group("enemies"):
-		if global_position.distance_to((enemy as Node2D).global_position) <= SPIN_RADIUS:
+		var enemy_pos := (enemy as Node2D).global_position
+		if global_position.distance_to(enemy_pos) <= SPIN_RADIUS:
 			(enemy as BaseEnemy).request_damage(dmg, peer_id)
+			var dir := (enemy_pos - global_position).normalized()
+			if dir == Vector2.ZERO:
+				dir = Vector2(movement.facing_direction, 0.0)
+			(enemy as BaseEnemy).request_knockback(dir, SPIN_KNOCKBACK)
 	return true
 
 # ─── Skill 2: Super Ataque 3× ──────────────────────────────
@@ -92,7 +110,9 @@ func _use_skill_2() -> bool:
 		return false
 	if animation:
 		animation.play("skill_shield_bash")
-	_current_dmg_mult = _strike_data.damage_multiplier
+	_current_dmg_mult  = _strike_data.damage_multiplier
+	_current_knockback = SUPER_KNOCKBACK
+	_current_kb_penetr = SUPER_KB_PENETR
 	_activate_sword_hitbox()
 	return true
 

@@ -7,6 +7,7 @@ extends Area2D
 @export var speed: float = 500.0
 @export var lifetime: float = 3.0
 @export var gravity_scale: float = 0.0
+@export var knockback: float = 70.0  ## empurrão leve (clérigo/arqueiro)
 
 var direction: Vector2 = Vector2.RIGHT
 var damage: int = 0
@@ -37,6 +38,7 @@ func _physics_process(delta: float) -> void:
 func _on_body_entered(body: Node2D) -> void:
 	if body is BaseEnemy:
 		(body as BaseEnemy).request_damage(damage, owner_peer_id)
+		(body as BaseEnemy).request_knockback(_velocity.normalized(), knockback)
 		queue_free()
 	elif body is StaticBody2D or body is TileMap:
 		queue_free()

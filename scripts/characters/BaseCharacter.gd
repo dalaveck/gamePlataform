@@ -26,6 +26,9 @@ var _is_local_player: bool = false
 var _regen_check_timer: float = 0.0
 var _damage_reduction: float = 0.0
 var _damage_reduction_timer: float = 0.0
+var _knockback: Vector2 = Vector2.ZERO
+
+const KNOCKBACK_DECAY: float = 1400.0  ## px/s² de desaceleração do empurrão
 
 func _ready() -> void:
 	add_to_group("players")
@@ -59,6 +62,10 @@ func _physics_process(delta: float) -> void:
 	movement.apply_gravity(delta)
 	_handle_input(delta)
 	_check_wall_slide()
+	# Empurrão recebido (somado por cima do movimento, decai rápido)
+	if _knockback != Vector2.ZERO:
+		velocity += _knockback
+		_knockback = _knockback.move_toward(Vector2.ZERO, KNOCKBACK_DECAY * delta)
 	move_and_slide()
 	_update_animation()
 	# Tick buff de proteção
@@ -176,6 +183,14 @@ func receive_damage(amount: int, _attacker_peer_id: int) -> void:
 	var final := int(amount * (1.0 - _damage_reduction))
 	stats.take_damage(final)
 	EventBus.player_damaged.emit(peer_id, final)
+
+## Empurrão recebido (ex.: ataque de Boss/MiniBoss). Aplicado na autoridade
+## local do personagem; em peers remotos não tem efeito (physics não roda).
+@rpc("any_peer", "call_local", "reliable")
+func receive_knockback(direction: Vector2, force: float) -> void:
+	if stats.current_hp <= 0:
+		return
+	_knockback = direction.normalized() * force
 
 @rpc("any_peer", "call_local", "reliable")
 func receive_heal(amount: int) -> void:

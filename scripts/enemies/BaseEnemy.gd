@@ -29,7 +29,11 @@ var _attack_cooldown: float  = 0.0
 var _curse_timer: float     = 0.0
 var _curse_drain_rate: float = 0.0  ## HP/s drenado
 
+# ─── Knockback (empurrão recebido) ─────────────────────────
+var _knockback: Vector2 = Vector2.ZERO
+
 const GRAVITY: float = 980.0
+const KNOCKBACK_DECAY: float = 1600.0  ## px/s² de desaceleração do empurrão
 
 func _ready() -> void:
 	add_to_group("enemies")
@@ -51,6 +55,10 @@ func _physics_process(delta: float) -> void:
 		return
 	velocity.y += GRAVITY * delta
 	_tick_state(delta)
+	# Empurrão (somado por cima da velocidade da IA, decai rápido)
+	if _knockback != Vector2.ZERO:
+		velocity += _knockback
+		_knockback = _knockback.move_toward(Vector2.ZERO, KNOCKBACK_DECAY * delta)
 	# Dreno de maldição (servidor)
 	if _curse_timer > 0.0:
 		_curse_timer -= delta
@@ -104,9 +112,24 @@ func _do_attack() -> void:
 func _execute_attack() -> void:
 	if animation:
 		animation.play("attack")
+	var kb_force := _attack_knockback_force()
 	for body: Node2D in attack_area.get_overlapping_bodies():
 		if body is BaseCharacter:
-			(body as BaseCharacter).receive_damage.rpc(enemy_data.atk, 0)
+			var character := body as BaseCharacter
+			character.receive_damage.rpc(enemy_data.atk, 0)
+			if kb_force > 0.0:
+				var dir := (character.global_position - global_position).normalized()
+				dir.y -= 0.35  ## leve componente para cima
+				character.receive_knockback.rpc(dir.normalized(), kb_force)
+
+## Força com que o inimigo empurra jogadores ao atacar (só Boss/MiniBoss).
+func _attack_knockback_force() -> float:
+	if enemy_data == null:
+		return 0.0
+	match enemy_data.enemy_type:
+		EnemyData.EnemyType.BOSS:     return 320.0
+		EnemyData.EnemyType.MINIBOSS: return 240.0
+		_:                            return 0.0
 
 # ─── Dano ──────────────────────────────────────────────────
 func request_damage(amount: int, attacker_peer_id: int) -> void:
@@ -128,6 +151,33 @@ func take_damage(amount: int, attacker_peer_id: int) -> void:
 		_die_synced.rpc(attacker_peer_id)
 	elif current_state == EnemyState.IDLE or current_state == EnemyState.PATROL:
 		current_state = EnemyState.CHASE
+
+# ─── Knockback (empurrão) ──────────────────────────────────
+## resist_factor: 0.0 ignora a resistência do alvo, 1.0 aplica integralmente.
+func request_knockback(direction: Vector2, force: float, resist_factor: float = 1.0) -> void:
+	if multiplayer.is_server():
+		apply_knockback(direction, force, resist_factor)
+	else:
+		_request_knockback_rpc.rpc_id(1, direction, force, resist_factor)
+
+@rpc("any_peer", "call_remote", "reliable")
+func _request_knockback_rpc(direction: Vector2, force: float, resist_factor: float) -> void:
+	apply_knockback(direction, force, resist_factor)
+
+func apply_knockback(direction: Vector2, force: float, resist_factor: float = 1.0) -> void:
+	if current_state == EnemyState.DEAD:
+		return
+	var resistance := _knockback_resistance() * resist_factor
+	_knockback = direction.normalized() * force * (1.0 - resistance)
+
+## Quanto o inimigo resiste a ser empurrado (Boss/MiniBoss resistem muito).
+func _knockback_resistance() -> float:
+	if enemy_data == null:
+		return 0.0
+	match enemy_data.enemy_type:
+		EnemyData.EnemyType.BOSS:     return 0.85
+		EnemyData.EnemyType.MINIBOSS: return 0.80
+		_:                            return 0.0
 
 # ─── Maldição ──────────────────────────────────────────────
 func request_curse(drain_percent: float, duration: float) -> void:

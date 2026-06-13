@@ -50,3 +50,4 @@ func _on_enemy_entered(body: Node2D) -> void:
 	if body is BaseEnemy and not _hit_enemies.has(body):
 		_hit_enemies.append(body)
 		(body as BaseEnemy).request_damage(_damage, _owner_id)
+		(body as BaseEnemy).request_knockback(velocity.normalized(), 70.0)
