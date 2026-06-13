@@ -231,5 +231,8 @@ func _on_died() -> void:
 	EventBus.player_died.emit(peer_id)
 	set_physics_process(false)
 	hurtbox.set_deferred("monitoring", false)
-	if animation:
-		animation.play("die")
+	# Clareia ligeiramente antes de cair e fica esmaecido (derrotado)
+	if sprite:
+		var tw := create_tween()
+		tw.tween_property(sprite, "modulate", Color(1.9, 1.9, 1.9, 1.0), 0.15)
+		tw.tween_property(sprite, "modulate", Color(1.5, 1.5, 1.5, 0.35), 0.4)

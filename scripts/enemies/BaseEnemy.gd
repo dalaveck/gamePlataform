@@ -221,12 +221,14 @@ func _die(killer_peer_id: int) -> void:
 	current_state = EnemyState.DEAD
 	current_hp    = 0
 	velocity      = Vector2.ZERO
-	VFX.special(global_position, "death")
 	xp_component.distribute_rewards(killer_peer_id)
 	EventBus.enemy_killed.emit(enemy_data, killer_peer_id)
-	if animation:
-		animation.play("die")
-		await animation.animation_finished
+	# Clareia ligeiramente e some suavemente antes de desaparecer
+	if sprite:
+		var tw := create_tween()
+		tw.tween_property(sprite, "modulate", Color(1.9, 1.9, 1.9, 1.0), 0.12)
+		tw.tween_property(sprite, "modulate", Color(1.9, 1.9, 1.9, 0.0), 0.32)
+		await tw.finished
 	queue_free()
 
 func _update_health_bar() -> void:
