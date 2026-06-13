@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3 uid="uid://data_chicken"]
+
+[ext_resource type="Script" path="res://scripts/resources/EnemyData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+enemy_id = "chicken"
+enemy_name = "Galinha Voadora"
+enemy_type = 0
+max_hp = 45
+atk = 10
+defense = 1
+move_speed = 70.0
+xp_reward = 30
+money_reward = 12
