@@ -91,7 +91,7 @@ func _use_skill_3() -> bool:
 func _spawn_holy_bolt(dmg_mult: float) -> void:
 	if holy_bolt_scene == null:
 		return
-	var bolt: Projectile = holy_bolt_scene.instantiate()
+	var bolt: BouncingHolyBolt = holy_bolt_scene.instantiate()
 	get_tree().current_scene.add_child(bolt)
 	bolt.global_position = spell_spawn_point.global_position
 	var dmg := int((stats.atk * 0.5 + stats.magic_power) * dmg_mult)
