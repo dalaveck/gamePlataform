@@ -20,13 +20,17 @@ func _tick_state(delta: float) -> void:
 	super._tick_state(delta)
 
 func _use_special_attack() -> void:
-	## Onda de choque: dano em área ao redor do boss
+	## Onda de choque: dano em área ao redor do boss + empurrão radial forte
 	if animation:
 		animation.play("attack")
 	var damage := int(enemy_data.atk * 1.5)
 	for player: Node2D in get_tree().get_nodes_in_group("players"):
 		if global_position.distance_to(player.global_position) <= SPECIAL_RADIUS:
-			(player as BaseCharacter).receive_damage.rpc(damage, 0)
+			var character := player as BaseCharacter
+			character.receive_damage.rpc(damage, 0)
+			var dir := (character.global_position - global_position).normalized()
+			dir.y -= 0.35
+			character.receive_knockback.rpc(dir.normalized(), 380.0)
 
 func take_damage(amount: int, attacker_peer_id: int) -> void:
 	super.take_damage(amount, attacker_peer_id)

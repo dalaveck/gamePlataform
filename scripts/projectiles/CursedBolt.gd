@@ -39,6 +39,7 @@ func _physics_process(delta: float) -> void:
 	var collider := col.get_collider()
 	if collider is BaseEnemy:
 		(collider as BaseEnemy).request_damage(_damage, _owner_id)
+		(collider as BaseEnemy).request_knockback(velocity.normalized(), 70.0)
 		(collider as BaseEnemy).request_curse(DOT_PERCENT, DOT_DURATION)
 		queue_free()
 	elif _bounces < MAX_BOUNCES:

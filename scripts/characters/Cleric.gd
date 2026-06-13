@@ -13,6 +13,9 @@ extends BaseCharacter
 @export var cursed_bolt_scene: PackedScene = null
 
 const ATTACK_MP_COST: int = 5
+const HEAL_RADIUS   : float = 200.0  ## alcance da cura em aliados no coop
+const HEAL_HP_PCT   : float = 0.30
+const HEAL_SP_PCT   : float = 0.50
 
 var _greater_heal_data: SkillData = null
 var _fireball_data    : SkillData = null
@@ -63,10 +66,12 @@ func _use_skill_1() -> bool:
 		return false
 	if animation:
 		animation.play("skill_heal")
-	var hp_heal := int(stats.max_hp * 0.30)
-	var sp_rest := int(stats.max_sp * 0.50)
-	stats.heal(hp_heal)
-	stats.restore_sp(sp_rest)
+	VFX.special(global_position, "heal_cast")
+	# Cura o próprio clérigo e todos os aliados dentro do raio (coop).
+	# Cada alvo recupera a % do próprio máximo (calculado em cada peer).
+	for player in get_tree().get_nodes_in_group("players"):
+		if global_position.distance_to((player as Node2D).global_position) <= HEAL_RADIUS:
+			(player as BaseCharacter).receive_greater_heal.rpc(HEAL_HP_PCT, HEAL_SP_PCT)
 	return true
 
 # ─── Skill 2: Bola de Fogo ─────────────────────────────────
@@ -91,7 +96,7 @@ func _use_skill_3() -> bool:
 func _spawn_holy_bolt(dmg_mult: float) -> void:
 	if holy_bolt_scene == null:
 		return
-	var bolt: Projectile = holy_bolt_scene.instantiate()
+	var bolt: BouncingHolyBolt = holy_bolt_scene.instantiate()
 	get_tree().current_scene.add_child(bolt)
 	bolt.global_position = spell_spawn_point.global_position
 	var dmg := int((stats.atk * 0.5 + stats.magic_power) * dmg_mult)
@@ -105,6 +110,7 @@ func _spawn_fireball() -> void:
 	fb.global_position = spell_spawn_point.global_position
 	var dmg := int((stats.atk * 0.5 + stats.magic_power) * _fireball_data.damage_multiplier)
 	fb.setup(_get_aim_direction(), dmg, peer_id)
+	VFX.special(spell_spawn_point.global_position, "fireball")
 
 func _spawn_cursed_bolt() -> void:
 	if cursed_bolt_scene == null:
@@ -114,3 +120,4 @@ func _spawn_cursed_bolt() -> void:
 	cb.global_position = spell_spawn_point.global_position
 	var dmg := int((stats.atk * 0.5 + stats.magic_power) * _curse_data.damage_multiplier)
 	cb.setup(_get_aim_direction(), dmg, peer_id)
+	VFX.special(spell_spawn_point.global_position, "curse")

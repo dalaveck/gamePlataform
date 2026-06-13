@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://map_01"]
+[gd_scene load_steps=16 format=3 uid="uid://map_01"]
 
 [ext_resource type="Script" path="res://scripts/maps/BaseMap.gd" id="1"]
 [ext_resource type="Resource" path="res://data/maps/map01.tres" id="2"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://scenes/enemies/base/Slime.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/miniboss/ForestMiniBoss.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/boss/ForestBoss.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/flying/FlyingChicken.tscn" id="7"]
 
 [sub_resource type="RectangleShape2D" id="shape_g1"]
 size = Vector2(900, 100)
@@ -321,6 +322,15 @@ position = Vector2(1550, 585)
 
 [node name="Slime4" parent="Enemies" instance=ExtResource("4")]
 position = Vector2(1950, 585)
+
+[node name="FlyingChicken1" parent="Enemies" instance=ExtResource("7")]
+position = Vector2(820, 585)
+
+[node name="FlyingChicken2" parent="Enemies" instance=ExtResource("7")]
+position = Vector2(1450, 585)
+
+[node name="FlyingChicken3" parent="Enemies" instance=ExtResource("7")]
+position = Vector2(2900, 585)
 
 [node name="ForestMiniBoss" parent="Enemies" instance=ExtResource("5")]
 position = Vector2(2480, 577)

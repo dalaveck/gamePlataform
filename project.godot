@@ -27,6 +27,7 @@ GameManager="*res://scripts/autoloads/GameManager.gd"
 NetworkManager="*res://scripts/autoloads/NetworkManager.gd"
 SaveSystem="*res://scripts/autoloads/SaveSystem.gd"
 SessionData="*res://scripts/autoloads/SessionData.gd"
+VFX="*res://scripts/autoloads/VFX.gd"
 
 [display]
 

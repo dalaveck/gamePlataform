@@ -14,7 +14,13 @@ func _on_body_entered(body: Node2D) -> void:
 	_explode()
 
 func _explode() -> void:
+	VFX.special(global_position, "explosion")
 	for enemy in get_tree().get_nodes_in_group("enemies"):
-		if global_position.distance_to((enemy as Node2D).global_position) <= EXPLOSION_RADIUS:
+		var enemy_pos := (enemy as Node2D).global_position
+		if global_position.distance_to(enemy_pos) <= EXPLOSION_RADIUS:
 			(enemy as BaseEnemy).request_damage(damage, owner_peer_id)
+			var dir := (enemy_pos - global_position).normalized()
+			if dir == Vector2.ZERO:
+				dir = _velocity.normalized()
+			(enemy as BaseEnemy).request_knockback(dir, knockback)
 	queue_free()

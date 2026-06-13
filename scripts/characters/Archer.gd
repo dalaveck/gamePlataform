@@ -72,6 +72,7 @@ func _use_skill_1() -> bool:
 		return false
 	if animation:
 		animation.play("skill_multishot")
+	VFX.special(arrow_spawn_point.global_position, "multishot")
 	var total   := MULTI_ARROW_COUNT
 	var half    := (total - 1) / 2.0
 	var aim_dir := _get_aim_direction()
@@ -96,6 +97,7 @@ func _use_skill_2() -> bool:
 		return false
 	if animation:
 		animation.play("skill_rain_arrows")
+	VFX.special(arrow_spawn_point.global_position, "penetrate")
 	_fire_arrow(penetrating_arrow_scene, _penetr_data.damage_multiplier, 0.0)
 	return true
 
