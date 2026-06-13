@@ -92,6 +92,7 @@ func _use_skill_1() -> bool:
 		return false
 	if animation:
 		animation.play("skill_whirlwind")
+	VFX.special(global_position, "spin")
 	var dmg := int(stats.atk * _spin_data.damage_multiplier)
 	# Acerta ambos os lados (360°) dentro do raio e empurra radialmente
 	for enemy in get_tree().get_nodes_in_group("enemies"):
@@ -113,6 +114,7 @@ func _use_skill_2() -> bool:
 	_current_dmg_mult  = _strike_data.damage_multiplier
 	_current_knockback = SUPER_KNOCKBACK
 	_current_kb_penetr = SUPER_KB_PENETR
+	VFX.special(global_position + Vector2(movement.facing_direction * 30.0, 0.0), "power")
 	_activate_sword_hitbox()
 	return true
 
@@ -122,6 +124,7 @@ func _use_skill_3() -> bool:
 		return false
 	if animation:
 		animation.play("skill_shield_bash")
+	VFX.special(global_position, "protect")
 	_broadcast_protection.rpc()
 	return true
 

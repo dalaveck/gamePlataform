@@ -158,6 +158,15 @@ func apply_protection_buff(reduction: float, duration: float) -> void:
 	_damage_reduction       = reduction
 	_damage_reduction_timer = duration
 
+# ─── Flash do sprite (feedback de dano/cura) ───────────────
+func _flash(color: Color) -> void:
+	if sprite == null:
+		return
+	var base := sprite.modulate
+	sprite.modulate = color
+	var tw := create_tween()
+	tw.tween_property(sprite, "modulate", base, 0.18)
+
 # ─── Sobrescrever nas subclasses ───────────────────────────
 func _perform_attack() -> void:
 	pass
@@ -183,6 +192,9 @@ func receive_damage(amount: int, _attacker_peer_id: int) -> void:
 	var final := int(amount * (1.0 - _damage_reduction))
 	stats.take_damage(final)
 	EventBus.player_damaged.emit(peer_id, final)
+	VFX.hit(global_position, Color(1.0, 0.4, 0.4))
+	VFX.damage_number(global_position, final, Color(1.0, 0.5, 0.5))
+	_flash(Color(1.6, 1.0, 1.0))
 
 ## Empurrão recebido (ex.: ataque de Boss/MiniBoss). Aplicado na autoridade
 ## local do personagem; em peers remotos não tem efeito (physics não roda).
@@ -198,6 +210,8 @@ func receive_heal(amount: int) -> void:
 		return
 	stats.heal(amount)
 	EventBus.player_healed.emit(peer_id, amount)
+	VFX.heal(global_position, amount)
+	_flash(Color(1.0, 1.4, 1.0))
 
 ## Cura percentual (HP e SP) com base no máximo do próprio alvo.
 ## Usada pela Cura Maior do Clérigo em si e em aliados no coop.
@@ -210,6 +224,8 @@ func receive_greater_heal(hp_percent: float, sp_percent: float) -> void:
 	if sp_percent > 0.0:
 		stats.restore_sp(int(stats.max_sp * sp_percent))
 	EventBus.player_healed.emit(peer_id, hp_amount)
+	VFX.heal(global_position, hp_amount)
+	_flash(Color(1.0, 1.4, 1.0))
 
 func _on_died() -> void:
 	EventBus.player_died.emit(peer_id)

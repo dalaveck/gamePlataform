@@ -147,10 +147,26 @@ func take_damage(amount: int, attacker_peer_id: int) -> void:
 		return
 	var mitigated := max(1, amount - (enemy_data.defense if enemy_data else 0))
 	current_hp = max(0, current_hp - mitigated)
+	_hit_fx.rpc(mitigated)
 	if current_hp == 0:
 		_die_synced.rpc(attacker_peer_id)
 	elif current_state == EnemyState.IDLE or current_state == EnemyState.PATROL:
 		current_state = EnemyState.CHASE
+
+## Efeito de impacto exibido em todos os peers (cosmético).
+@rpc("authority", "call_local", "unreliable")
+func _hit_fx(amount: int) -> void:
+	VFX.hit(global_position, Color(1.0, 0.85, 0.3))
+	VFX.damage_number(global_position, amount, Color(1.0, 0.95, 0.6))
+	_flash(Color(1.8, 1.4, 1.4))
+
+func _flash(color: Color) -> void:
+	if sprite == null:
+		return
+	var base := sprite.modulate
+	sprite.modulate = color
+	var tw := create_tween()
+	tw.tween_property(sprite, "modulate", base, 0.16)
 
 # ─── Knockback (empurrão) ──────────────────────────────────
 ## resist_factor: 0.0 ignora a resistência do alvo, 1.0 aplica integralmente.
@@ -205,6 +221,7 @@ func _die(killer_peer_id: int) -> void:
 	current_state = EnemyState.DEAD
 	current_hp    = 0
 	velocity      = Vector2.ZERO
+	VFX.special(global_position, "death")
 	xp_component.distribute_rewards(killer_peer_id)
 	EventBus.enemy_killed.emit(enemy_data, killer_peer_id)
 	if animation:

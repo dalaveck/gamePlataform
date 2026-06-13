@@ -14,6 +14,7 @@ func _on_body_entered(body: Node2D) -> void:
 	_explode()
 
 func _explode() -> void:
+	VFX.special(global_position, "explosion")
 	for enemy in get_tree().get_nodes_in_group("enemies"):
 		var enemy_pos := (enemy as Node2D).global_position
 		if global_position.distance_to(enemy_pos) <= EXPLOSION_RADIUS:

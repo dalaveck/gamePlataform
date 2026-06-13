@@ -66,6 +66,7 @@ func _use_skill_1() -> bool:
 		return false
 	if animation:
 		animation.play("skill_heal")
+	VFX.special(global_position, "heal_cast")
 	# Cura o próprio clérigo e todos os aliados dentro do raio (coop).
 	# Cada alvo recupera a % do próprio máximo (calculado em cada peer).
 	for player in get_tree().get_nodes_in_group("players"):
@@ -109,6 +110,7 @@ func _spawn_fireball() -> void:
 	fb.global_position = spell_spawn_point.global_position
 	var dmg := int((stats.atk * 0.5 + stats.magic_power) * _fireball_data.damage_multiplier)
 	fb.setup(_get_aim_direction(), dmg, peer_id)
+	VFX.special(spell_spawn_point.global_position, "fireball")
 
 func _spawn_cursed_bolt() -> void:
 	if cursed_bolt_scene == null:
@@ -118,3 +120,4 @@ func _spawn_cursed_bolt() -> void:
 	cb.global_position = spell_spawn_point.global_position
 	var dmg := int((stats.atk * 0.5 + stats.magic_power) * _curse_data.damage_multiplier)
 	cb.setup(_get_aim_direction(), dmg, peer_id)
+	VFX.special(spell_spawn_point.global_position, "curse")
