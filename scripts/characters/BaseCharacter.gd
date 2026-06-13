@@ -184,6 +184,18 @@ func receive_heal(amount: int) -> void:
 	stats.heal(amount)
 	EventBus.player_healed.emit(peer_id, amount)
 
+## Cura percentual (HP e SP) com base no máximo do próprio alvo.
+## Usada pela Cura Maior do Clérigo em si e em aliados no coop.
+@rpc("any_peer", "call_local", "reliable")
+func receive_greater_heal(hp_percent: float, sp_percent: float) -> void:
+	if stats.current_hp <= 0:
+		return
+	var hp_amount := int(stats.max_hp * hp_percent)
+	stats.heal(hp_amount)
+	if sp_percent > 0.0:
+		stats.restore_sp(int(stats.max_sp * sp_percent))
+	EventBus.player_healed.emit(peer_id, hp_amount)
+
 func _on_died() -> void:
 	EventBus.player_died.emit(peer_id)
 	set_physics_process(false)
