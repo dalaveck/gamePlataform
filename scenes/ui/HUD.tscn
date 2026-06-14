@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://game_hud"]
+[gd_scene load_steps=6 format=3 uid="uid://game_hud"]
 
 [ext_resource type="Script" path="res://scripts/ui/HUD.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/ui/SkillBar.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/PauseMenu.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/ui/StatsScreen.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/ui/InventoryShopScreen.tscn" id="5"]
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1")
@@ -45,7 +48,7 @@ modulate = Color(0.95, 0.85, 0.3, 1)
 [node name="MoneyLabel" type="Label" parent="Panel/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "🪙 0"
+text = "Ouro: 0"
 
 [node name="SkillBar" parent="." instance=ExtResource("2")]
 unique_name_in_owner = true
@@ -57,3 +60,12 @@ offset_left = -149.0
 offset_top = -96.0
 offset_right = 149.0
 offset_bottom = -10.0
+
+[node name="PauseMenu" parent="." instance=ExtResource("3")]
+unique_name_in_owner = true
+
+[node name="StatsScreen" parent="." instance=ExtResource("4")]
+unique_name_in_owner = true
+
+[node name="InventoryShopScreen" parent="." instance=ExtResource("5")]
+unique_name_in_owner = true

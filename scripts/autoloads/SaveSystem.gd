@@ -96,17 +96,25 @@ func deserialize_character(d: Dictionary) -> CharacterData:
 
 func _serialize_character(c: CharacterData) -> Dictionary:
 	return {
-		"character_id": c.character_id,
-		"character_name": c.character_name,
-		"character_class": c.character_class,
-		"level": c.level,
-		"experience": c.experience,
+		"character_id":       c.character_id,
+		"character_name":     c.character_name,
+		"character_class":    c.character_class,
+		"level":              c.level,
+		"experience":         c.experience,
 		"experience_to_next": c.experience_to_next,
-		"strength": c.strength,
-		"skill": c.skill,
-		"constitution": c.constitution,
-		"spirit": c.spirit,
-		"attribute_points": c.attribute_points,
+		"strength":           c.strength,
+		"skill":              c.skill,
+		"constitution":       c.constitution,
+		"spirit":             c.spirit,
+		"attribute_points":   c.attribute_points,
+		"equipped_weapon":    c.equipped_weapon.item_id   if c.equipped_weapon   else "",
+		"equipped_armor":     c.equipped_armor.item_id    if c.equipped_armor    else "",
+		"equipped_helmet":    c.equipped_helmet.item_id   if c.equipped_helmet   else "",
+		"equipped_boots":     c.equipped_boots.item_id    if c.equipped_boots    else "",
+		"equipped_bracelet":  c.equipped_bracelet.item_id if c.equipped_bracelet else "",
+		"equipped_necklace":  c.equipped_necklace.item_id if c.equipped_necklace else "",
+		"equipped_ring":      c.equipped_ring.item_id     if c.equipped_ring     else "",
+		"inventory":          c.inventory,
 	}
 
 func _deserialize_character(d: Dictionary) -> CharacterData:
@@ -122,7 +130,21 @@ func _deserialize_character(d: Dictionary) -> CharacterData:
 	c.constitution       = d.get("constitution", 1)
 	c.spirit             = d.get("spirit", 1)
 	c.attribute_points   = d.get("attribute_points", 0)
+	c.equipped_weapon    = _load_item(d.get("equipped_weapon",   ""))
+	c.equipped_armor     = _load_item(d.get("equipped_armor",    ""))
+	c.equipped_helmet    = _load_item(d.get("equipped_helmet",   ""))
+	c.equipped_boots     = _load_item(d.get("equipped_boots",    ""))
+	c.equipped_bracelet  = _load_item(d.get("equipped_bracelet", ""))
+	c.equipped_necklace  = _load_item(d.get("equipped_necklace", ""))
+	c.equipped_ring      = _load_item(d.get("equipped_ring",     ""))
+	var inv: Array = d.get("inventory", [])
+	c.inventory.assign(inv)
 	return c
+
+func _load_item(id: String) -> ItemData:
+	if id == "":
+		return null
+	return ItemDatabase.get_item(id)
 
 func _generate_id() -> String:
 	return "%d_%d" % [Time.get_unix_time_from_system(), randi()]

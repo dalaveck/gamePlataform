@@ -1,19 +1,22 @@
 extends CanvasLayer
 
-## HUD do jogador local: barras de HP/MP/SP, nível, dinheiro e barra de habilidades.
-
 @onready var hp_bar: ProgressBar    = %HPBar
 @onready var mp_bar: ProgressBar    = %MPBar
 @onready var sp_bar: ProgressBar    = %SPBar
 @onready var level_label: Label     = %LevelLabel
 @onready var money_label: Label     = %MoneyLabel
 @onready var skill_bar: SkillBar    = %SkillBar
+@onready var pause_menu: PauseMenu              = %PauseMenu
+@onready var stats_screen: StatsScreen          = %StatsScreen
+@onready var inventory_shop: InventoryShopScreen = %InventoryShopScreen
 
 var _player: BaseCharacter = null
 
 func _ready() -> void:
+	process_mode = PROCESS_MODE_ALWAYS
 	EventBus.money_gained.connect(_on_money_gained)
 	EventBus.level_up.connect(_on_level_up)
+	EventBus.hud_update_requested.connect(_update_money)
 	_update_money()
 
 func bind(player: BaseCharacter) -> void:
@@ -27,6 +30,10 @@ func bind(player: BaseCharacter) -> void:
 	_update_level()
 	if skill_bar:
 		skill_bar.bind(player)
+	if stats_screen:
+		stats_screen.bind(player)
+	if inventory_shop:
+		inventory_shop.bind(player)
 
 func _on_hp_changed(current: int, maximum: int) -> void:
 	hp_bar.max_value = maximum
@@ -48,12 +55,12 @@ func _on_level_up(character_id: String, _new_level: int) -> void:
 		_update_level()
 
 func _update_money() -> void:
-	money_label.text = "🪙 %d" % SaveSystem.account_money
+	money_label.text = "Ouro: %d" % SaveSystem.account_money
 
 func _update_level() -> void:
 	if _player == null:
 		return
-	level_label.text = "%s — Nv. %d" % [
+	level_label.text = "%s  Nv.%d" % [
 		_player.character_data.character_name,
 		_player.character_data.level,
 	]

@@ -70,7 +70,7 @@ func _derive_stats() -> void:
 	atk         = 10  + (strength * 5)
 
 func _apply_equipment_bonuses(data: CharacterData) -> void:
-	for item: ItemData in [data.equipped_weapon, data.equipped_armor, data.equipped_accessory]:
+	for item: ItemData in data.all_equipment_slots():
 		if item == null:
 			continue
 		strength     += item.bonus_strength

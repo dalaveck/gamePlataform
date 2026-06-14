@@ -1,7 +1,7 @@
 class_name ItemData
 extends Resource
 
-enum ItemType { WEAPON, ARMOR, ACCESSORY, CONSUMABLE }
+enum ItemType { WEAPON, ARMOR, HELMET, BOOTS, BRACELET, NECKLACE, RING, CONSUMABLE }
 enum ClassRestriction { ALL, WARRIOR, CLERIC, ARCHER }
 
 @export var item_id: String = ""
@@ -30,3 +30,14 @@ func can_be_equipped_by(character_class: CharacterData.CharacterClass) -> bool:
 		ClassRestriction.CLERIC:  return character_class == CharacterData.CharacterClass.CLERIC
 		ClassRestriction.ARCHER:  return character_class == CharacterData.CharacterClass.ARCHER
 	return false
+
+func get_type_name() -> String:
+	match item_type:
+		ItemType.WEAPON:   return "Arma"
+		ItemType.ARMOR:    return "Armadura"
+		ItemType.HELMET:   return "Elmo"
+		ItemType.BOOTS:    return "Botas"
+		ItemType.BRACELET: return "Bracelete"
+		ItemType.NECKLACE: return "Colar"
+		ItemType.RING:     return "Anel"
+	return "Item"
