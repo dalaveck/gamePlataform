@@ -324,12 +324,18 @@ position = Vector2(1550, 585)
 position = Vector2(1950, 585)
 
 [node name="FlyingChicken1" parent="Enemies" instance=ExtResource("7")]
-position = Vector2(820, 585)
+position = Vector2(400, 580)
 
 [node name="FlyingChicken2" parent="Enemies" instance=ExtResource("7")]
-position = Vector2(1450, 585)
+position = Vector2(820, 585)
 
 [node name="FlyingChicken3" parent="Enemies" instance=ExtResource("7")]
+position = Vector2(1450, 585)
+
+[node name="FlyingChicken4" parent="Enemies" instance=ExtResource("7")]
+position = Vector2(2100, 580)
+
+[node name="FlyingChicken5" parent="Enemies" instance=ExtResource("7")]
 position = Vector2(2900, 585)
 
 [node name="ForestMiniBoss" parent="Enemies" instance=ExtResource("5")]

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3 uid="uid://data_ice_dragon"]
+
+[ext_resource type="Script" path="res://scripts/resources/EnemyData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+enemy_id = "ice_dragon"
+enemy_name = "Dragão Glacial"
+enemy_type = 2
+max_hp = 2800
+atk = 60
+defense = 22
+move_speed = 65.0
+xp_reward = 1400
+money_reward = 700

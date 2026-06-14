@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3 uid="uid://data_ice_eagle"]
+
+[ext_resource type="Script" path="res://scripts/resources/EnemyData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+enemy_id = "ice_eagle"
+enemy_name = "Águia do Gelo"
+enemy_type = 0
+max_hp = 70
+atk = 16
+defense = 3
+move_speed = 90.0
+xp_reward = 45
+money_reward = 18

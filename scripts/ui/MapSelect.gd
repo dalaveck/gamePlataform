@@ -2,6 +2,7 @@ extends Control
 
 const MAP_RESOURCES: Array[String] = [
 	"res://data/maps/map01.tres",
+	"res://data/maps/map02.tres",
 ]
 
 @onready var map_list: VBoxContainer = %MapList

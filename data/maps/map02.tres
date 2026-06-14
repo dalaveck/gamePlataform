@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="MapData" load_steps=2 format=3 uid="uid://data_map02"]
+
+[ext_resource type="Script" path="res://scripts/resources/MapData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+map_id = "ice_01"
+map_name = "Terra do Gelo"
+difficulty = 1
+scene_path = "res://scenes/maps/Map02.tscn"
+recommended_level = 5
+miniboss_id = "ice_yeti"
+boss_id = "ice_dragon"
