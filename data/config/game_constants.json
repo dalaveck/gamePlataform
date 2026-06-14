@@ -1,0 +1,89 @@
+{
+  "_doc": "Constantes de balanceamento do jogo. Os valores aqui sao REFERENCIA — o jogo lê alguns diretamente, outros estao hardcoded nos scripts indicados.",
+
+  "stat_formulas": {
+    "_doc": "Formulas usadas em StatsComponent._derive_stats(). Script: scripts/components/StatsComponent.gd",
+    "max_hp":      "100 + (constitution * 20)",
+    "defense":     "5   + (constitution * 3)",
+    "max_mp":      "50  + (spirit * 15)",
+    "magic_power": "spirit * 5",
+    "max_sp":      "80  + (skill * 10)",
+    "agility":     "1.0 + (skill * 0.05)",
+    "atk":         "10  + (strength * 5)",
+    "_note": "Equipment bonuses sao somados APOS a formula base."
+  },
+
+  "regeneration": {
+    "_doc": "Taxa de regeneracao passiva por segundo. Script: scripts/components/StatsComponent.gd (constantes HP_REGEN_RATE etc.)",
+    "hp_per_second": 5.0,
+    "sp_per_second": 10.0,
+    "mp_per_second": 2.0,
+    "regen_check_interval_sec": 1.0,
+    "safe_distance_from_enemies_px": 280.0,
+    "regen_check_timer_sec": 0.5
+  },
+
+  "leveling": {
+    "_doc": "Sistema de nivel e XP. Script: scripts/autoloads/SaveSystem.gd (_on_xp_gained)",
+    "xp_to_next_level_base": 100,
+    "xp_multiplier_per_level": 1.2,
+    "attribute_points_per_level": 3,
+    "_formula": "xp_to_next[nivel N] = 100 * 1.2^(N-1)"
+  },
+
+  "combat": {
+    "_doc": "Constantes de combate. Script: scripts/components/StatsComponent.gd (take_damage)",
+    "minimum_damage": 1,
+    "_formula_damage": "dano_aplicado = max(1, dano_recebido - defense)"
+  },
+
+  "movement": {
+    "_doc": "Valores de movimentacao. Script: scripts/components/MovementComponent.gd",
+    "_note": "Ver MovementComponent.gd para os valores exatos de velocidade, pulo e dash."
+  },
+
+  "maps": {
+    "map01": {
+      "name": "Floresta Inicial",
+      "recommended_level": 1,
+      "width_px": 3200,
+      "enemies": ["FlyingChicken x5"]
+    },
+    "map02": {
+      "name": "Terra do Gelo",
+      "recommended_level": 5,
+      "width_px": 5750,
+      "enemies": ["IceWolf x7", "IceEagle x5", "IceYeti x1 (miniboss)", "IceDragon x1 (boss)"]
+    }
+  },
+
+  "enemies_stats": {
+    "_doc": "Stats dos inimigos estao nos arquivos .tres em data/enemies/. Edite os .tres para balancear.",
+    "FlyingChicken": {
+      "file": "data/enemies/flying_chicken.tres",
+      "type": "NORMAL"
+    },
+    "IceWolf": {
+      "file": "data/enemies/ice_wolf.tres",
+      "hp": 85, "atk": 18, "def": 5, "speed": 110,
+      "xp_reward": 50, "money_reward": 20
+    },
+    "IceEagle": {
+      "file": "data/enemies/ice_eagle.tres",
+      "hp": 70, "atk": 16, "def": 3, "speed": 90,
+      "xp_reward": 45, "money_reward": 18
+    },
+    "IceYeti": {
+      "file": "data/enemies/ice_yeti.tres",
+      "type": "MINIBOSS",
+      "hp": 950, "atk": 42, "def": 18, "speed": 85,
+      "xp_reward": 420, "money_reward": 200
+    },
+    "IceDragon": {
+      "file": "data/enemies/ice_dragon.tres",
+      "type": "BOSS",
+      "hp": 2800, "atk": 60, "def": 22, "speed": 65,
+      "xp_reward": 1400, "money_reward": 700
+    }
+  }
+}

@@ -1,0 +1,407 @@
+[
+  {
+    "_comment": "═══════════════════════════════════════════════════",
+    "_comment2": " GUERREIRO — Armas",
+    "_comment3": "═══════════════════════════════════════════════════"
+  },
+  {
+    "id": "sword_iron",
+    "name": "Espada de Ferro",
+    "type": "WEAPON",
+    "restriction": "WARRIOR",
+    "price": 80,
+    "bonus_atk": 15
+  },
+  {
+    "id": "axe_war",
+    "name": "Machado de Guerra",
+    "type": "WEAPON",
+    "restriction": "WARRIOR",
+    "price": 160,
+    "bonus_atk": 28,
+    "bonus_strength": 1
+  },
+  {
+    "id": "sword_dragon",
+    "name": "Espada do Dragao",
+    "type": "WEAPON",
+    "restriction": "WARRIOR",
+    "price": 340,
+    "bonus_atk": 45,
+    "bonus_strength": 3
+  },
+  {
+    "_comment": "GUERREIRO — Armaduras"
+  },
+  {
+    "id": "chainmail",
+    "name": "Cota de Malha",
+    "type": "ARMOR",
+    "restriction": "WARRIOR",
+    "price": 100,
+    "bonus_defense": 20
+  },
+  {
+    "id": "plate_armor",
+    "name": "Armadura de Placas",
+    "type": "ARMOR",
+    "restriction": "WARRIOR",
+    "price": 210,
+    "bonus_defense": 36,
+    "bonus_constitution": 1
+  },
+  {
+    "id": "warrior_armor",
+    "name": "Armadura do Guerreiro",
+    "type": "ARMOR",
+    "restriction": "WARRIOR",
+    "price": 440,
+    "bonus_defense": 52,
+    "bonus_constitution": 3
+  },
+  {
+    "_comment": "GUERREIRO — Elmos"
+  },
+  {
+    "id": "iron_helm",
+    "name": "Elmo de Ferro",
+    "type": "HELMET",
+    "restriction": "WARRIOR",
+    "price": 60,
+    "bonus_defense": 10
+  },
+  {
+    "id": "battle_helm",
+    "name": "Elmo de Batalha",
+    "type": "HELMET",
+    "restriction": "WARRIOR",
+    "price": 140,
+    "bonus_defense": 18,
+    "bonus_constitution": 1
+  },
+  {
+    "id": "warrior_helm",
+    "name": "Elmo do Guerreiro",
+    "type": "HELMET",
+    "restriction": "WARRIOR",
+    "price": 280,
+    "bonus_defense": 28,
+    "bonus_constitution": 2
+  },
+  {
+    "_comment": "═══════════════════════════════════════════════════",
+    "_comment2": " CLERIGO — Armas"
+  },
+  {
+    "id": "birch_wand",
+    "name": "Varinha de Betula",
+    "type": "WEAPON",
+    "restriction": "CLERIC",
+    "price": 70,
+    "bonus_magic_power": 15
+  },
+  {
+    "id": "forest_staff",
+    "name": "Cajado do Bosque",
+    "type": "WEAPON",
+    "restriction": "CLERIC",
+    "price": 150,
+    "bonus_magic_power": 28,
+    "bonus_spirit": 2
+  },
+  {
+    "id": "holy_staff",
+    "name": "Cajado Sagrado",
+    "type": "WEAPON",
+    "restriction": "CLERIC",
+    "price": 320,
+    "bonus_magic_power": 48,
+    "bonus_spirit": 4
+  },
+  {
+    "_comment": "CLERIGO — Armaduras"
+  },
+  {
+    "id": "novice_robe",
+    "name": "Roupao de Novico",
+    "type": "ARMOR",
+    "restriction": "CLERIC",
+    "price": 50,
+    "bonus_defense": 8
+  },
+  {
+    "id": "sacred_robe",
+    "name": "Roupao Sagrado",
+    "type": "ARMOR",
+    "restriction": "CLERIC",
+    "price": 120,
+    "bonus_defense": 16,
+    "bonus_spirit": 1
+  },
+  {
+    "id": "high_robe",
+    "name": "Vestes do Alto Clerigo",
+    "type": "ARMOR",
+    "restriction": "CLERIC",
+    "price": 280,
+    "bonus_defense": 24,
+    "bonus_spirit": 3
+  },
+  {
+    "_comment": "CLERIGO — Elmos / Capuzes"
+  },
+  {
+    "id": "silk_hood",
+    "name": "Capuz de Seda",
+    "type": "HELMET",
+    "restriction": "CLERIC",
+    "price": 55,
+    "bonus_spirit": 1
+  },
+  {
+    "id": "blessed_hood",
+    "name": "Capuz Abencado",
+    "type": "HELMET",
+    "restriction": "CLERIC",
+    "price": 130,
+    "bonus_spirit": 2,
+    "bonus_magic_power": 8
+  },
+  {
+    "id": "holy_hood",
+    "name": "Capuz Sagrado",
+    "type": "HELMET",
+    "restriction": "CLERIC",
+    "price": 260,
+    "bonus_spirit": 3,
+    "bonus_magic_power": 15
+  },
+  {
+    "_comment": "═══════════════════════════════════════════════════",
+    "_comment2": " ARQUEIRO — Armas"
+  },
+  {
+    "id": "short_bow",
+    "name": "Arco Curto",
+    "type": "WEAPON",
+    "restriction": "ARCHER",
+    "price": 70,
+    "bonus_atk": 12
+  },
+  {
+    "id": "crossbow",
+    "name": "Besta de Campanha",
+    "type": "WEAPON",
+    "restriction": "ARCHER",
+    "price": 160,
+    "bonus_atk": 24,
+    "bonus_skill": 2
+  },
+  {
+    "id": "elven_bow",
+    "name": "Arco Elfico",
+    "type": "WEAPON",
+    "restriction": "ARCHER",
+    "price": 320,
+    "bonus_atk": 40,
+    "bonus_skill": 3
+  },
+  {
+    "_comment": "ARQUEIRO — Armaduras"
+  },
+  {
+    "id": "hard_leather",
+    "name": "Couro Endurecido",
+    "type": "ARMOR",
+    "restriction": "ARCHER",
+    "price": 80,
+    "bonus_defense": 12
+  },
+  {
+    "id": "reinf_leather",
+    "name": "Couro Reforcado",
+    "type": "ARMOR",
+    "restriction": "ARCHER",
+    "price": 175,
+    "bonus_defense": 22,
+    "bonus_skill": 1
+  },
+  {
+    "id": "hunter_armor",
+    "name": "Armadura do Cacador",
+    "type": "ARMOR",
+    "restriction": "ARCHER",
+    "price": 340,
+    "bonus_defense": 34,
+    "bonus_skill": 2
+  },
+  {
+    "_comment": "ARQUEIRO — Elmos / Capuzes"
+  },
+  {
+    "id": "ranger_hood",
+    "name": "Capuz do Ranger",
+    "type": "HELMET",
+    "restriction": "ARCHER",
+    "price": 55,
+    "bonus_skill": 1
+  },
+  {
+    "id": "shadow_hood",
+    "name": "Capuz das Sombras",
+    "type": "HELMET",
+    "restriction": "ARCHER",
+    "price": 130,
+    "bonus_skill": 2,
+    "bonus_atk": 5
+  },
+  {
+    "id": "eagle_hood",
+    "name": "Capuz da Aguia",
+    "type": "HELMET",
+    "restriction": "ARCHER",
+    "price": 260,
+    "bonus_skill": 3,
+    "bonus_atk": 8
+  },
+  {
+    "_comment": "═══════════════════════════════════════════════════",
+    "_comment2": " UNIVERSAIS — Botas  (todos os personagens)"
+  },
+  {
+    "id": "leather_boots",
+    "name": "Botas de Couro",
+    "type": "BOOTS",
+    "restriction": "ALL",
+    "price": 40,
+    "bonus_defense": 4
+  },
+  {
+    "id": "swift_boots",
+    "name": "Botas Velozes",
+    "type": "BOOTS",
+    "restriction": "ALL",
+    "price": 90,
+    "bonus_skill": 1,
+    "bonus_defense": 5
+  },
+  {
+    "id": "iron_boots",
+    "name": "Botas de Ferro",
+    "type": "BOOTS",
+    "restriction": "ALL",
+    "price": 120,
+    "bonus_defense": 10,
+    "bonus_constitution": 1
+  },
+  {
+    "_comment": "UNIVERSAIS — Colares"
+  },
+  {
+    "id": "amulet_str",
+    "name": "Amuleto de Forca",
+    "type": "NECKLACE",
+    "restriction": "ALL",
+    "price": 90,
+    "bonus_strength": 2
+  },
+  {
+    "id": "amulet_magic",
+    "name": "Colar de Magia",
+    "type": "NECKLACE",
+    "restriction": "ALL",
+    "price": 90,
+    "bonus_spirit": 2
+  },
+  {
+    "id": "gem_prot",
+    "name": "Gema Protetora",
+    "type": "NECKLACE",
+    "restriction": "ALL",
+    "price": 90,
+    "bonus_constitution": 2
+  },
+  {
+    "id": "pearl_wisdom",
+    "name": "Perola da Sabedoria",
+    "type": "NECKLACE",
+    "restriction": "ALL",
+    "price": 200,
+    "bonus_spirit": 3,
+    "bonus_skill": 1
+  },
+  {
+    "_comment": "UNIVERSAIS — Aneis"
+  },
+  {
+    "id": "ring_agility",
+    "name": "Anel de Agilidade",
+    "type": "RING",
+    "restriction": "ALL",
+    "price": 60,
+    "bonus_skill": 1
+  },
+  {
+    "id": "ring_vigor",
+    "name": "Anel de Vigor",
+    "type": "RING",
+    "restriction": "ALL",
+    "price": 60,
+    "bonus_constitution": 1
+  },
+  {
+    "id": "ring_mana",
+    "name": "Anel de Mana",
+    "type": "RING",
+    "restriction": "ALL",
+    "price": 60,
+    "bonus_spirit": 1
+  },
+  {
+    "id": "ring_power",
+    "name": "Anel do Poder",
+    "type": "RING",
+    "restriction": "ALL",
+    "price": 150,
+    "bonus_strength": 2,
+    "bonus_atk": 4
+  },
+  {
+    "_comment": "UNIVERSAIS — Braceletes"
+  },
+  {
+    "id": "brace_power",
+    "name": "Bracelete de Poder",
+    "type": "BRACELET",
+    "restriction": "ALL",
+    "price": 80,
+    "bonus_strength": 1,
+    "bonus_atk": 5
+  },
+  {
+    "id": "brace_guard",
+    "name": "Bracelete de Guarda",
+    "type": "BRACELET",
+    "restriction": "ALL",
+    "price": 80,
+    "bonus_defense": 8
+  },
+  {
+    "id": "brace_magic",
+    "name": "Bracelete Magico",
+    "type": "BRACELET",
+    "restriction": "ALL",
+    "price": 80,
+    "bonus_spirit": 1,
+    "bonus_magic_power": 5
+  },
+  {
+    "id": "brace_iron",
+    "name": "Bracelete de Ferro",
+    "type": "BRACELET",
+    "restriction": "ALL",
+    "price": 150,
+    "bonus_defense": 14,
+    "bonus_constitution": 1
+  }
+]

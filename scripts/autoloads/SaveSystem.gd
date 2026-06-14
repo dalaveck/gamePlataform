@@ -1,7 +1,11 @@
 extends Node
 
-const SAVE_DIR: String = "user://saves/"
+const SAVE_DIR: String    = "user://saves/"
 const ACCOUNT_FILE: String = "user://saves/account.json"
+const CLASSES_JSON: String = "res://data/config/classes.json"
+
+## Cache das estatisticas base por classe, carregado de data/config/classes.json
+var _class_base_stats: Dictionary = {}
 
 ## Dados da conta (persistidos em disco)
 var account_money: int = 0
@@ -10,10 +14,21 @@ var characters: Array[CharacterData] = []
 
 func _ready() -> void:
 	_ensure_save_dir()
+	_load_class_stats()
 	load_account()
 	EventBus.money_gained.connect(_on_money_gained)
 	EventBus.xp_gained.connect(_on_xp_gained)
 	EventBus.level_up.connect(_on_level_up)
+
+func _load_class_stats() -> void:
+	var file := FileAccess.open(CLASSES_JSON, FileAccess.READ)
+	if file == null:
+		push_warning("SaveSystem: nao encontrou %s — usando stats hardcoded." % CLASSES_JSON)
+		return
+	var parsed = JSON.parse_string(file.get_as_text())
+	file.close()
+	if parsed is Dictionary:
+		_class_base_stats = parsed
 
 func _ensure_save_dir() -> void:
 	if not DirAccess.dir_exists_absolute(SAVE_DIR):
@@ -70,22 +85,27 @@ func get_character_by_id(id: String) -> CharacterData:
 	return null
 
 func _apply_class_base_stats(data: CharacterData) -> void:
+	var key := CharacterData.CharacterClass.keys()[data.character_class]
+	var entry: Dictionary = {}
+	if _class_base_stats.has(key):
+		entry = _class_base_stats[key].get("base_stats", {})
+	# Fallback hardcoded se o JSON nao carregar
 	match data.character_class:
 		CharacterData.CharacterClass.WARRIOR:
-			data.strength = 5
-			data.skill = 3
-			data.constitution = 4
-			data.spirit = 1
+			data.strength     = entry.get("strength",     5)
+			data.skill        = entry.get("skill",        3)
+			data.constitution = entry.get("constitution", 4)
+			data.spirit       = entry.get("spirit",       1)
 		CharacterData.CharacterClass.CLERIC:
-			data.strength = 2
-			data.skill = 2
-			data.constitution = 3
-			data.spirit = 6
+			data.strength     = entry.get("strength",     2)
+			data.skill        = entry.get("skill",        2)
+			data.constitution = entry.get("constitution", 3)
+			data.spirit       = entry.get("spirit",       6)
 		CharacterData.CharacterClass.ARCHER:
-			data.strength = 3
-			data.skill = 5
-			data.constitution = 2
-			data.spirit = 2
+			data.strength     = entry.get("strength",     3)
+			data.skill        = entry.get("skill",        5)
+			data.constitution = entry.get("constitution", 2)
+			data.spirit       = entry.get("spirit",       2)
 
 # ─── Serialização ──────────────────────────────────────────
 func serialize_character(c: CharacterData) -> Dictionary:

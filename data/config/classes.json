@@ -1,0 +1,36 @@
+{
+  "_doc": "Atributos base de cada classe ao criar um personagem novo. Altere os valores aqui para balancear as classes.",
+
+  "WARRIOR": {
+    "display_name": "Guerreiro",
+    "description": "Tanque corpo-a-corpo com alta forca e constituicao. Usa espadas, machados e armaduras pesadas.",
+    "base_stats": {
+      "strength":     5,
+      "skill":        3,
+      "constitution": 4,
+      "spirit":       1
+    }
+  },
+
+  "CLERIC": {
+    "display_name": "Clerigo",
+    "description": "Suporte magico com alto espirito. Usa varinhas, cajados e roupoes. Cura aliados e causa dano magico.",
+    "base_stats": {
+      "strength":     2,
+      "skill":        2,
+      "constitution": 3,
+      "spirit":       6
+    }
+  },
+
+  "ARCHER": {
+    "display_name": "Arqueiro",
+    "description": "Atacante agil a distancia com alta habilidade. Usa arcos, bestas e armaduras leves.",
+    "base_stats": {
+      "strength":     3,
+      "skill":        5,
+      "constitution": 2,
+      "spirit":       2
+    }
+  }
+}

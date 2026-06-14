@@ -1,0 +1,153 @@
+{
+  "_doc": "Referencia de todos os inimigos do jogo. Os stats reais estao nos arquivos .tres em data/enemies/. Este JSON e apenas leitura — edite os .tres para modificar os valores no jogo.",
+
+  "types": {
+    "NORMAL":  0,
+    "MINIBOSS": 1,
+    "BOSS":    2
+  },
+
+  "enemies": [
+    {
+      "id": "slime",
+      "name": "Slime",
+      "tres_file": "data/enemies/slime.tres",
+      "scene": "scenes/enemies/base/Slime.tscn",
+      "script": "scripts/enemies/Slime.gd",
+      "type": "NORMAL",
+      "hp": 60,
+      "atk": 12,
+      "defense": 2,
+      "speed": 80,
+      "xp_reward": 25,
+      "money_reward": 8,
+      "maps": ["map01"],
+      "behavior": "Patrol left-right, turn at walls and cliff edges (EdgeRay)"
+    },
+    {
+      "id": "chicken",
+      "name": "Galinha Voadora",
+      "tres_file": "data/enemies/chicken.tres",
+      "scene": "scenes/enemies/flying/FlyingChicken.tscn",
+      "script": "scripts/enemies/FlyingEnemy.gd",
+      "type": "NORMAL",
+      "hp": 45,
+      "atk": 10,
+      "defense": 1,
+      "speed": 90,
+      "xp_reward": 20,
+      "money_reward": 5,
+      "maps": ["map01"],
+      "count_in_map01": 5,
+      "behavior": "Flying: flaps to gain altitude, glides when near max height, chases on sight"
+    },
+    {
+      "id": "ice_wolf",
+      "name": "Lobo de Gelo",
+      "tres_file": "data/enemies/ice_wolf.tres",
+      "scene": "scenes/enemies/base/IceWolf.tscn",
+      "script": "scripts/enemies/Slime.gd",
+      "type": "NORMAL",
+      "hp": 85,
+      "atk": 18,
+      "defense": 5,
+      "speed": 110,
+      "xp_reward": 50,
+      "money_reward": 20,
+      "maps": ["map02"],
+      "count_in_map02": 7,
+      "behavior": "Same as Slime — patrol, turn at walls/cliffs, chase on sight"
+    },
+    {
+      "id": "ice_eagle",
+      "name": "Aguia de Gelo",
+      "tres_file": "data/enemies/ice_eagle.tres",
+      "scene": "scenes/enemies/flying/IceEagle.tscn",
+      "script": "scripts/enemies/FlyingEnemy.gd",
+      "type": "NORMAL",
+      "hp": 70,
+      "atk": 16,
+      "defense": 3,
+      "speed": 90,
+      "xp_reward": 45,
+      "money_reward": 18,
+      "maps": ["map02"],
+      "count_in_map02": 5,
+      "behavior": "Flying: same as FlyingChicken but with higher stats"
+    },
+    {
+      "id": "forest_ogre",
+      "name": "Ogro da Floresta",
+      "tres_file": "data/enemies/forest_miniboss.tres",
+      "scene": "scenes/enemies/miniboss/ForestMiniBoss.tscn",
+      "script": "scripts/enemies/MiniBoss.gd",
+      "type": "MINIBOSS",
+      "hp": 200,
+      "atk": 22,
+      "defense": 8,
+      "speed": 75,
+      "xp_reward": 100,
+      "money_reward": 50,
+      "maps": ["map01"],
+      "behavior": "Two phases: at 50% HP increases speed and aggression"
+    },
+    {
+      "id": "ice_yeti",
+      "name": "Yeti de Gelo",
+      "tres_file": "data/enemies/ice_yeti.tres",
+      "scene": "scenes/enemies/miniboss/IceYeti.tscn",
+      "script": "scripts/enemies/MiniBoss.gd",
+      "type": "MINIBOSS",
+      "hp": 950,
+      "atk": 42,
+      "defense": 18,
+      "speed": 85,
+      "xp_reward": 420,
+      "money_reward": 200,
+      "maps": ["map02"],
+      "behavior": "Two phases: at 50% HP increases speed and aggression"
+    },
+    {
+      "id": "forest_guardian",
+      "name": "Guardiao da Floresta",
+      "tres_file": "data/enemies/forest_boss.tres",
+      "scene": "scenes/enemies/boss/ForestBoss.tscn",
+      "script": "scripts/enemies/Boss.gd",
+      "type": "BOSS",
+      "hp": 500,
+      "atk": 35,
+      "defense": 12,
+      "speed": 65,
+      "xp_reward": 300,
+      "money_reward": 150,
+      "maps": ["map01"],
+      "behavior": "Multi-phase with special area attack; enrages at <33% HP. Defeating triggers Victory screen."
+    },
+    {
+      "id": "ice_dragon",
+      "name": "Dragao de Gelo",
+      "tres_file": "data/enemies/ice_dragon.tres",
+      "scene": "scenes/enemies/boss/IceDragon.tscn",
+      "script": "scripts/enemies/Boss.gd",
+      "type": "BOSS",
+      "hp": 2800,
+      "atk": 60,
+      "defense": 22,
+      "speed": 65,
+      "xp_reward": 1400,
+      "money_reward": 700,
+      "maps": ["map02"],
+      "behavior": "Multi-phase with special area attack; enrages at <33% HP. Defeating triggers Victory screen."
+    }
+  ],
+
+  "ai_states": {
+    "_doc": "Estados de IA compartilhados por todos os inimigos (BaseEnemy.gd)",
+    "PATROL":  "Anda na direcao atual, inverte ao bater em parede ou chegar na beira",
+    "CHASE":   "Persegue o jogador mais proximo dentro do raio de deteccao",
+    "ATTACK":  "Ataca quando o jogador entra no hitbox de ataque",
+    "DEAD":    "Toca animacao de morte, emite sinal, e remove o no"
+  },
+
+  "damage_formula": "dano_aplicado = max(1, atk - defense_do_alvo)"
+}
