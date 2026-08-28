@@ -10,6 +10,25 @@ export function novoId() {
   return proximoId++;
 }
 
+/**
+ * Resumo leve do personagem para anexar a um jogador de sessão multiplayer
+ * (ver src/services/sessaoService.js) — só o que a mesa precisa exibir,
+ * não a ficha inteira.
+ */
+export function resumirPersonagem(personagem, recursos) {
+  return {
+    codinome: personagem.codinome || "(sem nome)",
+    arquetipo: personagem.arquetipo,
+    forca: personagem.forca,
+    habilidade: personagem.habilidade,
+    resistencia: personagem.resistencia,
+    armadura: personagem.armadura,
+    poderDeFogo: personagem.poderDeFogo,
+    pvMax: recursos.pvMax,
+    paMax: recursos.paMax,
+  };
+}
+
 export function personagemVazio() {
   return {
     codinome: "",

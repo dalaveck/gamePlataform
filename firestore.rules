@@ -1,0 +1,18 @@
+rules_version = '2';
+
+// Regras da Fase 2 (sessão/sala) — ver src/services/sessaoService.js e
+// ROADMAP.md. Publicar em: Firebase Console → Firestore Database → Regras
+// (ou `firebase deploy --only firestore:rules`, se usar a CLI).
+//
+// Modelo intencionalmente simples para o MVP de mesa entre amigos: qualquer
+// usuário anônimo autenticado (ver garantirUsuarioAnonimo em
+// src/services/firebase.js) pode ler/escrever qualquer sessão, contanto que
+// saiba o código de 6 caracteres — não há autorização por sala. Suficiente
+// para uma mesa fechada; reforçar se o app for exposto publicamente.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /sessoes/{codigo} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

@@ -128,12 +128,30 @@ persistência entre sessões do navegador — isso é trabalho de `SaveSystem`/F
 
 ---
 
-## Fase 2 — Estrutura de Sessão/Sala ⬜
+## Fase 2 — Estrutura de Sessão/Sala 🟨
 Objetivo: permitir que várias pessoas entrem na mesma "mesa" via link/código.
-- [ ] Modelo de dados de Sessão no Firestore: `sessao { codigo, jogadores[], estado, log[], variante }`.
-- [ ] Tela "Criar Sala" (gera código) e "Entrar em Sala" (por código).
-- [ ] Sincronização em tempo real do estado da sessão entre jogadores (listeners Firestore).
-- [ ] Cada jogador entra com uma ficha (nova, importada da Fase 0 ou do `.json` da ficha HTML).
+- [x] Modelo de dados de Sessão no Firestore: `sessao { codigo, jogadores[], estado, log[], variante }`
+      — `src/services/sessaoService.js`. Auth anônima (`garantirUsuarioAnonimo` em
+      `src/services/firebase.js`) dá o `id` de cada jogador.
+- [x] Tela "Criar Sala" (gera código de 6 caracteres) e "Entrar em Sala" (por código) —
+      `src/components/sessao/EntrarOuCriar.jsx`, orquestradas por `SessaoTela.jsx` e o hook
+      `src/hooks/useSessao.js`.
+- [x] Sincronização em tempo real do estado da sessão entre jogadores (listener `onSnapshot` em
+      `observarSessao`) — lobby (`LobbySessao.jsx`) mostra jogadores entrando/saindo e o status
+      "pronto" ao vivo.
+- [x] Cada jogador entra com um resumo da ficha (`resumirPersonagem` em `usePersonagem.js`) —
+      a ficha em edição na aba "Ficha" é a mesma usada para criar/entrar na sessão (estado
+      compartilhado, levantado para `App.jsx`).
+- [ ] **Bloqueado por infraestrutura que esta sessão não acessa**: tudo isso precisa de um projeto
+      Firebase real (Firestore + Auth anônima habilitados) e das variáveis `VITE_FIREBASE_*`
+      (ver `.env.example`) — sem isso a aba "Mesa/Sessão" mostra um aviso e fica desativada
+      (comportamento testado). `firestore.rules` na raiz tem as regras a publicar no console do
+      Firebase quando o projeto existir.
+- [ ] "Nova, importada da Fase 0" e o `.json` da ficha HTML: como no ROADMAP 0.5.3, isso ainda
+      depende do importador de compatibilidade não implementado — por ora o resumo vem sempre da
+      ficha em edição na sessão atual do navegador.
+- [ ] Estado da sessão parado no lobby por enquanto — sala "em_jogo" (mapa, combate, motor do
+      Mestre) é Fase 3-5.
 
 ## Fase 3 — Motor do Mestre Semi-Automático ⬜
 Objetivo: gerar cenas e eventos com pesos de probabilidade, e narrar de forma coerente.

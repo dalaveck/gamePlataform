@@ -1,6 +1,5 @@
 import { useRef } from "react";
 import styles from "./Ficha.module.css";
-import { usePersonagem } from "../../hooks/usePersonagem.js";
 import { PONTOS_CRIACAO } from "../../data/regras.js";
 import SecaoCaracteristicas from "./SecaoCaracteristicas.jsx";
 import SecaoRecursos from "./SecaoRecursos.jsx";
@@ -10,8 +9,8 @@ import SecaoPericias from "./SecaoPericias.jsx";
 import SecaoVantagensDesvantagens from "./SecaoVantagensDesvantagens.jsx";
 import SecaoDinheiroAnotacoes from "./SecaoDinheiroAnotacoes.jsx";
 
-export default function FichaPersonagem({ variante }) {
-  const ficha = usePersonagem(variante);
+/** `ficha` vem de usePersonagem() — compartilhado com a tela de sessão (App.jsx), que usa um resumo do personagem ao entrar numa sala. */
+export default function FichaPersonagem({ ficha }) {
   const inputArquivoRef = useRef(null);
   const orcamento = PONTOS_CRIACAO[ficha.variante].max;
 

@@ -244,6 +244,50 @@ painel da Vercel — esta sessão não tem acesso a ele):
    `rondobyte.com.br`), host `gametest`.
 5. *(adiado)* SSL é automático (Let's Encrypt) assim que o DNS propaga.
 
+## 11. Fase 2 — Sessão/sala (Firebase)
+
+Implementado nesta sessão, mas **bloqueado por infraestrutura**: precisa de um projeto Firebase
+real (esta sessão não tem acesso a nenhum). O código está todo pronto e testado sem crashar quando
+Firebase não está configurado — a aba "Mesa/Sessão" mostra um aviso em vez de quebrar.
+
+### O que existe
+- `src/services/firebase.js` — inicializa Firebase a partir de `VITE_FIREBASE_*` (`.env.local`,
+  ver `.env.example`). Exporta `firebaseConfigurado` (bool) para o resto do app checar antes de
+  tentar usar `db`/`auth`. `garantirUsuarioAnonimo()` faz sign-in anônimo e cacheia a promise do
+  uid.
+- `src/services/sessaoService.js` — CRUD + `onSnapshot` sobre `sessoes/{codigo}` no Firestore:
+  `criarSessao`, `entrarSessao` (idempotente pelo uid), `sairDaSessao`, `definirProntidao`,
+  `adicionarLog`, `observarSessao`. Código de sala: 6 caracteres, alfabeto sem `0/O/1/I` pra evitar
+  confusão ao ditar em voz alta.
+- `src/hooks/useSessao.js` — estado React por cima do service (criar/entrar/sair/marcar pronto),
+  cancela a assinatura do Firestore ao desmontar ou trocar de sala.
+- `src/components/sessao/` — `SessaoTela.jsx` (decide entre tela de entrada e lobby, e mostra o
+  aviso de "Firebase não configurado" quando `firebaseConfigurado` é falso),
+  `EntrarOuCriar.jsx` (abas Criar/Entrar), `LobbySessao.jsx` (código grande, lista de jogadores ao
+  vivo, status pronto/aguardando).
+- `firestore.rules` (raiz do repo) — regra mínima: qualquer usuário anônimo autenticado pode
+  ler/escrever qualquer sessão (suficiente para uma mesa fechada entre amigos que sabem o código;
+  reforçar se o app for exposto publicamente). Publicar manualmente no console do Firebase.
+- **Decisão de arquitetura**: `usePersonagem` subiu de `FichaPersonagem.jsx` para `App.jsx` — agora
+  é estado compartilhado entre a aba "Ficha" e a aba "Mesa/Sessão", porque a sessão precisa de um
+  resumo do personagem (`resumirPersonagem`, novo helper em `usePersonagem.js`) pra anexar ao
+  jogador ao criar/entrar numa sala. `FichaPersonagem` deixou de chamar o hook internamente e passou
+  a receber `ficha` como prop.
+- **Decisão de performance**: o SDK do Firebase é pesado (~670 kB minificado). `SessaoTela` é
+  carregada com `React.lazy` + `Suspense` em `App.jsx`, então quem só usa a ficha não paga esse
+  custo no bundle inicial.
+
+### Para ativar de verdade (fora desta sessão)
+1. Criar um projeto no [Firebase Console](https://console.firebase.google.com/).
+2. Ativar **Firestore Database** (modo produção) e **Authentication → Sign-in method → Anônimo**.
+3. Publicar o conteúdo de `firestore.rules` na aba Regras do Firestore.
+4. Console → Configurações do projeto → Seus apps → adicionar um app Web → copiar a config do SDK
+   para `.env.local` (copiar de `.env.example`), variáveis `VITE_FIREBASE_*`.
+5. Se for publicar na Vercel (seção 10), adicionar as mesmas variáveis em Settings →
+   Environment Variables do projeto Vercel.
+
 ### Próximo passo sugerido
-Seguir `ROADMAP.md`: Fase 2 (sessão/sala com Firebase) é a próxima fase de feature. O deploy na
-Vercel (passo 1-2 acima) é independente e pode ser feito a qualquer momento.
+Ativar o Firebase de verdade (passos acima) pra testar a sessão multiplayer ponta a ponta. Depois,
+seguir `ROADMAP.md`: Fase 3 (motor do Mestre semi-automático) é a próxima fase de feature grande —
+ou fechar as pontas soltas da Fase 2 (estado "em_jogo", importador de ficha HTML). O deploy na
+Vercel (seção 10) continua independente e pode ser feito a qualquer momento.
