@@ -1,0 +1,22 @@
+// Testes de caracteristica/pericia: valor base + bonus/redutores + 1d6
+// contra uma dificuldade (numero-alvo definido pelo mestre/motor).
+
+import { rolar1d6 } from "./dice.js";
+
+export function testar({ valorBase = 0, bonus = 0, dificuldade = 0, aleatorio = Math.random } = {}) {
+  const dado = rolar1d6(aleatorio);
+  const total = valorBase + bonus + dado;
+  return { total, dado, passou: total >= dificuldade, dificuldade };
+}
+
+export function testarCaracteristica(personagem, caracteristica, opcoes = {}) {
+  const valorBase = personagem?.[caracteristica] ?? 0;
+  return testar({ ...opcoes, valorBase });
+}
+
+export function testarPericia(personagem, pericia, opcoes = {}) {
+  const temPericia = personagem?.pericias?.includes(pericia);
+  const habilidade = personagem?.habilidade ?? 0;
+  const bonusPericia = temPericia ? 2 : 0;
+  return testar({ ...opcoes, valorBase: habilidade, bonus: (opcoes.bonus ?? 0) + bonusPericia });
+}

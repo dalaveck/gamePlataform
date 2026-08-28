@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3D&amp;T Cyberpunk — Painel do Mestre</title>
+<style>
+  :root{
+    --ink:#101418; --hair:#c9ced6; --hair-soft:#e3e7ec; --mute:#6e7884;
+    --cyan:#0090a8; --magenta:#c4007a; --amber:#8a6a00; --red:#b3261e; --green:#0a7a4a;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; padding:20px 14px 60px; background:#eef1f4;
+    font-family:"Helvetica Neue",Arial,sans-serif; color:var(--ink); line-height:1.5;
+  }
+  .wrap{max-width:1000px; margin:0 auto}
+  .sheet{background:#fff; border:1px solid var(--hair); padding:20px 22px 26px}
+
+  /* barra */
+  .toolbar{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:10px}
+  .toolbar button, .btn{
+    font-family:ui-monospace,"SF Mono",Menlo,monospace; font-size:11px; letter-spacing:.6px;
+    text-transform:uppercase; padding:8px 13px; border-radius:2px; cursor:pointer;
+    border:1px solid var(--ink); background:var(--ink); color:#fff;
+  }
+  .toolbar button:hover,.btn:hover{background:var(--magenta); border-color:var(--magenta)}
+  .toolbar button.ghost{background:transparent; color:var(--ink)}
+  .toolbar button.ghost:hover{background:var(--ink); color:#fff}
+  button:focus-visible{outline:2px solid var(--cyan); outline-offset:2px}
+  #status{font-size:11px; color:var(--mute); font-family:ui-monospace,Menlo,monospace}
+
+  /* cabeçalho */
+  .top{display:flex; gap:20px; align-items:flex-start; border-bottom:2px solid var(--ink); padding-bottom:11px}
+  .brand h1{font-size:22px; margin:0; letter-spacing:-.5px}
+  .brand .sub{color:var(--magenta); font-weight:700; font-size:11px; letter-spacing:1px; margin-top:3px}
+  .brand .tag{color:var(--mute); font-size:8.5px; letter-spacing:.6px; margin-top:4px; text-transform:uppercase}
+  .idgrid{flex:1; display:grid; grid-template-columns:repeat(3,1fr); gap:8px 14px}
+
+  .f{display:flex; flex-direction:column-reverse}
+  .f label{
+    font-size:8px; letter-spacing:.7px; text-transform:uppercase; color:var(--mute);
+    margin-top:2px; font-family:ui-monospace,Menlo,monospace;
+  }
+  .f input, .f textarea{
+    font-family:inherit; font-size:13px; color:var(--ink);
+    border:none; border-bottom:1px solid var(--hair); background:transparent;
+    padding:3px 2px; width:100%; outline:none; resize:vertical;
+  }
+  .f input:focus, .f textarea:focus{border-bottom-color:var(--magenta); background:#fff8fc}
+  .f textarea{border:1px solid var(--hair-soft); border-radius:2px; padding:7px; line-height:1.5}
+
+  section{margin-top:18px; border:1px solid var(--hair); border-radius:2px; padding:12px 14px 14px}
+  section > h2{
+    margin:0 0 10px; font-size:11px; letter-spacing:1.3px; text-transform:uppercase;
+    font-family:ui-monospace,Menlo,monospace;
+    display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
+  }
+  h2 .note{font-size:9px; color:var(--mute); text-transform:none; font-family:inherit; font-style:italic; letter-spacing:.2px}
+  .c-red{border-top:3px solid var(--red)} .c-red h2{color:var(--red)}
+  .c-cyan{border-top:3px solid var(--cyan)} .c-cyan h2{color:var(--cyan)}
+  .c-amber{border-top:3px solid var(--amber)} .c-amber h2{color:var(--amber)}
+  .c-magenta{border-top:3px solid var(--magenta)} .c-magenta h2{color:var(--magenta)}
+  .c-green{border-top:3px solid var(--green)} .c-green h2{color:var(--green)}
+  .row{display:grid; gap:14px}
+  .two{grid-template-columns:1fr 1fr}
+
+  /* combate */
+  .combat-bar{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:10px}
+  .combat-bar button{
+    font-family:ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:.5px; text-transform:uppercase;
+    padding:6px 11px; border:1px solid var(--hair); background:#fff; color:var(--ink); border-radius:2px; cursor:pointer;
+  }
+  .combat-bar button:hover{border-color:var(--ink); background:#f4f6f8}
+  .combat-bar button.primary{background:var(--red); border-color:var(--red); color:#fff}
+  .combat-bar button.primary:hover{background:#8f1e17}
+  .round{
+    font-family:ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:.6px;
+    padding:6px 12px; background:var(--ink); color:#fff; border-radius:2px;
+  }
+
+  table{width:100%; border-collapse:collapse}
+  th{
+    font-size:8px; letter-spacing:.7px; text-transform:uppercase; color:var(--mute);
+    text-align:left; padding:0 5px 5px; border-bottom:1.5px solid var(--ink);
+    font-family:ui-monospace,Menlo,monospace; font-weight:600;
+  }
+  td{border-bottom:1px solid var(--hair-soft); padding:2px 0}
+  tr.active{background:#fff4f4}
+  tr.active td{border-bottom-color:#f0c7c4}
+  tr.down{opacity:.42}
+  tr.down input{text-decoration:line-through}
+  td input{
+    width:100%; border:none; background:transparent; padding:6px 5px;
+    font-size:12.5px; font-family:inherit; outline:none; color:var(--ink);
+  }
+  td input:focus{background:#fffbe8}
+  td.num input{text-align:center}
+  td.mark{width:26px; text-align:center; font-family:ui-monospace,Menlo,monospace; color:var(--red); font-size:13px}
+  td.act{width:56px; text-align:right; padding-right:4px; white-space:nowrap}
+  .mini{
+    border:1px solid var(--hair); background:#fff; color:var(--mute); cursor:pointer;
+    border-radius:2px; font-size:11px; line-height:1; padding:4px 6px; margin-left:2px;
+  }
+  .mini:hover{border-color:var(--ink); color:var(--ink)}
+  .mini.kill:hover{border-color:var(--red); color:var(--red)}
+  .empty{font-size:12.5px; color:var(--mute); font-style:italic; padding:10px 4px}
+
+  ul.tips{margin:10px 0 0; padding-left:18px; font-size:12.5px; color:var(--mute)}
+  ul.tips li{margin-bottom:3px}
+
+  @media (max-width:760px){
+    .idgrid{grid-template-columns:1fr}
+    .two{grid-template-columns:1fr}
+    .top{flex-direction:column; gap:12px}
+  }
+  @page{size:A4; margin:12mm}
+  @media print{
+    body{background:#fff; padding:0}
+    .toolbar,.combat-bar .no-print,.mini{display:none !important}
+    .sheet{border:none; padding:0}
+    section{break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="toolbar">
+    <button type="button" id="btn-save">Salvar campanha</button>
+    <button type="button" id="btn-load">Carregar</button>
+    <button type="button" id="btn-pdf">Exportar PDF</button>
+    <button type="button" id="btn-clear" class="ghost">Limpar tudo</button>
+    <input type="file" id="file-input" accept=".json,application/json" hidden>
+    <span id="status" role="status"></span>
+  </div>
+
+  <div class="sheet" id="sheet">
+
+    <div class="top">
+      <div class="brand">
+        <h1>Painel do Mestre</h1>
+        <div class="sub">// CYBERPUNK PROTOCOL</div>
+        <div class="tag">3D&amp;T · sem magia</div>
+      </div>
+      <div class="idgrid">
+        <div class="f"><input type="text" data-k="campanha"><label>Campanha</label></div>
+        <div class="f"><input type="text" data-k="sessao"><label>Sessão nº</label></div>
+        <div class="f"><input type="text" data-k="data"><label>Data</label></div>
+      </div>
+    </div>
+
+    <!-- ================= COMBATE ================= -->
+    <section class="c-red">
+      <h2>Rastreador de combate <span class="note">ordem por iniciativa · H + 1d6</span></h2>
+
+      <div class="combat-bar">
+        <span class="round" id="round-label">Rodada 1</span>
+        <button type="button" class="primary no-print" id="btn-next">Próximo turno →</button>
+        <button type="button" class="no-print" id="btn-sort">Ordenar por iniciativa</button>
+        <button type="button" class="no-print" id="btn-add-pc">+ Personagem</button>
+        <button type="button" class="no-print" id="btn-add-npc">+ Inimigo</button>
+        <button type="button" class="no-print" id="btn-reset">Encerrar combate</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="width:26px"></th>
+            <th style="width:28%">Nome</th>
+            <th style="width:9%">Inic.</th>
+            <th style="width:9%">PV</th>
+            <th style="width:9%">PA</th>
+            <th style="width:9%">FD</th>
+            <th>Condições / notas</th>
+            <th style="width:56px"></th>
+          </tr>
+        </thead>
+        <tbody id="combat-body"></tbody>
+      </table>
+      <div class="empty" id="combat-empty">Nenhum combatente. Use os botões acima para montar a ordem.</div>
+
+      <ul class="tips">
+        <li>Clique no nome da linha para marcá-la como caída (fica riscada e sai do rodízio de turnos).</li>
+        <li>PV e PA aceitam qualquer anotação: <b>12/15</b>, <b>-3</b>, o que for mais rápido para você.</li>
+        <li>O botão de turno pula quem está caído e vira a rodada sozinho ao chegar no fim da lista.</li>
+      </ul>
+    </section>
+
+    <!-- ================= PERSONAGENS ================= -->
+    <section class="c-cyan">
+      <h2>Os personagens <span class="note">referência rápida durante a mesa</span></h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:20%">Jogador</th>
+            <th style="width:22%">Personagem</th>
+            <th style="width:16%">Conceito</th>
+            <th style="width:8%">PV</th>
+            <th style="width:8%">PA</th>
+            <th>Habilidades e ganchos pessoais</th>
+          </tr>
+        </thead>
+        <tbody id="pc-body"></tbody>
+      </table>
+    </section>
+
+    <!-- ================= HISTÓRIA ================= -->
+    <section class="c-magenta">
+      <h2>A história</h2>
+      <div class="row two">
+        <div class="f"><textarea rows="5" data-k="premissa"></textarea><label>Premissa — do que se trata a campanha</label></div>
+        <div class="f"><textarea rows="5" data-k="arco"></textarea><label>Arco atual — para onde a coisa está indo</label></div>
+      </div>
+      <div class="row two" style="margin-top:14px">
+        <div class="f"><textarea rows="5" data-k="ganchos"></textarea><label>Ganchos em aberto — o que ainda não foi puxado</label></div>
+        <div class="f"><textarea rows="5" data-k="relogio"></textarea><label>Relógio — o que acontece se o grupo não agir</label></div>
+      </div>
+    </section>
+
+    <!-- ================= NPCS E LOCAIS ================= -->
+    <section class="c-amber">
+      <h2>Elenco e cenário</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:22%">NPC</th>
+            <th style="width:20%">Papel / facção</th>
+            <th style="width:18%">O que quer</th>
+            <th>Onde está e como reage ao grupo</th>
+          </tr>
+        </thead>
+        <tbody id="npc-body"></tbody>
+      </table>
+      <div style="margin-top:6px"><button type="button" class="mini no-print" id="btn-add-elenco">+ linha</button></div>
+
+      <div class="row two" style="margin-top:14px">
+        <div class="f"><textarea rows="4" data-k="locais"></textarea><label>Locais da sessão — o que tem em cada um</label></div>
+        <div class="f"><textarea rows="4" data-k="faccoes"></textarea><label>Facções — quem está em guerra com quem</label></div>
+      </div>
+    </section>
+
+    <!-- ================= PISTAS ================= -->
+    <section class="c-green">
+      <h2>Pistas, segredos e recompensas</h2>
+      <div class="row two">
+        <div class="f"><textarea rows="5" data-k="pistas"></textarea><label>Pistas já entregues — e o que elas revelam de verdade</label></div>
+        <div class="f"><textarea rows="5" data-k="segredos"></textarea><label>Segredos que o grupo ainda não sabe</label></div>
+      </div>
+      <div class="row two" style="margin-top:14px">
+        <div class="f"><textarea rows="4" data-k="loot"></textarea><label>Dinheiro, equipamento e favores prometidos</label></div>
+        <div class="f"><textarea rows="4" data-k="xp"></textarea><label>Pontos de experiência concedidos e por quê</label></div>
+      </div>
+    </section>
+
+    <!-- ================= DIÁRIO ================= -->
+    <section>
+      <h2>Diário de sessão</h2>
+      <div class="f"><textarea rows="8" data-k="diario"></textarea><label>O que aconteceu, o que ficou pendente, o que preparar para a próxima</label></div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const status = $('status');
+  let timer;
+  function say(m){ status.textContent = m; clearTimeout(timer); timer = setTimeout(()=>status.textContent='', 4000); }
+
+  /* ---------- estado ---------- */
+  const state = {
+    combat: [],
+    turn: 0,
+    round: 1,
+    pcs: [],
+    elenco: []
+  };
+
+  function novoCombatente(tipo){
+    return { nome:'', inic:'', pv:'', pa:'', fd:'', notas:'', down:false, tipo };
+  }
+  function novoPC(){ return { jogador:'', pers:'', conceito:'', pv:'', pa:'', notas:'' }; }
+  function novaLinhaElenco(){ return { npc:'', papel:'', quer:'', onde:'' }; }
+
+  /* ---------- combate ---------- */
+  const cbody = $('combat-body'), cempty = $('combat-empty');
+
+  function renderCombat(){
+    cbody.innerHTML = '';
+    cempty.style.display = state.combat.length ? 'none' : 'block';
+
+    state.combat.forEach((c, i) => {
+      const tr = document.createElement('tr');
+      if (i === state.turn && !c.down) tr.className = 'active';
+      if (c.down) tr.className = 'down';
+
+      const mark = document.createElement('td');
+      mark.className = 'mark';
+      mark.textContent = (i === state.turn && !c.down) ? '▶' : '';
+      tr.appendChild(mark);
+
+      [['nome', c.tipo === 'npc' ? 'Inimigo' : 'Personagem', ''],
+       ['inic','', 'num'], ['pv','', 'num'], ['pa','', 'num'], ['fd','', 'num'],
+       ['notas','','']].forEach(([campo, ph, cls]) => {
+        const td = document.createElement('td');
+        if (cls) td.className = cls;
+        const inp = document.createElement('input');
+        inp.type = 'text';
+        inp.value = c[campo];
+        inp.placeholder = ph;
+        inp.addEventListener('input', e => { c[campo] = e.target.value; });
+        if (campo === 'nome'){
+          inp.addEventListener('dblclick', () => { c.down = !c.down; renderCombat(); });
+          inp.title = 'Clique duas vezes para marcar como caído';
+        }
+        td.appendChild(inp);
+        tr.appendChild(td);
+      });
+
+      const act = document.createElement('td');
+      act.className = 'act';
+      const down = document.createElement('button');
+      down.className = 'mini'; down.type = 'button';
+      down.textContent = c.down ? '↺' : '✕';
+      down.title = c.down ? 'Voltar ao combate' : 'Marcar como caído';
+      down.addEventListener('click', () => { c.down = !c.down; renderCombat(); });
+      const del = document.createElement('button');
+      del.className = 'mini kill'; del.type = 'button'; del.textContent = '🗑';
+      del.title = 'Remover da lista';
+      del.addEventListener('click', () => {
+        state.combat.splice(i,1);
+        if (state.turn >= state.combat.length) state.turn = 0;
+        renderCombat();
+      });
+      act.appendChild(down); act.appendChild(del);
+      tr.appendChild(act);
+
+      cbody.appendChild(tr);
+    });
+
+    $('round-label').textContent = 'Rodada ' + state.round;
+  }
+
+  $('btn-add-pc').addEventListener('click', () => { state.combat.push(novoCombatente('pc')); renderCombat(); });
+  $('btn-add-npc').addEventListener('click', () => { state.combat.push(novoCombatente('npc')); renderCombat(); });
+
+  $('btn-sort').addEventListener('click', () => {
+    state.combat.sort((a,b) => (parseInt(b.inic,10)||0) - (parseInt(a.inic,10)||0));
+    state.turn = 0;
+    renderCombat();
+    say('Ordem atualizada.');
+  });
+
+  $('btn-next').addEventListener('click', () => {
+    const vivos = state.combat.filter(c => !c.down);
+    if (!vivos.length) return;
+    let i = state.turn, voltas = 0;
+    do {
+      i++;
+      if (i >= state.combat.length){ i = 0; state.round++; }
+      voltas++;
+    } while (state.combat[i] && state.combat[i].down && voltas <= state.combat.length);
+    state.turn = i;
+    renderCombat();
+  });
+
+  $('btn-reset').addEventListener('click', () => {
+    if (!confirm('Encerrar o combate e limpar a lista de combatentes?')) return;
+    state.combat = []; state.turn = 0; state.round = 1;
+    renderCombat(); say('Combate encerrado.');
+  });
+
+  /* ---------- tabelas simples ---------- */
+  function renderLinhas(tbody, lista, campos, minimo){
+    while (lista.length < minimo) lista.push(campos.novo());
+    tbody.innerHTML = '';
+    lista.forEach(item => {
+      const tr = document.createElement('tr');
+      campos.chaves.forEach(([k, cls]) => {
+        const td = document.createElement('td');
+        if (cls) td.className = cls;
+        const inp = document.createElement('input');
+        inp.type = 'text'; inp.value = item[k];
+        inp.addEventListener('input', e => { item[k] = e.target.value; });
+        td.appendChild(inp); tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+  }
+
+  const pcCampos = { novo: novoPC, chaves:[['jogador'],['pers'],['conceito'],['pv','num'],['pa','num'],['notas']] };
+  const elencoCampos = { novo: novaLinhaElenco, chaves:[['npc'],['papel'],['quer'],['onde']] };
+
+  function renderPCs(){ renderLinhas($('pc-body'), state.pcs, pcCampos, 5); }
+  function renderElenco(){ renderLinhas($('npc-body'), state.elenco, elencoCampos, 6); }
+
+  $('btn-add-elenco').addEventListener('click', () => { state.elenco.push(novaLinhaElenco()); renderElenco(); });
+
+  /* ---------- campos de texto livres ---------- */
+  const livres = () => Array.from(document.querySelectorAll('[data-k]'));
+
+  /* ---------- salvar / carregar ---------- */
+  function coletar(){
+    const texto = {};
+    livres().forEach(el => { texto[el.dataset.k] = el.value; });
+    return { v:1, tipo:'painel-mestre-3dt', texto, combat: state.combat, round: state.round, turn: state.turn, pcs: state.pcs, elenco: state.elenco };
+  }
+
+  $('btn-save').addEventListener('click', () => {
+    const nome = (document.querySelector('[data-k="campanha"]').value || 'campanha').trim().replace(/[^\w\-]+/g,'-').toLowerCase();
+    const blob = new Blob([JSON.stringify(coletar())], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = nome + '-mestre.json';
+    a.click(); URL.revokeObjectURL(a.href);
+    say('Campanha salva.');
+  });
+
+  const input = $('file-input');
+  $('btn-load').addEventListener('click', () => input.click());
+  input.addEventListener('change', () => {
+    const file = input.files[0]; if (!file) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try{
+        const d = JSON.parse(r.result);
+        if (d.tipo !== 'painel-mestre-3dt') { say('Esse arquivo não é de um painel do mestre.'); return; }
+        livres().forEach(el => { el.value = (d.texto && d.texto[el.dataset.k]) || ''; });
+        state.combat = d.combat || []; state.round = d.round || 1; state.turn = d.turn || 0;
+        state.pcs = d.pcs || []; state.elenco = d.elenco || [];
+        renderCombat(); renderPCs(); renderElenco();
+        say('Campanha carregada.');
+      } catch { say('Não consegui ler esse arquivo.'); }
+    };
+    r.onerror = () => say('Não consegui ler esse arquivo.');
+    r.readAsText(file); input.value = '';
+  });
+
+  $('btn-clear').addEventListener('click', () => {
+    if (!confirm('Apagar tudo — combate, elenco e anotações?')) return;
+    livres().forEach(el => el.value = '');
+    state.combat = []; state.turn = 0; state.round = 1; state.pcs = []; state.elenco = [];
+    renderCombat(); renderPCs(); renderElenco();
+    say('Painel limpo.');
+  });
+
+  $('btn-pdf').addEventListener('click', () => window.print());
+
+  /* ---------- início ---------- */
+  renderCombat(); renderPCs(); renderElenco();
+})();
+</script>
+</body>
+</html>

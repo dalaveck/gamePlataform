@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ficha 3D&amp;T — Cyberpunk (paisagem)</title>
+<style>
+  :root{
+    --ink:#101418; --hair:#c9ced6; --hair-soft:#e3e7ec; --mute:#6e7884;
+    --cyan:#0090a8; --magenta:#c4007a; --amber:#8a6a00; --green:#0a7a4a; --paper:#fff;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; padding:20px 14px 40px; background:#eef1f4;
+    font-family:"Helvetica Neue",Arial,sans-serif; color:var(--ink);
+  }
+  .sheet{
+    width:1122px; max-width:100%; margin:0 auto; background:var(--paper);
+    border:1px solid var(--hair); padding:12px 14px 12px;
+  }
+
+  /* barra */
+  .toolbar{width:1122px; max-width:100%; margin:0 auto 10px; display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+  .toolbar button{
+    font-family:ui-monospace,"SF Mono",Menlo,monospace; font-size:11px; letter-spacing:.6px;
+    text-transform:uppercase; padding:8px 14px; border-radius:2px; cursor:pointer;
+    border:1px solid var(--ink); background:var(--ink); color:#fff;
+  }
+  .toolbar button:hover{background:var(--magenta); border-color:var(--magenta)}
+  .toolbar button.ghost{background:transparent; color:var(--ink)}
+  .toolbar button.ghost:hover{background:var(--ink); color:#fff}
+  .toolbar button:focus-visible{outline:2px solid var(--cyan); outline-offset:2px}
+  .f.pontos{width:84px; flex:0 0 auto; align-self:flex-start}
+  #status{font-size:11px; color:var(--mute); font-family:ui-monospace,Menlo,monospace}
+
+  /* cabeçalho */
+  .top{display:flex; gap:18px; align-items:flex-start; border-bottom:2px solid var(--ink); padding-bottom:7px}
+  .brand h1{font-size:21px; letter-spacing:-1px; margin:0; line-height:.95}
+  .brand .sub{color:var(--magenta); font-weight:700; font-size:11px; letter-spacing:1px; margin-top:3px}
+  .brand .tag{color:var(--mute); font-size:8px; letter-spacing:.6px; margin-top:4px; text-transform:uppercase}
+  .idgrid{flex:1; display:grid; grid-template-columns:repeat(6,1fr); gap:6px 12px}
+
+  /* campos */
+  .f{display:flex; flex-direction:column-reverse}
+  .f label{
+    font-size:7.5px; letter-spacing:.6px; text-transform:uppercase; color:var(--mute);
+    margin-top:2px; font-family:ui-monospace,"SF Mono",Menlo,monospace;
+  }
+  .f input, .f textarea{
+    font-family:inherit; font-size:11.5px; color:var(--ink);
+    border:none; border-bottom:1px solid var(--hair); background:transparent;
+    padding:2px 2px; width:100%; outline:none; resize:none;
+  }
+  .f input:focus, .f textarea:focus{border-bottom-color:var(--magenta); background:#fff8fc}
+  .f textarea{border:1px solid var(--hair-soft); border-radius:2px; padding:5px; line-height:1.4}
+
+  /* colunas */
+  .cols{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-top:8px; align-items:start}
+  .col{display:flex; flex-direction:column; gap:8px}
+
+  section{border:1px solid var(--hair); border-radius:2px; padding:6px 9px 8px}
+  section > h2{
+    margin:0 0 5px; font-size:9.5px; letter-spacing:1.2px; text-transform:uppercase;
+    font-family:ui-monospace,"SF Mono",Menlo,monospace;
+    display:flex; justify-content:space-between; align-items:baseline; gap:8px;
+  }
+  h2 .note{font-size:8px; letter-spacing:.2px; color:var(--mute); text-transform:none; font-family:inherit; font-style:italic}
+  .formula{font-family:ui-monospace,Menlo,monospace; font-size:8.5px; color:var(--amber); text-transform:none; letter-spacing:.2px}
+  .c-cyan{border-top:3px solid var(--cyan)} .c-cyan h2{color:var(--cyan)}
+  .c-amber{border-top:3px solid var(--amber)} .c-amber h2{color:var(--amber)}
+  .c-magenta{border-top:3px solid var(--magenta)} .c-magenta h2{color:var(--magenta)}
+  .c-green{border-top:3px solid var(--green)} .c-green h2{color:var(--green)}
+  .row{display:grid; gap:12px}
+  .two{grid-template-columns:1fr 1fr}
+  .three{grid-template-columns:repeat(3,1fr)}
+
+  /* tabelas */
+  table{width:100%; border-collapse:collapse}
+  th{
+    font-size:7.5px; letter-spacing:.6px; text-transform:uppercase; color:var(--mute);
+    text-align:left; padding:0 3px 4px; border-bottom:1.5px solid var(--ink);
+    font-family:ui-monospace,Menlo,monospace; font-weight:600;
+  }
+  td{border-bottom:1px solid var(--hair-soft); padding:0}
+  td input{width:100%; border:none; background:transparent; padding:3px 3px; font-size:11px; font-family:inherit; outline:none; color:var(--ink)}
+  td input:focus{background:#fffbe8}
+  td.num input{text-align:center}
+  td.attrname{font-size:11px; font-weight:600; padding:0 3px}
+  td.check{text-align:center; padding:0}
+  td.check input{
+    appearance:none; width:12px; height:12px; margin:3px auto; display:block;
+    border:1.5px solid var(--hair); border-radius:2px; cursor:pointer; background:#fff;
+  }
+  td.check input:checked{background:var(--cyan); border-color:var(--cyan)}
+  td.check input:focus-visible{outline:2px solid var(--magenta); outline-offset:1px}
+
+  .lines{display:flex; flex-direction:column; gap:5px}
+  .lineitem{display:grid; grid-template-columns:1fr 44px; gap:6px; align-items:end}
+
+  @media (max-width:900px){
+    .cols{grid-template-columns:1fr}
+    .idgrid{grid-template-columns:1fr 1fr}
+    .top{flex-direction:column; gap:12px}
+  }
+  @page{size:A4 landscape; margin:6mm}
+  @media print{
+    body{background:#fff; padding:0}
+    .toolbar{display:none !important}
+    .sheet{border:none; width:auto; padding:0}
+    textarea{height:auto}
+    input,textarea{background:transparent !important}
+    section{break-inside:avoid}
+    td.check input:checked{
+      -webkit-print-color-adjust:exact; print-color-adjust:exact;
+      background:var(--cyan) !important; border-color:var(--cyan) !important;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <button type="button" id="btn-pdf">Exportar PDF</button>
+  <button type="button" id="btn-save">Salvar ficha</button>
+  <button type="button" id="btn-load">Carregar ficha</button>
+  <button type="button" id="btn-clear" class="ghost">Limpar</button>
+  <input type="file" id="file-input" accept=".json,application/json" hidden>
+  <span id="status" role="status"></span>
+</div>
+
+<div class="sheet" id="sheet">
+
+  <div class="top">
+    <div class="brand">
+      <h1>3D&amp;T</h1>
+      <div class="sub">// CYBERPUNK PROTOCOL</div>
+      <div class="tag">Ficha de runner — sem magia</div>
+    </div>
+    <div class="idgrid">
+      <div class="f" style="grid-column:span 3"><input type="text"><label>Codinome / runner</label></div>
+      <div class="f"><input type="text"><label>Pontos de vida</label></div>
+      <div class="f"><input type="text"><label>Pontos de ação</label></div>
+      <div class="f"><input type="text"><label>Iniciativa (H + 1d6)</label></div>
+      <div class="f" style="grid-column:span 3"></div>
+      <div class="f"><input type="text"><label>PA atuais</label></div>
+      <div class="f"><input type="text"><label>PV atuais</label></div>
+      <div class="f"><input type="text"><label>Pontos de experiência</label></div>
+    </div>
+    <div class="f pontos"><input type="text"><label>Pontos totais</label></div>
+  </div>
+
+  <div class="cols">
+
+    <!-- COLUNA 1 -->
+    <div class="col">
+      <section class="c-cyan">
+        <h2>Características</h2>
+        <table>
+          <thead><tr><th style="width:60%">Característica</th><th style="width:20%">Valor</th><th style="width:20%">Buff</th></tr></thead>
+          <tbody>
+            <tr><td class="attrname">Força (F)</td><td class="num"><input type="text"></td><td class="num"><input type="text"></td></tr>
+            <tr><td class="attrname">Habilidade (H)</td><td class="num"><input type="text"></td><td class="num"><input type="text"></td></tr>
+            <tr><td class="attrname">Resistência (R)</td><td class="num"><input type="text"></td><td class="num"><input type="text"></td></tr>
+            <tr><td class="attrname">Armadura (A)</td><td class="num"><input type="text"></td><td class="num"><input type="text"></td></tr>
+            <tr><td class="attrname">Poder de fogo (PdF)</td><td class="num"><input type="text"></td><td class="num"><input type="text"></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="c-green">
+        <h2>Dinheiro</h2>
+        <div class="row two">
+          <div class="f"><input type="text"><label>Saldo em conta</label></div>
+          <div class="f"><input type="text"><label>Dinheiro em espécie</label></div>
+        </div>
+      </section>
+
+      <section class="c-cyan">
+        <h2>Habilidades <span class="note">implantes, ciberware</span></h2>
+        <div class="lines">
+          <div class="lineitem"><div class="f"><input type="text"><label>Habilidade 1 · efeito</label></div><div class="f"><input type="text"><label>Custo</label></div></div>
+          <div class="lineitem"><div class="f"><input type="text"><label>Habilidade 2 · efeito</label></div><div class="f"><input type="text"><label>Custo</label></div></div>
+          <div class="lineitem"><div class="f"><input type="text"><label>Habilidade 3 · efeito</label></div><div class="f"><input type="text"><label>Custo</label></div></div>
+          <div class="lineitem"><div class="f"><input type="text"><label>Habilidade 4 · efeito</label></div><div class="f"><input type="text"><label>Custo</label></div></div>
+          <div class="lineitem"><div class="f"><input type="text"><label>Habilidade 5 · efeito</label></div><div class="f"><input type="text"><label>Custo</label></div></div>
+        </div>
+      </section>
+
+      <section class="c-cyan">
+        <h2>Equipamento</h2>
+        <div class="f"><textarea rows="6"></textarea><label>Armas, ciberware instalado, itens</label></div>
+      </section>
+    </div>
+
+    <!-- COLUNA 2 -->
+    <div class="col">
+      <section class="c-amber">
+        <h2>Tipos de ataque <span class="formula">Hab + Força + Equip + 1d6</span></h2>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:30%">Ataque / arma</th><th style="width:22%">Dano</th>
+              <th style="width:12%">Hab</th><th style="width:12%">For</th><th style="width:12%">Eq</th><th style="width:12%">Tot</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><input type="text"></td><td><input type="text"></td><td class="num"><input type="text"></td><td class="num"><input type="text"></td><td class="num"><input type="text"></td><td class="num"><input type="text"></td></tr>
+            <tr><td><input type="text"></td><td><input type="text"></td><td class="num"><input type="text"></td><td class="num"><input type="text"></td><td class="num"><input type="text"></td><td class="num"><input type="text"></td></tr>
+            <tr><td><input type="text"></td><td><input type="text"></td><td class="num"><input type="text"></td><td class="num"><input type="text"></td><td class="num"><input type="text"></td><td class="num"><input type="text"></td></tr>
+            <tr><td><input type="text"></td><td><input type="text"></td><td class="num"><input type="text"></td><td class="num"><input type="text"></td><td class="num"><input type="text"></td><td class="num"><input type="text"></td></tr>
+            <tr><td><input type="text"></td><td><input type="text"></td><td class="num"><input type="text"></td><td class="num"><input type="text"></td><td class="num"><input type="text"></td><td class="num"><input type="text"></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="c-amber">
+        <h2>Defesa <span class="formula">Res + Hab + Equip + 1d6</span></h2>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:52%">Proteção / equipamento</th>
+              <th style="width:12%">Res</th><th style="width:12%">Hab</th><th style="width:12%">Eq</th><th style="width:12%">Tot</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><input type="text"></td><td class="num"><input type="text"></td><td class="num"><input type="text"></td><td class="num"><input type="text"></td><td class="num"><input type="text"></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="c-magenta">
+        <h2>Vantagens</h2>
+        <div class="lines">
+          <div class="lineitem"><div class="f"><input type="text"><label>Vantagem 1</label></div><div class="f"><input type="text"><label>Custo</label></div></div>
+          <div class="lineitem"><div class="f"><input type="text"><label>Vantagem 2</label></div><div class="f"><input type="text"><label>Custo</label></div></div>
+          <div class="lineitem"><div class="f"><input type="text"><label>Vantagem 3</label></div><div class="f"><input type="text"><label>Custo</label></div></div>
+          <div class="lineitem"><div class="f"><input type="text"><label>Vantagem 4</label></div><div class="f"><input type="text"><label>Custo</label></div></div>
+          <div class="lineitem"><div class="f"><input type="text"><label>Vantagem 5</label></div><div class="f"><input type="text"><label>Custo</label></div></div>
+        </div>
+      </section>
+
+      <section class="c-magenta">
+        <h2>Desvantagens</h2>
+        <div class="lines">
+          <div class="lineitem"><div class="f"><input type="text"><label>Desvantagem 1</label></div><div class="f"><input type="text"><label>Pts</label></div></div>
+          <div class="lineitem"><div class="f"><input type="text"><label>Desvantagem 2</label></div><div class="f"><input type="text"><label>Pts</label></div></div>
+          <div class="lineitem"><div class="f"><input type="text"><label>Desvantagem 3</label></div><div class="f"><input type="text"><label>Pts</label></div></div>
+          <div class="lineitem"><div class="f"><input type="text"><label>Desvantagem 4</label></div><div class="f"><input type="text"><label>Pts</label></div></div>
+          <div class="lineitem"><div class="f"><input type="text"><label>Desvantagem 5</label></div><div class="f"><input type="text"><label>Pts</label></div></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- COLUNA 3 -->
+    <div class="col">
+      <section class="c-cyan">
+        <h2>Perícias <span class="note">área completa ou até 3 soltas</span></h2>
+        <table>
+          <thead>
+            <tr><th style="width:24%">Área</th><th style="width:12%">Compl.</th><th style="width:64%">Perícias soltas</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="attrname">Animais</td><td class="check"><input type="checkbox"></td><td><input type="text"></td></tr>
+            <tr><td class="attrname">Arte</td><td class="check"><input type="checkbox"></td><td><input type="text"></td></tr>
+            <tr><td class="attrname">Ciência</td><td class="check"><input type="checkbox"></td><td><input type="text"></td></tr>
+            <tr><td class="attrname">Crime</td><td class="check"><input type="checkbox"></td><td><input type="text"></td></tr>
+            <tr><td class="attrname">Esporte</td><td class="check"><input type="checkbox"></td><td><input type="text"></td></tr>
+            <tr><td class="attrname">Idiomas</td><td class="check"><input type="checkbox"></td><td><input type="text"></td></tr>
+            <tr><td class="attrname">Investigação</td><td class="check"><input type="checkbox"></td><td><input type="text"></td></tr>
+            <tr><td class="attrname">Manipulação</td><td class="check"><input type="checkbox"></td><td><input type="text"></td></tr>
+            <tr><td class="attrname">Máquinas</td><td class="check"><input type="checkbox"></td><td><input type="text"></td></tr>
+            <tr><td class="attrname">Medicina</td><td class="check"><input type="checkbox"></td><td><input type="text"></td></tr>
+            <tr><td class="attrname">Sobrevivência</td><td class="check"><input type="checkbox"></td><td><input type="text"></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Anotações</h2>
+        <div class="f"><textarea rows="12"></textarea><label>Detalhes da vantagem única, contatos, contratos, história</label></div>
+      </section>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  const sheet  = document.getElementById('sheet');
+  const status = document.getElementById('status');
+  const fields = () => Array.from(sheet.querySelectorAll('input, textarea'));
+
+  let timer;
+  function say(msg){
+    status.textContent = msg;
+    clearTimeout(timer);
+    timer = setTimeout(() => { status.textContent = ''; }, 4000);
+  }
+
+  function collect(){
+    return fields().map(el => el.type === 'checkbox' ? el.checked : el.value);
+  }
+
+  function apply(values){
+    const els = fields();
+    if (!Array.isArray(values) || values.length !== els.length){
+      say('Arquivo não corresponde a esta ficha.');
+      return;
+    }
+    els.forEach((el, i) => {
+      if (el.type === 'checkbox') el.checked = !!values[i];
+      else el.value = values[i] ?? '';
+    });
+    say('Ficha carregada.');
+  }
+
+  function fileName(){
+    const nome = (fields()[0].value || 'ficha').trim().replace(/[^\w\-]+/g, '-').toLowerCase();
+    return `${nome}-3dt.json`;
+  }
+
+  document.getElementById('btn-pdf').addEventListener('click', () => window.print());
+
+  document.getElementById('btn-save').addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify({ v:1, layout:'paisagem', dados: collect() })], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = fileName();
+    a.click();
+    URL.revokeObjectURL(a.href);
+    say('Ficha salva.');
+  });
+
+  const input = document.getElementById('file-input');
+  document.getElementById('btn-load').addEventListener('click', () => input.click());
+  input.addEventListener('change', () => {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try { apply(JSON.parse(reader.result).dados); }
+      catch { say('Não consegui ler esse arquivo.'); }
+    };
+    reader.onerror = () => say('Não consegui ler esse arquivo.');
+    reader.readAsText(file);
+    input.value = '';
+  });
+
+  document.getElementById('btn-clear').addEventListener('click', () => {
+    if (!confirm('Apagar tudo que está preenchido nesta ficha?')) return;
+    fields().forEach(el => { if (el.type === 'checkbox') el.checked = false; else el.value = ''; });
+    say('Ficha limpa.');
+  });
+})();
+</script>
+</body>
+</html>

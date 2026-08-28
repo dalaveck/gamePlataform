@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3D&amp;T Cyberpunk — NPCs e inimigos (paisagem)</title>
+<style>
+  :root{
+    --ink:#101418; --hair:#c9ced6; --hair-soft:#e3e7ec; --mute:#6e7884;
+    --cyan:#0090a8; --magenta:#c4007a; --amber:#8a6a00; --red:#b3261e; --green:#0a7a4a;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; padding:16px 12px 40px; background:#eef1f4;
+    font-family:"Helvetica Neue",Arial,sans-serif; color:var(--ink); line-height:1.28;
+  }
+  .sheet{width:1122px; max-width:100%; margin:0 auto; background:#fff; border:1px solid var(--hair); padding:11px 13px}
+
+  .top{display:flex; gap:14px; align-items:baseline; border-bottom:2px solid var(--ink); padding-bottom:4px; margin-bottom:6px}
+  .top h1{font-size:15px; margin:0; letter-spacing:-.4px}
+  .top .sub{color:var(--magenta); font-weight:700; font-size:9px; letter-spacing:1px; margin-top:1px}
+  .top .intro{flex:1; font-size:7.4px; color:var(--mute); line-height:1.35}
+  .top .intro b{color:var(--ink)}
+
+  .cols{display:grid; grid-template-columns:repeat(4,1fr); gap:7px; align-items:start}
+  .col{display:flex; flex-direction:column; gap:5px}
+
+  .tier{
+    padding:3px 6px; border-left:3px solid var(--ink); background:#f4f6f8; margin-bottom:1px;
+  }
+  .tier h2{
+    margin:0; font-size:7.4px; letter-spacing:.8px; text-transform:uppercase;
+    font-family:ui-monospace,"SF Mono",Menlo,monospace;
+  }
+  .tier p{margin:1px 0 0; font-size:6.4px; color:var(--mute); line-height:1.3}
+  .t1{border-left-color:var(--cyan)} .t1 h2{color:var(--cyan)}
+  .t2{border-left-color:var(--amber)} .t2 h2{color:var(--amber)}
+  .t3{border-left-color:var(--magenta)} .t3 h2{color:var(--magenta)}
+  .t4{border-left-color:var(--red)} .t4 h2{color:var(--red)}
+
+  .npc{border:1px solid var(--hair); border-radius:2px; padding:4px 6px 5px}
+  .b1{border-top:2.2px solid var(--cyan)}
+  .b2{border-top:2.2px solid var(--amber)}
+  .b3{border-top:2.2px solid var(--magenta)}
+  .b4{border-top:2.2px solid var(--red)}
+  .npc h3{margin:0; font-size:8.4px; display:inline}
+  .cost{
+    font-family:ui-monospace,Menlo,monospace; font-size:6.2px; letter-spacing:.4px; text-transform:uppercase;
+    color:#fff; background:var(--ink); padding:1px 4px; border-radius:2px; margin-left:3px; white-space:nowrap;
+  }
+  .role{font-size:6.6px; color:var(--mute); font-style:italic; margin:1px 0 3px; line-height:1.25}
+  .stats{
+    display:flex; flex-wrap:wrap; gap:2px; margin:0 0 3px;
+    font-family:ui-monospace,Menlo,monospace; font-size:6.2px;
+  }
+  .stats span{background:#f4f6f8; border:1px solid var(--hair-soft); padding:1px 3px; border-radius:2px}
+  .stats span.hi{background:#fff6d9; border-color:#e6d08a}
+  .npc p{margin:0 0 2px; font-size:6.8px; line-height:1.3; color:#25303b}
+  .npc p:last-child{margin-bottom:0}
+  .lbl{
+    font-size:5.8px; letter-spacing:.5px; text-transform:uppercase;
+    font-family:ui-monospace,Menlo,monospace; color:var(--mute);
+  }
+  .npc b{color:var(--ink)}
+  .nota{
+    font-size:6.3px; color:var(--mute); border-left:2px solid var(--hair);
+    padding:2px 5px; margin-top:3px; background:#fafbfc; line-height:1.3;
+  }
+
+  @media (max-width:900px){ .cols{grid-template-columns:1fr} .sheet{width:auto} }
+  @page{size:A4 landscape; margin:5mm}
+  @media print{
+    body{background:#fff; padding:0; margin:0}
+    .sheet{border:none; width:auto; padding:0}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="top">
+    <div>
+      <h1>NPCs &amp; inimigos</h1>
+      <div class="sub">// CYBERPUNK PROTOCOL</div>
+    </div>
+    <div class="intro">
+      3D&amp;T &middot; sem magia &middot; calibrado para personagens de <b>9 pontos</b>. FA e FD est&atilde;o anotadas <b>j&aacute; somadas, sem o 1d6</b> &mdash; role o dado e some.
+      <b>FA = Hab + For&ccedil;a (ou PdF) + Equip</b> &middot; <b>FD = Res + Hab + Equip</b> &middot; PV = Resist&ecirc;ncia &times; 5 &middot; PA = Habilidade &times; 5.
+    </div>
+  </div>
+
+  <div class="cols">
+
+    <!-- ============ COLUNA 1 — NÍVEL 1 ============ -->
+    <div class="col">
+      <div class="tier t1">
+        <h2>Nível 1 — comuns · 3 a 4 pts</h2>
+        <p>Caem em um ou dois golpes. Use em grupos de três ou mais; sozinhos não ameaçam ninguém.</p>
+      </div>
+
+      <div class="npc b1">
+        <h3>Rato de Beco</h3><span class="cost">3 pts</span>
+        <div class="role">Gangue de rua · faca e coragem emprestada</div>
+        <div class="stats"><span>F1</span><span>H1</span><span>R1</span><span>A0</span><span>PdF0</span><span>PV 5</span><span>FA 3</span><span>FD 2</span></div>
+        <p><span class="lbl">Equip</span> Faca serrilhada (+1 FA, corte)</p>
+        <p><span class="lbl">Tática</span> Ataca em bando e foge quando dois companheiros caem. Só encara alvo isolado.</p>
+      </div>
+
+      <div class="npc b1">
+        <h3>Segurança de Turno</h3><span class="cost">4 pts</span>
+        <div class="role">Guarda contratado · uniforme barato, pistola pior</div>
+        <div class="stats"><span>F0</span><span>H1</span><span>R1</span><span>A1</span><span>PdF1</span><span>PV 5</span><span>FA 3</span><span>FD 3</span></div>
+        <p><span class="lbl">Equip</span> Pistola 9 mm (+1 FA), colete leve (+1 FD)</p>
+        <p><span class="lbl">Tática</span> Chama reforço antes de atirar. Cede a um bom teste de Manipulação.</p>
+      </div>
+
+      <div class="npc b1">
+        <h3>Drone Zangão</h3><span class="cost">3 pts</span>
+        <div class="role">Vigilância automatizada · pequeno e irritante</div>
+        <div class="stats"><span>F0</span><span>H2</span><span>R1</span><span>A0</span><span>PdF0</span><span>PV 5</span><span>FA —</span><span>FD 3</span></div>
+        <p><span class="lbl">Habilidade</span> <b>Transmissão</b> — não ataca. Cada turno com linha de visão adianta os reforços em um turno.</p>
+      </div>
+
+      <div class="npc b1">
+        <h3>Camelô de Chips</h3><span class="cost">3 pts</span>
+        <div class="role">Vendedor de banca · sabe de tudo e conta por um preço</div>
+        <div class="stats"><span>F0</span><span>H2</span><span>R1</span><span>A0</span><span>PdF0</span><span>PV 5</span><span>FA 2</span><span>FD 3</span></div>
+        <p><span class="lbl">Perícias</span> Manipulação (lábia), Máquinas, Investigação</p>
+        <p><span class="lbl">Uso</span> Não é para lutar: é a fonte de informação barata do bairro. Vende ao grupo e depois vende o grupo.</p>
+      </div>
+
+      <div class="npc b1">
+        <h3>Sucata</h3><span class="cost">4 pts</span>
+        <div class="role">Viciado em implantes de segunda · dor não registra mais</div>
+        <div class="stats"><span>F2</span><span>H1</span><span>R2</span><span>A0</span><span>PdF0</span><span>PV 10</span><span>FA 4</span><span>FD 3</span></div>
+        <p><span class="lbl">Habilidade</span> <b>Não sente</b> — ignora a penalidade de PV baixos e nunca foge.</p>
+        <p><span class="lbl">Tática</span> Avança em linha reta. Serve para gastar a munição e a paciência do grupo.</p>
+      </div>
+
+      <div class="npc b1">
+        <h3>Corredor</h3><span class="cost">4 pts</span>
+        <div class="role">Motoboy de gangue · entrega pacote e recado</div>
+        <div class="stats"><span>F1</span><span>H2</span><span>R1</span><span>A0</span><span>PdF1</span><span>PV 5</span><span>FA 4</span><span>FD 3</span></div>
+        <p><span class="lbl">Habilidade</span> <b>Sempre à frente</b> — em perseguição, só é alcançado com um teste difícil de Máquinas ou Esporte.</p>
+        <p><span class="lbl">Uso</span> Se escapar, o inimigo sabe onde o grupo está em duas horas.</p>
+      </div>
+    </div>
+
+    <!-- ============ COLUNA 2 — NÍVEL 2 ============ -->
+    <div class="col">
+      <div class="tier t2">
+        <h2>Nível 2 — médios · 6 a 7 pts</h2>
+        <p>Perto de um personagem novato, cada um com uma habilidade especial. Em dupla, obrigam o grupo a pensar.</p>
+      </div>
+
+      <div class="npc b2">
+        <h3>Bruto de Crômio</h3><span class="cost">7 pts</span>
+        <div class="role">Cobrador de dívidas · braços industriais no torso</div>
+        <div class="stats"><span class="hi">F3</span><span>H1</span><span>R2</span><span>A1</span><span>PdF0</span><span>PV 10</span><span>PA 5</span><span>FA 5</span><span>FD 4</span></div>
+        <p><span class="lbl">Especial</span> <b>Arremesso (1 PA)</b> — Força contra Força; vencendo, o alvo sofre 3 de dano direto e cai indefeso.</p>
+        <p><span class="lbl">Tática</span> Vai atrás do mais frágil e ignora tiros pequenos.</p>
+      </div>
+
+      <div class="npc b2">
+        <h3>Netrunner de Gangue</h3><span class="cost">6 pts</span>
+        <div class="role">Adolescente com deck remendado e zero autopreservação</div>
+        <div class="stats"><span>F0</span><span class="hi">H3</span><span>R1</span><span>A0</span><span>PdF1</span><span>PV 5</span><span>PA 15</span><span>FA 4</span><span>FD 4</span></div>
+        <p><span class="lbl">Especial</span> <b>Interferência (2 PA)</b> — Máquinas contra a FD; travando, o alvo perde 2 em Habilidade por um turno. Inútil contra carne pura.</p>
+        <p><span class="lbl">Tática</span> Fica atrás dos colegas e trava o mais bem equipado do grupo.</p>
+      </div>
+
+      <div class="npc b2">
+        <h3>Bisturi</h3><span class="cost">7 pts</span>
+        <div class="role">Ripperdoc de fundo de loja · vende implante, colhe órgão</div>
+        <div class="stats"><span>F1</span><span class="hi">H3</span><span>R1</span><span>A0</span><span>PdF1</span><span>PV 5</span><span>PA 15</span><span>FA 5</span><span>FD 4</span></div>
+        <p><span class="lbl">Especial</span> <b>Anestésico (1 PA)</b> — ao acertar, o alvo testa Resistência ou perde a ação seguinte.</p>
+        <p><span class="lbl">Tática</span> Caça feridos. Negocia a própria vida com informação — e cumpre.</p>
+      </div>
+
+      <div class="npc b2">
+        <h3>Olho de Telhado</h3><span class="cost">7 pts</span>
+        <div class="role">Franco-atiradora · paga por tiro, não por hora</div>
+        <div class="stats"><span>F0</span><span>H2</span><span>R1</span><span>A1</span><span class="hi">PdF3</span><span>PV 5</span><span>PA 10</span><span>FA 6</span><span>FD 4</span></div>
+        <p><span class="lbl">Especial</span> <b>Tiro paciente (2 PA)</b> — gasta um turno mirando; o próximo tiro tem +3 na FA e ignora 2 de proteção.</p>
+        <p><span class="lbl">Tática</span> Nunca está na mesma sala. Só existe enquanto ninguém subir até ela.</p>
+      </div>
+
+      <div class="npc b2">
+        <h3>Sanguessuga</h3><span class="cost">7 pts</span>
+        <div class="role">Vampiro sem clã · cepa degradada, fome constante</div>
+        <div class="stats"><span>F2</span><span>H2</span><span>R2</span><span>A0</span><span>PdF0</span><span>PV 10</span><span>PA 10</span><span>FA 4</span><span>FD 4</span></div>
+        <p><span class="lbl">Especial</span> <b>Regeneração</b> — 2 PV por turno, exceto contra fogo. <b>Dreno</b> ao acertar alvo caído: 3 de dano e recupera o mesmo.</p>
+        <div class="nota">Espelho útil para os PJs vampiros: mostra no que a cepa dá quando ninguém controla a fome. Fogo resolve.</div>
+      </div>
+
+      <div class="npc b2">
+        <h3>Escudeiro</h3><span class="cost">7 pts</span>
+        <div class="role">Segurança de elite · escudo balístico e nenhuma pressa</div>
+        <div class="stats"><span>F1</span><span>H1</span><span>R2</span><span class="hi">A3</span><span>PdF1</span><span>PV 10</span><span>PA 5</span><span>FA 3</span><span>FD 6</span></div>
+        <p><span class="lbl">Especial</span> <b>Bloqueio (1 PA)</b> — protege um aliado adjacente: o ataque atinge o Escudeiro no lugar dele.</p>
+        <p><span class="lbl">Tática</span> Avança devagar para empurrar o grupo até a área de tiro dos colegas.</p>
+      </div>
+    </div>
+
+    <!-- ============ COLUNA 3 — NÍVEL 3 ============ -->
+    <div class="col">
+      <div class="tier t3">
+        <h2>Nível 3 — elite · 11 a 12 pts</h2>
+        <p>Acima do orçamento dos PJs. Um equilibra o grupo inteiro; dois exigem plano, terreno ou fuga. Sempre anuncie que vem coisa grande.</p>
+      </div>
+
+      <div class="npc b3">
+        <h3>Vespa</h3><span class="cost">12 pts</span>
+        <div class="role">Assassina de contrato · camuflagem óptica e lâminas de antebraço</div>
+        <div class="stats"><span>F2</span><span class="hi">H4</span><span>R2</span><span>A1</span><span>PdF1</span><span>PV 10</span><span>PA 20</span><span>FA 7</span><span>FD 7</span></div>
+        <p><span class="lbl">Especiais</span> <b>Camuflagem (3 PA)</b> — invisível por 3 turnos; os alvos defendem sem somar Habilidade. <b>Ataque múltiplo</b> — até 4 golpes, −1 cumulativo.</p>
+        <div class="nota">Fumaça, chuva ou sensor térmico anulam a camuflagem. Com PV baixos, é frágil como qualquer humano.</div>
+      </div>
+
+      <div class="npc b3">
+        <h3>Sargento Kessler</h3><span class="cost">11 pts</span>
+        <div class="role">Comandante corporativo · blindagem pesada e rifle</div>
+        <div class="stats"><span>F1</span><span>H2</span><span class="hi">R3</span><span class="hi">A3</span><span>PdF2</span><span>PV 15</span><span>PA 10</span><span>FA 5</span><span>FD 7</span></div>
+        <p><span class="lbl">Especiais</span> <b>Supressão (2 PA)</b> — prende uma área; sair da cobertura exige teste de Habilidade ou sofre o ataque. <b>Comando</b> — capangas de nível 1 e 2 ganham +1 na FA enquanto ele estiver de pé.</p>
+        <div class="nota">Derrubá-lo desmonta o esquadrão. Ataques que ignoram proteção valem mais que tiro direto.</div>
+      </div>
+
+      <div class="npc b3">
+        <h3>Padre Aguirre</h3><span class="cost">12 pts</span>
+        <div class="role">Caçador de vampiros · lança-chamas e um arquivo com fotos do grupo</div>
+        <div class="stats"><span>F2</span><span class="hi">H3</span><span>R3</span><span>A2</span><span>PdF2</span><span>PV 15</span><span>PA 15</span><span>FA 6</span><span>FD 8</span></div>
+        <p><span class="lbl">Especiais</span> <b>Purificação (2 PA)</b> — jato de fogo em área, FA 8, e impede regeneração por 3 turnos. <b>Estudioso</b> — conhece as fraquezas de qualquer cepa que já tenha visto.</p>
+        <div class="nota">Feito para ameaçar especificamente os dois vampiros do grupo. Contra os outros PJs é só um homem armado — e ele sabe disso, e negocia.</div>
+      </div>
+
+      <div class="npc b3">
+        <h3>Unidade K-9</h3><span class="cost">12 pts</span>
+        <div class="role">Andróide militar de descarte · sem rosto, sem dúvida</div>
+        <div class="stats"><span class="hi">F3</span><span>H3</span><span>R3</span><span>A2</span><span>PdF1</span><span>PV 15</span><span>PA 15</span><span>FA 7</span><span>FD 8</span></div>
+        <p><span class="lbl">Especiais</span> <b>Chassi</b> — imune a dor, sedativo, veneno e intimidação. <b>Alvo travado (1 PA)</b> — escolhe um alvo; +2 na FA contra ele até que caia.</p>
+        <div class="nota">Vulnerável a dano elétrico e a netrunning (+2 contra ela) — é a luta em que a hacker do grupo brilha.</div>
+      </div>
+    </div>
+
+    <!-- ============ COLUNA 4 — NÍVEL 4 ============ -->
+    <div class="col">
+      <div class="tier t4">
+        <h2>Nível 4 — chefes · 16 a 18 pts</h2>
+        <p>Fim de arco. Cada um tem uma condição de derrota alternativa: não devem ser vencidos só na porrada. Sempre com escolta.</p>
+      </div>
+
+      <div class="npc b4">
+        <h3>Kurogane</h3><span class="cost">16 pts</span>
+        <div class="role">O último solo · 80% de metal, 100% de rancor</div>
+        <div class="stats"><span class="hi">F4</span><span class="hi">H4</span><span>R3</span><span>A3</span><span>PdF2</span><span>PV 15</span><span>PA 20</span><span>FA 9</span><span>FD 8</span></div>
+        <p><span class="lbl">Especiais</span> <b>Reflexos</b> — age duas vezes por rodada. <b>Corte ascendente (4 PA)</b> — +3 na FA; derrubando o alvo, atinge outro adjacente. <b>Código</b> — nunca ataca caído ou desarmado.</p>
+        <div class="nota">Derrota alternativa: o código é explorável. Duelo formal aceito ou prova de que o contratante o traiu tiram Kurogane da luta sem um ponto de dano.</div>
+      </div>
+
+      <div class="npc b4">
+        <h3>Diretora Vale</h3><span class="cost">17 pts</span>
+        <div class="role">Executiva · exoesqueleto de diretoria e um andar de recursos</div>
+        <div class="stats"><span>F3</span><span>H3</span><span class="hi">R4</span><span class="hi">A4</span><span>PdF3</span><span>PV 20</span><span>PA 15</span><span>FA 7</span><span>FD 9</span></div>
+        <p><span class="lbl">Especiais</span> <b>Escudo cinético (3 PA)</b> — anula um ataque, duas vezes por combate. <b>Ativos (2 PA)</b> — 1d6 Seguranças chegam em dois turnos. <b>Segunda fase</b> — na metade dos PV, +1 em F e H mas −2 na FD.</p>
+        <div class="nota">Derrota alternativa: vazar os arquivos dela para a diretoria a destrói. Com a prova em mãos, ela se rende para negociar.</div>
+      </div>
+
+      <div class="npc b4">
+        <h3>ORÁCULO</h3><span class="cost">18 pts</span>
+        <div class="role">IA · não tem corpo, tem a cidade</div>
+        <div class="stats"><span>F0</span><span class="hi">H5</span><span class="hi">R5</span><span>A2</span><span>PdF3</span><span>PV 25</span><span>PA 25</span><span>FA 8</span><span>FD 10</span></div>
+        <p><span class="lbl">Especiais</span> <b>Domínio predial (2 PA)</b> — um perigo ambiental por turno, FA 8 em área. <b>Sequestro (4 PA)</b> — controla por um turno um PJ com ciberware. <b>Enxame</b> — dois Drones por turno, sem fim.</p>
+        <div class="nota">Só perde PV para netrunning ou dano ao hardware. Cada nó do servidor destruído tira 5 PV e uma habilidade. Também aceita ser convencida.</div>
+      </div>
+
+      <div class="npc b4">
+        <h3>Barão Sangrento</h3><span class="cost">17 pts</span>
+        <div class="role">Vampiro ancião · dono da cepa que corre nas veias dos PJs</div>
+        <div class="stats"><span class="hi">F4</span><span class="hi">H4</span><span>R4</span><span>A1</span><span>PdF0</span><span>PV 20</span><span>PA 20</span><span>FA 9</span><span>FD 9</span></div>
+        <p><span class="lbl">Especiais</span> <b>Regeneração superior</b> — 5 PV por turno, exceto fogo. <b>Chamado do sangue (3 PA)</b> — um PJ vampiro testa Resistência ou perde a ação obedecendo. <b>Velocidade</b> — age duas vezes por rodada.</p>
+        <div class="nota">Derrota alternativa: sem fogo, ele não morre — regenera mais rápido do que qualquer grupo de 9 pontos causa dano. Queimá-lo é a única vitória física; a outra é convencê-lo de que os PJs valem mais vivos.</div>
+      </div>
+
+      <div class="npc b4">
+        <h3>O Coletor</h3><span class="cost">16 pts</span>
+        <div class="role">Caçador de implantes · fica com a peça, devolve o resto</div>
+        <div class="stats"><span>F2</span><span class="hi">H5</span><span>R3</span><span>A3</span><span>PdF3</span><span>PV 15</span><span>PA 25</span><span>FA 8</span><span>FD 9</span></div>
+        <p><span class="lbl">Especiais</span> <b>Extração (3 PA)</b> — contra alvo caído, arranca um implante: a habilidade cibernética some até cirurgia. <b>Contramedidas</b> — imune a netrunning e a travamento de ciberware. <b>Rede de drones</b> — dois Zangões sempre em cena.</p>
+        <div class="nota">Ameaça direta ao meio andróide e a quem tiver ciberware. Derrota alternativa: ele coleciona, não mata — uma peça rara oferecida em troca compra a retirada dele.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

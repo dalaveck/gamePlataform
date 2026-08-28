@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3D&amp;T Cyberpunk — Habilidades, vantagens e desvantagens</title>
+<style>
+  :root{
+    --ink:#101418; --hair:#c9ced6; --hair-soft:#e3e7ec; --mute:#6e7884;
+    --cyan:#0090a8; --magenta:#c4007a; --amber:#8a6a00; --red:#b3261e; --green:#0a7a4a;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; padding:16px 12px 40px;  background:#eef1f4;
+    font-family:"Helvetica Neue",Arial,sans-serif; color:var(--ink); line-height:1.32;
+  }
+  .sheet{width:1122px; max-width:100%; margin:0 auto; background:#fff; border:1px solid var(--hair); padding:12px 14px 12px}
+
+  .top{display:flex; gap:16px; align-items:baseline; border-bottom:2px solid var(--ink); padding-bottom:4px; margin-bottom:6px}
+  .top h1{font-size:15px; margin:0; letter-spacing:-.4px}
+  .top .sub{color:var(--magenta); font-weight:700; font-size:10px; letter-spacing:1px; margin-top:2px}
+  .top .intro{flex:1; font-size:8px; color:var(--mute); line-height:1.4; padding-top:2px}
+  .top .intro b{color:var(--ink)}
+
+  .cols{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; align-items:start}
+  .col{display:flex; flex-direction:column; gap:5px}
+
+  .group{
+    break-inside:avoid; -webkit-column-break-inside:avoid;
+    border:1px solid var(--hair); border-radius:2px; padding:4px 6px 5px; margin:0;
+  }
+  .group > h2{
+    margin:0 0 1px; font-size:8.2px; letter-spacing:.9px; text-transform:uppercase;
+    font-family:ui-monospace,"SF Mono",Menlo,monospace;
+  }
+  .group > .desc{font-size:6.5px; color:var(--mute); margin:0 0 3px; line-height:1.25}
+  .g-geral{border-top:2.5px solid var(--ink)} .g-geral h2{color:var(--ink)}
+  .g-vamp{border-top:2.5px solid var(--red)} .g-vamp h2{color:var(--red)}
+  .g-hack{border-top:2.5px solid var(--cyan)} .g-hack h2{color:var(--cyan)}
+  .g-atle{border-top:2.5px solid var(--green)} .g-atle h2{color:var(--green)}
+  .g-andr{border-top:2.5px solid var(--amber)} .g-andr h2{color:var(--amber)}
+  .g-vant{border-top:2.5px solid var(--magenta)} .g-vant h2{color:var(--magenta)}
+  .g-desv{border-top:2.5px solid var(--red)} .g-desv h2{color:var(--red)}
+
+  .hab{border-bottom:1px solid var(--hair-soft); padding:1.6px 0}
+  .hab:last-child{border-bottom:none; padding-bottom:0}
+  .hab h3{margin:0; font-size:7.6px; display:inline}
+  .price{
+    font-family:ui-monospace,Menlo,monospace; font-size:6.6px; letter-spacing:.4px; text-transform:uppercase;
+    color:#fff; background:var(--ink); padding:1px 4px; border-radius:2px; margin-left:3px; white-space:nowrap;
+  }
+  .cost1{background:#4a5560} .cost2{background:#28323d} .cost3{background:var(--magenta)}
+  .hab p{margin:1px 0 0; font-size:6.5px; line-height:1.22; color:#25303b}
+  .hab p b{color:var(--ink)}
+
+  .aviso{
+    font-size:6.7px; border-left:2px solid var(--cyan); background:#f7fbfc;
+    padding:3px 6px; margin-top:4px; color:var(--mute); line-height:1.3;
+  }
+  .aviso b{color:var(--cyan)}
+
+  @media (max-width:900px){ .cols{grid-template-columns:1fr} .sheet{width:auto} }
+  @page{size:A4 landscape; margin:5mm}
+  @media print{
+    body{background:#fff; padding:0; margin:0}
+    .sheet{border:none; width:auto; padding:0}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="top">
+    <div>
+      <h1>Habilidades, vantagens e desvantagens</h1>
+      <div class="sub">// CYBERPUNK PROTOCOL</div>
+    </div>
+    <div class="intro">
+      3D&amp;T · sem magia · personagens de <b>9 pontos</b>. Habilidades e vantagens custam pontos; desvantagens devolvem, at&eacute; o teto de <b>3 pontos</b>.
+      Custos de ativa&ccedil;&atilde;o s&atilde;o em Pontos de A&ccedil;&atilde;o (<b>PA = Habilidade &times; 5</b>). O normal &eacute; fechar com duas ou tr&ecirc;s habilidades e o resto em caracter&iacute;sticas.
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+  <div class="group g-geral">
+    <h2>Gerais — qualquer personagem</h2>
+    <p class="desc">Aberto a todos, independente do conceito.</p>
+
+    <div class="hab">
+      <h3>Ataque especial <span class="price cost1">1 pt por nível</span></h3>
+      <p>Um golpe assinatura. Ao usá-lo, some +2 na Força de Ataque por nível comprado. Custa 2 PA por uso e você precisa descrever o golpe — sempre o mesmo.</p>
+    </div>
+    <div class="hab">
+      <h3>Reflexos rápidos <span class="price cost1">1 pt</span></h3>
+      <p>+2 na iniciativa e você nunca é pego indefeso por não ter agido ainda. Contra emboscadas, tem direito a um teste de Habilidade para reagir mesmo assim.</p>
+    </div>
+    <div class="hab">
+      <h3>Ataque múltiplo <span class="price cost2">2 pts</span></h3>
+      <p>Divide sua ação em golpes contra alvos diferentes, até o valor da sua Habilidade. O primeiro sai limpo, os seguintes com −1 cumulativo.</p>
+    </div>
+    <div class="hab">
+      <h3>Contatos <span class="price cost1">1 pt</span></h3>
+      <p>Você conhece gente. Uma vez por sessão, declare que conhece alguém útil naquela situação — o mestre define o preço do favor, mas a pessoa existe e atende.</p>
+    </div>
+    <div class="hab">
+      <h3>Resistência a dano <span class="price cost2">2 pts</span></h3>
+      <p>Escolha um tipo de dano (fogo, elétrico, perfuração, químico). Contra ele, você soma +3 na Força de Defesa.</p>
+    </div>
+  </div>
+  <div class="group g-atle">
+    <h2>Atleta — corpo treinado, sem implante nenhum</h2>
+    <p class="desc">O único que não depende de bateria nem de sangue. Sua vantagem é fazer tudo funcionar quando o resto do grupo está travado ou faminto.</p>
+
+    <div class="hab">
+      <h3>Parkour urbano <span class="price cost1">1 pt</span></h3>
+      <p>Move-se pelo cenário sem testes: telhados, andaimes, escadas de incêndio, vãos entre prédios. Nunca sofre dano de queda abaixo de dois andares.</p>
+    </div>
+    <div class="hab">
+      <h3>Esquiva aprimorada <span class="price cost2">2 pts</span></h3>
+      <p>Ao esquivar, some +2 no teste de Habilidade. E, mesmo falhando, você ainda soma Habilidade na Força de Defesa em vez de comer o dano inteiro.</p>
+    </div>
+    <div class="hab">
+      <h3>Fôlego infinito <span class="price cost1">1 pt</span></h3>
+      <p>Ignora penalidades por exaustão, corrida prolongada, ar rarefeito ou gás em baixa concentração. Em perseguições longas, você vence por padrão contra quem não tiver isso.</p>
+    </div>
+    <div class="hab">
+      <h3>Golpe preciso <span class="price cost2">2 pts</span></h3>
+      <p>2 PA. Um ataque que ignora até 3 pontos de proteção do alvo — junta, visor, articulação de exoesqueleto. Exige que você tenha observado o inimigo por ao menos um turno.</p>
+    </div>
+    <div class="hab">
+      <h3>Segundo fôlego <span class="price cost2">2 pts</span></h3>
+      <p>Uma vez por combate, ao chegar abaixo de metade dos PV, recupere 5 PV e limpe qualquer penalidade temporária. Puro treino e teimosia.</p>
+    </div>
+  </div>
+    </div>
+    <div class="col">
+  <div class="group g-vamp">
+    <h2>Vampiro — cepa hemofágica</h2>
+    <p class="desc">Sem magia: é um retrovírus de engenharia que reescreve o metabolismo. Regenera tecido rápido demais, e cobra a conta em sangue alheio.</p>
+
+    <div class="hab">
+      <h3>Regeneração <span class="price cost2">2 pts</span></h3>
+      <p>Recupera 2 PV no início de cada um dos seus turnos, desde que esteja acima de 0 PV. Não funciona contra dano por fogo, que cicatriza como em qualquer humano.</p>
+    </div>
+    <div class="hab">
+      <h3>Dreno <span class="price cost2">2 pts</span></h3>
+      <p>Se acertar um ataque corpo a corpo contra um alvo vivo, pode gastar sua ação seguinte para se alimentar: causa 3 de dano direto e recupera a mesma quantidade em PV. O alvo precisa estar imobilizado, caído ou indefeso.</p>
+    </div>
+    <div class="hab">
+      <h3>Sentidos noturnos <span class="price cost1">1 pt</span></h3>
+      <p>Enxerga no escuro total e sente sangue fresco a até 30 metros, através de paredes finas. Nenhuma penalidade por escuridão.</p>
+    </div>
+    <div class="hab">
+      <h3>Presença hipnótica <span class="price cost2">2 pts</span></h3>
+      <p>2 PA. Teste de Manipulação contra a FD de um alvo que possa ver seus olhos. Se passar, ele perde a ação do turno, hesitando. Não funciona duas vezes seguidas na mesma pessoa.</p>
+    </div>
+    <div class="hab">
+      <h3>Velocidade predatória <span class="price cost3">3 pts</span></h3>
+      <p>Uma vez por combate, aja duas vezes na mesma rodada. Custa 4 PA e adianta a fome: no fim da cena, você precisa se alimentar ou sofre −1 em todas as características até conseguir.</p>
+    </div>
+    <div class="aviso">
+      <b>Desvantagem obrigatória (+1 ponto):</b> Fome. Se passar uma sessão inteira sem se alimentar, perde 1 PV por cena e −1 em Habilidade. Sol direto causa 2 de dano por turno, ignorando Armadura. Sugiro que os dois vampiros escolham fraquezas <i>diferentes</i> além dessa — dá contraste entre eles.
+    </div>
+  </div>
+  <div class="group g-andr">
+    <h2>Meio andróide — chassi sob a pele</h2>
+    <p class="desc">Metade do corpo é fabricado. Ganha coisas que carne não faz — e herda os problemas de qualquer máquina.</p>
+
+    <div class="hab">
+      <h3>Chassi blindado <span class="price cost2">2 pts</span></h3>
+      <p>+2 na Força de Defesa, sempre ativo, sem custo. Não some com armadura vestida: vale a maior das duas.</p>
+    </div>
+    <div class="hab">
+      <h3>Membro-ferramenta <span class="price cost1">1 pt</span></h3>
+      <p>Um braço se reconfigura: chave, maçarico, gancho, arma branca. Conta como equipamento sempre disponível (+1 FA) e resolve sozinho tarefas manuais que exigiriam ferramenta.</p>
+    </div>
+    <div class="hab">
+      <h3>Coprocessador tático <span class="price cost2">2 pts</span></h3>
+      <p>1 PA. Refaz um teste de Habilidade que acabou de falhar. Utilizável uma vez por turno.</p>
+    </div>
+    <div class="hab">
+      <h3>Servo-força <span class="price cost2">2 pts</span></h3>
+      <p>Sua Força conta como 2 pontos acima para carregar, arrombar, esmagar e segurar. Em dano, some +1 na FA de ataques corpo a corpo.</p>
+    </div>
+    <div class="hab">
+      <h3>Interface direta <span class="price cost1">1 pt</span></h3>
+      <p>Conecta-se fisicamente a qualquer sistema por um cabo no pulso. Concede +2 em testes de Máquinas feitos com contato direto — e faz de você a melhor dupla possível para a hacker.</p>
+    </div>
+    <div class="aviso">
+      <b>Desvantagem obrigatória (+1 ponto):</b> Hardware. Dano elétrico e ataques de netrunning contra você recebem +2. Além disso, você é alvo válido para tudo que afeta ciberware — incluindo a habilidade "Travar ciberware" da sua própria colega de grupo, se ela errar o alvo.
+    </div>
+  </div>
+    </div>
+    <div class="col">
+  <div class="group g-hack">
+    <h2>Hacker — netrunner</h2>
+    <p class="desc">Metade do trabalho é feito antes de a porta abrir. Quase tudo aqui depende da perícia Máquinas.</p>
+
+    <div class="hab">
+      <h3>Intrusão remota <span class="price cost2">2 pts</span></h3>
+      <p>2 PA. Assume o controle de um sistema eletrônico à vista ou na mesma rede: portas, câmeras, elevadores, alarmes. Teste de Máquinas; a dificuldade sobe conforme a segurança do alvo.</p>
+    </div>
+    <div class="hab">
+      <h3>Travar ciberware <span class="price cost2">2 pts</span></h3>
+      <p>2 PA. Teste de Máquinas contra a FD de um alvo com implantes. Se passar, o ciberware dele congela por um turno: −2 em Habilidade e nada de habilidades cibernéticas. Inútil contra quem é de carne pura.</p>
+    </div>
+    <div class="hab">
+      <h3>Sequestro de drone <span class="price cost2">2 pts</span></h3>
+      <p>3 PA. Rouba um drone inimigo por três turnos e o usa como se fosse seu. Depois disso ele queima e cai.</p>
+    </div>
+    <div class="hab">
+      <h3>Visão de dados <span class="price cost1">1 pt</span></h3>
+      <p>Enxerga a camada eletrônica do ambiente: câmeras, sensores, sinais, quem está com implantes e quem não está. Você sempre sabe onde estão os olhos da sala.</p>
+    </div>
+    <div class="hab">
+      <h3>Porta dos fundos <span class="price cost3">3 pts</span></h3>
+      <p>Uma vez por sessão, declare que já deixou um acesso preparado num sistema que o grupo encontrar — e ele estava lá desde antes. Você escolhe o efeito: abrir uma rota, apagar registros, derrubar o alarme por uma cena.</p>
+    </div>
+  </div>
+  <div class="group g-vant">
+    <h2>Vantagens — custam pontos</h2>
+    <p class="desc">Diferente das habilidades, não são poderes acionados: são coisas que você <i>é</i> ou <i>tem</i>. Valem em cena social tanto quanto em combate.</p>
+
+    <div class="hab">
+      <h3>Ferro de estimação <span class="price cost1">1 pt</span></h3>
+      <p>Uma arma específica e sua, com história. Some +1 na FA além do bônus normal do equipamento. Se for perdida ou destruída, o bônus só volta quando você a recuperar ou reconstruir — e isso vira cena.</p>
+    </div>
+    <div class="hab">
+      <h3>Território <span class="price cost1">1 pt</span></h3>
+      <p>Um bairro, prédio ou setor onde você manda. Ali você tem +2 em Habilidade, sabe todas as saídas e ninguém entra sem você ficar sabendo. Escolha algo específico — não vale "a cidade".</p>
+    </div>
+    <div class="hab">
+      <h3>Grana velha <span class="price cost2">2 pts</span></h3>
+      <p>Você tem conta gorda e crédito limpo. Começa cada sessão podendo comprar um item ou serviço razoável sem discussão de preço. Não cobre armamento pesado nem suborno de gente graúda.</p>
+    </div>
+    <div class="hab">
+      <h3>Identidade falsa <span class="price cost1">1 pt</span></h3>
+      <p>Um rosto legal, registrado, com histórico de emprego e ficha limpa. Passa por qualquer checagem de rotina. Queima se for investigada a fundo, e aí você precisa de outra.</p>
+    </div>
+    <div class="hab">
+      <h3>Aliado <span class="price cost2">2 pts</span></h3>
+      <p>Um NPC leal de verdade — um ripperdoc, um fixer, um irmão. Tem por volta de 5 pontos e aparece quando você chamar, mas tem vida, medo e agenda própria.</p>
+    </div>
+    <div class="hab">
+      <h3>Sentidos ampliados <span class="price cost1">1 pt</span></h3>
+      <p>Escolha um: audição, olfato, visão térmica ou infravermelha. Some +2 em testes de Investigação ligados a ele e ignore as penalidades relacionadas.</p>
+    </div>
+    <div class="hab">
+      <h3>Reputação <span class="price cost1">1 pt</span></h3>
+      <p>Seu nome corre nas ruas. +2 em Manipulação com quem já ouviu falar de você — o que também significa que testemunhas sabem exatamente quem procurar depois.</p>
+    </div>
+    <div class="hab">
+      <h3>Insuspeito <span class="price cost1">1 pt</span></h3>
+      <p>Nada em você chama atenção: nem cara de runner, nem implante à mostra, nem ficha. Câmeras, revistas e triagens automáticas o tratam como civil comum.</p>
+    </div>
+  </div>
+    </div>
+    <div class="col">
+  <div class="group g-desv">
+    <h2>Desvantagens — devolvem pontos</h2>
+    <p class="desc">Cada uma devolve pontos para gastar em outra coisa. A regra da mesa: <b>máximo de 3 pontos em desvantagens</b>, e só conta se o mestre puder usá-la de verdade contra você. Desvantagem que nunca aparece em jogo é desvantagem que não vale ponto.</p>
+
+    <div class="hab">
+      <h3>Procurado <span class="price cost1">+1 pt</span></h3>
+      <p>Alguém com recursos quer você — corporação, gangue, polícia. Uma vez por sessão o mestre pode fazer surgir alguém no seu encalço, no pior momento possível.</p>
+    </div>
+    <div class="hab">
+      <h3>Dívida <span class="price cost1">+1 pt</span></h3>
+      <p>Você deve dinheiro ou um favor a gente que cobra com violência. O credor aparece periodicamente, e o que ele pede raramente combina com o plano do grupo.</p>
+    </div>
+    <div class="hab">
+      <h3>Código de honra <span class="price cost1">+1 pt</span></h3>
+      <p>Você tem uma linha que não cruza: não mata desarmado, não trai contratante, não deixa criança para trás. Quebrar isso custa 5 PA e uma cena de crise.</p>
+    </div>
+    <div class="hab">
+      <h3>Ponto fraco <span class="price cost1">+1 pt</span></h3>
+      <p>Um tipo específico de dano derruba você. Escolha um: fogo, elétrico, químico, sônico. Contra ele, sua Força de Defesa não soma Resistência.</p>
+    </div>
+    <div class="hab">
+      <h3>Fúria <span class="price cost1">+1 pt</span></h3>
+      <p>Um gatilho definido por você. Ao vê-lo, teste Habilidade: falhando, ataca o responsável e não pode recuar, negociar ou fugir enquanto ele estiver de pé.</p>
+    </div>
+    <div class="hab">
+      <h3>Corpo frágil <span class="price cost2">+2 pts</span></h3>
+      <p>Seus PV são calculados como Resistência × 3 em vez de × 5. Serve para quem quer investir tudo em Habilidade e aceitar que morre rápido.</p>
+    </div>
+    <div class="hab">
+      <h3>Dependência <span class="price cost1">+1 pt</span></h3>
+      <p>Remédio, estimulante, supressor de rejeição, sangue. Sem a dose diária, −1 em todas as características por dia de abstinência, cumulativo até você conseguir.</p>
+    </div>
+    <div class="hab">
+      <h3>Marca registrada <span class="price cost1">+1 pt</span></h3>
+      <p>Algo em você é inconfundível: presas, um braço de crômio, uma cicatriz, olhos errados. Impossível passar despercebido ou negar que estava na cena.</p>
+    </div>
+    <div class="hab">
+      <h3>Protegido <span class="price cost1">+1 pt</span></h3>
+      <p>Alguém depende de você: irmã, filho, mentor doente. Não sabe se defender e é o primeiro alvo de qualquer inimigo que descubra a ligação.</p>
+    </div>
+    <div class="hab">
+      <h3>Sem registro <span class="price cost1">+1 pt</span></h3>
+      <p>Você não existe em base de dados nenhuma. Nada de hospital público, transporte oficial, emprego legal ou qualquer porta que exija identificação.</p>
+    </div>
+  </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
