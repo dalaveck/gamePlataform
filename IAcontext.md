@@ -224,22 +224,26 @@ antes da sessão multiplayer. O que mudou:
   cálculo de saldo conferido preenchendo uma ficha de exemplo.
 - `src/services/` continua vazia — é Firebase/sessão, Fase 2.
 
-## 10. Deploy — gametest.rondobyte.com.br
+## 10. Deploy — Vercel (domínio customizado adiado)
 
-Decidido com o usuário: hospedagem na **Vercel** (conectada ao repositório GitHub), domínio
-`rondobyte.com.br` com DNS gerenciado na **Hostinger**. A Vercel detecta Vite automaticamente, sem
-`vercel.json` necessário. Fluxo (feito pelo usuário no painel de cada serviço — esta sessão não tem
-acesso a nenhum dos dois):
+Decidido com o usuário: hospedagem na **Vercel** (conectada ao repositório GitHub). Domínio
+customizado (`gametest.rondobyte.com.br`, DNS na **Hostinger**) foi cogitado mas **adiado por
+enquanto** — por ora fica só no domínio padrão da Vercel (`*.vercel.app`). Quando quiser retomar o
+domínio customizado, os passos 3-5 abaixo (hoje comentados como adiados) são o caminho.
+
+A Vercel detecta Vite automaticamente, sem `vercel.json` necessário. Fluxo (feito pelo usuário no
+painel da Vercel — esta sessão não tem acesso a ele):
 1. Conectar `dalaveck/gamePlataform` num projeto novo na Vercel.
-2. Produção segue o branch padrão do repo (`main`) — mergear a PR de cada fase para produção
-   atualizar. Outros branches/PRs geram Preview Deployments automáticos.
-3. Settings → Domains → adicionar `gametest.rondobyte.com.br`; a Vercel indica o valor exato do
-   CNAME (tipicamente `cname.vercel-dns.com`).
-4. Criar esse CNAME na Zona DNS da Hostinger (hPanel → Domínios → `rondobyte.com.br`), host
-   `gametest`.
-5. SSL é automático (Let's Encrypt) assim que o DNS propaga.
+2. **Atenção**: o branch padrão deste repo **não é `main`**, é `claude/brave-franklin-2h344d`
+   (nome de sessão anterior, nunca foi renomeado). A Vercel costuma detectar o branch padrão do
+   GitHub sozinha e usá-lo como Produção — conferir em Settings → Git → Production Branch depois de
+   conectar. Cada push nesse branch fica publicado automaticamente; PRs geram Preview Deployments.
+3. *(adiado)* Settings → Domains → adicionar `gametest.rondobyte.com.br`; a Vercel indica o valor
+   exato do CNAME (tipicamente `cname.vercel-dns.com`).
+4. *(adiado)* Criar esse CNAME na Zona DNS da Hostinger (hPanel → Domínios →
+   `rondobyte.com.br`), host `gametest`.
+5. *(adiado)* SSL é automático (Let's Encrypt) assim que o DNS propaga.
 
 ### Próximo passo sugerido
-Seguir `ROADMAP.md`: Fase 2 (sessão/sala com Firebase) é a próxima fase de feature. Deploy
-(seção 10 acima) é independente e pode ser feito a qualquer momento — cada push em `main` já fica
-publicado automaticamente depois do primeiro setup.
+Seguir `ROADMAP.md`: Fase 2 (sessão/sala com Firebase) é a próxima fase de feature. O deploy na
+Vercel (passo 1-2 acima) é independente e pode ser feito a qualquer momento.
