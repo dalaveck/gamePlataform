@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3D&amp;T — Resumo de regras (Cyberpunk)</title>
+<style>
+  :root{
+    --ink:#101418; --hair:#c9ced6; --hair-soft:#e3e7ec; --mute:#6e7884;
+    --cyan:#0090a8; --magenta:#c4007a; --amber:#8a6a00; --green:#0a7a4a;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; padding:22px 16px 48px; background:#eef1f4;
+    font-family:"Helvetica Neue",Arial,sans-serif; color:var(--ink); line-height:1.55;
+  }
+  .sheet{max-width:860px; margin:0 auto; background:#fff; border:1px solid var(--hair); padding:22px 26px 30px}
+
+  .top{border-bottom:2px solid var(--ink); padding-bottom:12px; margin-bottom:6px}
+  .top h1{font-size:26px; margin:0; letter-spacing:-.5px}
+  .top .sub{color:var(--magenta); font-weight:700; font-size:12px; letter-spacing:1px; margin-top:4px}
+  .top .tag{color:var(--mute); font-size:9px; letter-spacing:.6px; margin-top:5px; text-transform:uppercase}
+
+  section{margin-top:20px; border:1px solid var(--hair); border-radius:2px; padding:12px 16px 16px}
+  section > h2{
+    margin:0 0 10px; font-size:11px; letter-spacing:1.4px; text-transform:uppercase;
+    font-family:ui-monospace,"SF Mono",Menlo,monospace;
+  }
+  .c-cyan{border-top:3px solid var(--cyan)} .c-cyan h2{color:var(--cyan)}
+  .c-amber{border-top:3px solid var(--amber)} .c-amber h2{color:var(--amber)}
+  .c-magenta{border-top:3px solid var(--magenta)} .c-magenta h2{color:var(--magenta)}
+  .c-green{border-top:3px solid var(--green)} .c-green h2{color:var(--green)}
+
+  h3{font-size:13px; margin:16px 0 5px; letter-spacing:.2px}
+  h3:first-of-type{margin-top:0}
+  p{margin:0 0 9px; font-size:13.5px}
+  ul{margin:0 0 9px; padding-left:20px; font-size:13.5px}
+  li{margin-bottom:4px}
+  strong{font-weight:700}
+
+  .formula{
+    font-family:ui-monospace,"SF Mono",Menlo,monospace; font-size:13px;
+    background:#f6f8fa; border-left:3px solid var(--amber); padding:9px 12px;
+    margin:8px 0 12px; letter-spacing:.2px;
+  }
+  table{width:100%; border-collapse:collapse; margin:8px 0 12px; font-size:12.5px}
+  th{
+    text-align:left; font-size:8.5px; letter-spacing:.8px; text-transform:uppercase; color:var(--mute);
+    border-bottom:1.5px solid var(--ink); padding:0 6px 5px; font-family:ui-monospace,Menlo,monospace;
+  }
+  td{border-bottom:1px solid var(--hair-soft); padding:6px}
+  td:first-child{font-weight:600; width:26%}
+  .house{
+    font-size:11.5px; color:var(--mute); border-left:3px solid var(--cyan);
+    padding:6px 12px; margin:10px 0 0; background:#f7fbfc;
+  }
+  .house strong{color:var(--cyan)}
+
+  @page{size:A4; margin:14mm}
+  @media print{
+    body{background:#fff; padding:0}
+    .sheet{border:none; max-width:none; padding:0}
+    section{break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="top">
+    <h1>3D&amp;T — Resumo de regras</h1>
+    <div class="sub">// CYBERPUNK PROTOCOL</div>
+    <div class="tag">Base: 3D&amp;T Alpha · sem magia · com as adaptações da nossa mesa</div>
+  </div>
+
+  <section class="c-cyan">
+    <h2>O básico</h2>
+    <p>Todo o sistema roda com <strong>um dado de seis faces (1d6)</strong> e cinco características que vão de 0 a 5. Zero é gente comum, 1 é o topo do que um humano normal alcança, e de 2 para cima já é território de runner veterano ou de quem tem ciberware pesado.</p>
+    <table>
+      <tr><td>Força (F)</td><td>Dano corpo a corpo, capacidade de carga (F × 50 kg).</td></tr>
+      <tr><td>Habilidade (H)</td><td>Acerto, defesa, iniciativa, esquiva e a base de quase todo teste de perícia.</td></tr>
+      <tr><td>Resistência (R)</td><td>Define os Pontos de Vida: <strong>PV = R × 5</strong>. Aguentar dor, veneno, exaustão.</td></tr>
+      <tr><td>Armadura (A)</td><td>Proteção — colete, subderme blindada, escudo, campo de força.</td></tr>
+      <tr><td>Poder de Fogo (PdF)</td><td>Dano à distância. Alcance útil de cerca de PdF × 10 metros.</td></tr>
+    </table>
+    <p>Cada ponto de personagem compra um ponto de característica. Personagem recém-criado não passa de 5 em nada.</p>
+    <div class="house"><strong>Nossa mesa:</strong> não existem Pontos de Magia. O que seria PM vira <strong>Pontos de Ação</strong>, usados para acionar implantes, vantagens e técnicas.</div>
+  </section>
+
+  <section class="c-cyan">
+    <h2>Testes de característica</h2>
+    <p>Quando o resultado de uma ação é incerto, role 1d6 e compare com a característica que o mestre pedir. <strong>Resultado igual ou menor que a característica é sucesso.</strong></p>
+    <div class="formula">1d6 ≤ característica (+ bônus / − penalidade) → sucesso</div>
+    <ul>
+      <li><strong>1 no dado é sempre sucesso; 6 é sempre falha</strong>, não importa o valor da característica.</li>
+      <li>Bônus e penalidades mexem no alvo, não no dado. Com H4 e penalidade de −3, você precisa tirar 1. Com F3 e bônus de +2, passa com 5 ou menos.</li>
+      <li>A escolha da característica é do mestre e segue a lógica da cena: arrombar uma porta é Força, notar um vigia é Habilidade, aguentar gás lacrimogêneo é Resistência.</li>
+    </ul>
+    <h3>Dificuldades típicas</h3>
+    <table>
+      <tr><td>Trivial</td><td>Nem role. O personagem simplesmente faz.</td></tr>
+      <tr><td>Normal</td><td>Teste da característica sem modificador.</td></tr>
+      <tr><td>Difícil</td><td>Penalidade de −1 a −2.</td></tr>
+      <tr><td>Quase impossível</td><td>Penalidade de −3 ou pior. Só passa quem tirar 1.</td></tr>
+    </table>
+  </section>
+
+  <section class="c-cyan">
+    <h2>Perícias</h2>
+    <p>As onze áreas do 3D&amp;T: Animais, Arte, Ciência, Crime, Esporte, Idiomas, Investigação, Manipulação, Máquinas, Medicina e Sobrevivência. Você pode comprar a <strong>área completa</strong> ou apenas <strong>até três perícias soltas</strong> dela, por menos pontos.</p>
+    <p>Testes de perícia são testes de <strong>Habilidade</strong> modificados pelo fato de você ter ou não a perícia:</p>
+    <table>
+      <thead><tr><th>Dificuldade</th><th>Com a perícia</th><th>Sem a perícia</th></tr></thead>
+      <tr><td>Fácil</td><td>Sucesso automático</td><td>H − 1</td></tr>
+      <tr><td>Médio</td><td>H + 1</td><td>H − 3</td></tr>
+      <tr><td>Difícil</td><td>H − 2</td><td>Impossível</td></tr>
+    </table>
+    <p>Comprar uma área completa não deixa você melhor nos testes — deixa você <strong>capaz</strong> onde outros nem podem tentar. É essa a diferença que importa nos testes difíceis.</p>
+  </section>
+
+  <section class="c-amber">
+    <h2>Combate</h2>
+    <h3>Ordem das ações</h3>
+    <p>No começo da luta, cada um faz um teste de Habilidade (1d6 + H). Quem tirar mais alto age primeiro; empates se resolvem pelo maior H. Cada personagem tem, por turno, uma ação e o seu movimento.</p>
+
+    <h3>Ataque e defesa</h3>
+    <div class="formula">FA = Habilidade + Força (ou PdF) + Equipamento + 1d6<br>
+    FD = Habilidade + Resistência + Equipamento + 1d6</div>
+    <p>O atacante rola sua Força de Ataque, o alvo rola sua Força de Defesa. Se a <strong>FA superar a FD, a diferença é o dano</strong> perdido em PV. Se a FD empatar ou superar, o golpe não passa.</p>
+    <p>Exemplo: FA 10 contra FD 6 tira 4 PV. FA 10 contra FD 11 não tira nada.</p>
+    <div class="house"><strong>Nossa mesa:</strong> a defesa usa <strong>Resistência</strong> no lugar da Armadura tradicional do Alpha, e o bônus do equipamento entra direto nas duas contas. Armadura continua valendo como proteção passiva quando o mestre pedir.</div>
+
+    <h3>Esquiva</h3>
+    <p>Em vez de rolar FD, você pode gastar sua ação do turno tentando desviar: teste de Habilidade (1d6 ≤ H). Passou, o ataque erra por completo. Falhou, o dano entra inteiro, sem defesa nenhuma. É aposta alta.</p>
+
+    <h3>Crítico</h3>
+    <p>Tirou <strong>6 no dado do ataque</strong>: dobre a Força (ou o PdF) antes de somar. Tirou <strong>6 no dado da defesa</strong>: dobre a Resistência. O 6 é falha nos testes comuns, mas em combate é o melhor resultado possível.</p>
+
+    <h3>Indefeso e ataque furtivo</h3>
+    <p>Quem está caído, dormindo, amarrado, surpreendido ou sem enxergar o atacante <strong>não soma Habilidade na FD</strong> — defende apenas com o resto. É por isso que uma emboscada bem armada resolve um combate antes de ele começar.</p>
+
+    <h3>Múltiplos ataques</h3>
+    <p>Você pode dividir a ação em vários golpes corpo a corpo, até o número da sua Habilidade. O primeiro sai limpo, o segundo com −1, o terceiro com −2, e assim por diante.</p>
+
+    <h3>Ficando sem PV</h3>
+    <p>A 0 PV o personagem cai fora de combate e passa a depender de socorro. Com poucos PV restantes, o mestre pode aplicar −1 em H para tudo que envolva movimento e luta. Primeiros socorros (perícia de Medicina) estabilizam; recuperação de verdade é tempo de descanso ou uma clínica de rua.</p>
+  </section>
+
+  <section class="c-green">
+    <h2>Equipamento e dinheiro</h2>
+    <ul>
+      <li>Cada arma ou proteção dá um bônus de <strong>+1 a +3</strong> na FA ou na FD, definido pelo mestre conforme o item, e determina o tipo de dano.</li>
+      <li>Equipamento pesado costuma cobrar o preço em <strong>−1 a −3 na iniciativa</strong>.</li>
+      <li>Implantes comprados como Habilidades são permanentes e custam pontos de personagem. Equipamento comprado com dinheiro pode ser perdido, roubado ou confiscado — e é isso que o torna barato.</li>
+      <li>Anote na ficha o que está em conta e o que está em espécie: transferência deixa rastro, papel-moeda não.</li>
+    </ul>
+  </section>
+
+  <section class="c-magenta">
+    <h2>Vantagens, desvantagens e a vantagem única</h2>
+    <ul>
+      <li><strong>Vantagens</strong> custam pontos e dão capacidades concretas: ciberware, contatos, riqueza, sentidos ampliados, ataques especiais.</li>
+      <li><strong>Desvantagens</strong> devolvem pontos, mas cobram em jogo. Só valem os pontos se o mestre puder efetivamente usá-las contra você.</li>
+      <li>A <strong>vantagem única</strong> é uma só por personagem: um poder exclusivo, negociado com o mestre, com custo e limitações próprias. É a assinatura do personagem, não um item de lista.</li>
+    </ul>
+  </section>
+
+  <section class="c-cyan">
+    <h2>Evolução</h2>
+    <p>Ao fim das sessões o mestre concede pontos de experiência, gastos como pontos de personagem: subir uma característica, comprar perícias ou adquirir uma vantagem nova. Aumentos acima de 5 e mudanças na vantagem única precisam de aprovação — e, no nosso cenário, quase sempre de uma cirurgia.</p>
+  </section>
+
+</div>
+</body>
+</html>

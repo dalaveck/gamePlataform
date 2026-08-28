@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3D&amp;T Cyberpunk — NPCs e inimigos</title>
+<style>
+  :root{
+    --ink:#101418; --hair:#c9ced6; --hair-soft:#e3e7ec; --mute:#6e7884;
+    --cyan:#0090a8; --magenta:#c4007a; --amber:#8a6a00; --red:#b3261e;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; padding:22px 16px 48px; background:#eef1f4;
+    font-family:"Helvetica Neue",Arial,sans-serif; color:var(--ink); line-height:1.5;
+  }
+  .sheet{max-width:900px; margin:0 auto; background:#fff; border:1px solid var(--hair); padding:22px 26px 30px}
+
+  .top{border-bottom:2px solid var(--ink); padding-bottom:12px}
+  .top h1{font-size:25px; margin:0; letter-spacing:-.5px}
+  .top .sub{color:var(--magenta); font-weight:700; font-size:12px; letter-spacing:1px; margin-top:4px}
+  .top .tag{color:var(--mute); font-size:9px; letter-spacing:.6px; margin-top:5px; text-transform:uppercase}
+
+  .tierhead{
+    margin:26px 0 10px; padding:8px 12px; border-left:4px solid var(--ink);
+    background:#f6f8fa;
+  }
+  .tierhead h2{
+    margin:0; font-size:12px; letter-spacing:1.4px; text-transform:uppercase;
+    font-family:ui-monospace,"SF Mono",Menlo,monospace;
+  }
+  .tierhead p{margin:4px 0 0; font-size:12px; color:var(--mute)}
+  .t1{border-left-color:var(--cyan)} .t1 h2{color:var(--cyan)}
+  .t2{border-left-color:var(--amber)} .t2 h2{color:var(--amber)}
+  .t3{border-left-color:var(--magenta)} .t3 h2{color:var(--magenta)}
+  .t4{border-left-color:var(--red)} .t4 h2{color:var(--red)}
+
+  .npc{border:1px solid var(--hair); border-radius:2px; padding:12px 14px 14px; margin-bottom:12px}
+  .npc.b1{border-top:3px solid var(--cyan)}
+  .npc.b2{border-top:3px solid var(--amber)}
+  .npc.b3{border-top:3px solid var(--magenta)}
+  .npc.b4{border-top:3px solid var(--red)}
+  .npc h3{margin:0; font-size:15px; display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap}
+  .cost{
+    font-family:ui-monospace,Menlo,monospace; font-size:10px; letter-spacing:.6px;
+    color:#fff; background:var(--ink); padding:2px 8px; border-radius:2px; text-transform:uppercase;
+  }
+  .role{font-size:11.5px; color:var(--mute); font-style:italic; margin:2px 0 8px}
+
+  .stats{
+    display:flex; flex-wrap:wrap; gap:6px; margin:0 0 9px;
+    font-family:ui-monospace,Menlo,monospace; font-size:11.5px;
+  }
+  .stats span{background:#f4f6f8; border:1px solid var(--hair-soft); padding:2px 7px; border-radius:2px}
+  .stats span.hi{background:#fff6d9; border-color:#e6d08a}
+
+  .npc p{margin:0 0 6px; font-size:13px}
+  .npc p b{font-size:11px; letter-spacing:.6px; text-transform:uppercase; font-family:ui-monospace,Menlo,monospace; color:var(--mute)}
+  .npc ul{margin:0 0 6px; padding-left:18px; font-size:13px}
+  .npc li{margin-bottom:3px}
+
+  .nota{
+    font-size:12px; color:var(--mute); border-left:3px solid var(--hair);
+    padding:5px 10px; margin-top:8px; background:#fafbfc;
+  }
+
+  table.ref{width:100%; border-collapse:collapse; margin:10px 0 0; font-size:12.5px}
+  table.ref th{
+    text-align:left; font-size:8.5px; letter-spacing:.8px; text-transform:uppercase; color:var(--mute);
+    border-bottom:1.5px solid var(--ink); padding:0 6px 5px; font-family:ui-monospace,Menlo,monospace;
+  }
+  table.ref td{border-bottom:1px solid var(--hair-soft); padding:6px}
+
+  @page{size:A4; margin:14mm}
+  @media print{
+    body{background:#fff; padding:0}
+    .sheet{border:none; max-width:none; padding:0}
+    .npc{break-inside:avoid}
+    .tierhead{break-after:avoid}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="top">
+    <h1>NPCs &amp; inimigos</h1>
+    <div class="sub">// CYBERPUNK PROTOCOL</div>
+    <div class="tag">3D&amp;T · sem magia · calibrado para personagens de 9 pontos</div>
+  </div>
+
+  <p style="font-size:13px; margin-top:14px">
+    FA e FD estão anotadas já somadas, <b>sem o 1d6</b> — role o dado e some. Lembrando das fórmulas da mesa:
+    <b>FA = Hab + Força (ou PdF) + Equipamento</b> e <b>FD = Res + Hab + Equipamento</b>. PV = Resistência × 5.
+  </p>
+
+  <!-- ============ NÍVEL 1 ============ -->
+  <div class="tierhead t1">
+    <h2>Nível 1 — Capangas comuns · 3 a 4 pontos</h2>
+    <p>Morrem em um ou dois golpes. Servem para encher a cena, gastar munição e mostrar que o combate começou. Use em grupos de três ou mais; sozinhos não ameaçam ninguém.</p>
+  </div>
+
+  <div class="npc b1">
+    <h3>Rato de Beco <span class="cost">3 pontos</span></h3>
+    <div class="role">Gangue de rua · faca e coragem emprestada</div>
+    <div class="stats"><span>F1</span><span>H1</span><span>R1</span><span>A0</span><span>PdF0</span><span>PV 5</span><span>PA 0</span><span>FA 3</span><span>FD 2</span></div>
+    <p><b>Equipamento</b> Faca serrilhada (+1 FA, corte)</p>
+    <p><b>Perícias</b> Crime (furtividade, furto)</p>
+    <p><b>Tática</b> Ataca em bando, foge assim que dois companheiros caem. Prefere alvos isolados e desarmados.</p>
+  </div>
+
+  <div class="npc b1">
+    <h3>Segurança de Turno <span class="cost">4 pontos</span></h3>
+    <div class="role">Guarda contratado · uniforme barato, pistola pior ainda</div>
+    <div class="stats"><span>F0</span><span>H1</span><span>R1</span><span>A1</span><span>PdF1</span><span>PV 5</span><span>PA 0</span><span>FA 3</span><span>FD 3</span></div>
+    <p><b>Equipamento</b> Pistola de 9 mm (+1 FA, perfuração), colete leve (+1 FD)</p>
+    <p><b>Perícias</b> Investigação (percepção)</p>
+    <p><b>Tática</b> Chama reforço no rádio antes de atirar. Se o grupo o intimidar com um teste de Manipulação, ele entrega o crachá e some.</p>
+  </div>
+
+  <div class="npc b1">
+    <h3>Drone Zangão <span class="cost">3 pontos</span></h3>
+    <div class="role">Vigilância automatizada · pequeno, rápido, irritante</div>
+    <div class="stats"><span>F0</span><span>H2</span><span>R1</span><span>A0</span><span>PdF0</span><span>PV 5</span><span>PA 0</span><span>FA —</span><span>FD 3</span></div>
+    <p><b>Habilidade</b> <b style="color:var(--ink)">Voo e transmissão</b> — não ataca. A cada turno em que sobreviver com linha de visão até o grupo, marca a posição deles: o próximo reforço chega um turno mais cedo.</p>
+    <p><b>Tática</b> Mantém distância e fica no alto. Derrubá-lo exige tiro (PdF) ou um teste difícil de Esporte para alcançá-lo.</p>
+  </div>
+
+  <!-- ============ NÍVEL 2 ============ -->
+  <div class="tierhead t2">
+    <h2>Nível 2 — Capangas médios · 6 a 7 pontos</h2>
+    <p>Perto de um personagem novato, com uma habilidade especial cada. Sozinho é um problema administrável; em dupla, obriga o grupo a pensar.</p>
+  </div>
+
+  <div class="npc b2">
+    <h3>Bruto de Crômio <span class="cost">7 pontos</span></h3>
+    <div class="role">Cobrador de dívidas · braços industriais enxertados no torso</div>
+    <div class="stats"><span class="hi">F3</span><span>H1</span><span>R2</span><span>A1</span><span>PdF0</span><span>PV 10</span><span>PA 5</span><span>FA 5</span><span>FD 4</span></div>
+    <p><b>Equipamento</b> Punhos hidráulicos (+1 FA, impacto)</p>
+    <p><b>Habilidade especial</b> <b style="color:var(--ink)">Arremesso (1 PA)</b> — em vez de atacar, agarra um alvo de tamanho humano e o joga: teste de Força contra Força. Se vencer, o alvo sofre 3 de dano direto e cai indefeso (perde H na FD até se levantar).</p>
+    <p><b>Perícias</b> Esporte (levantamento de peso), Manipulação (intimidação)</p>
+    <p><b>Tática</b> Vai atrás do personagem mais frágil. Ignora tiros pequenos por puro tédio.</p>
+  </div>
+
+  <div class="npc b2">
+    <h3>Netrunner de Gangue <span class="cost">6 pontos</span></h3>
+    <div class="role">Adolescente com um deck remendado e nenhum senso de autopreservação</div>
+    <div class="stats"><span>F0</span><span class="hi">H3</span><span>R1</span><span>A0</span><span>PdF1</span><span>PV 5</span><span>PA 5</span><span>FA 4</span><span>FD 4</span></div>
+    <p><b>Equipamento</b> Pistola compacta (+1 FA), deck de intrusão</p>
+    <p><b>Habilidade especial</b> <b style="color:var(--ink)">Interferência (2 PA)</b> — teste de Máquinas contra a FD do alvo. Se passar, o ciberware do alvo trava por um turno: ele perde 2 em Habilidade para tudo. Não funciona em quem não tem implantes.</p>
+    <p><b>Perícias</b> Máquinas (netrunning, eletrônica), Crime</p>
+    <p><b>Tática</b> Fica atrás dos colegas, trava o mais bem equipado do grupo e foge se ficar sem escudo humano.</p>
+  </div>
+
+  <div class="npc b2">
+    <h3>Bisturi <span class="cost">7 pontos</span></h3>
+    <div class="role">Ripperdoc de fundo de loja · vende implantes de dia, colhe órgãos de noite</div>
+    <div class="stats"><span>F1</span><span class="hi">H3</span><span>R1</span><span>A0</span><span>PdF1</span><span>PV 5</span><span>PA 5</span><span>FA 5</span><span>FD 4</span></div>
+    <p><b>Equipamento</b> Lâmina cirúrgica monofilamento (+1 FA, corte, ignora 1 de proteção)</p>
+    <p><b>Habilidade especial</b> <b style="color:var(--ink)">Anestésico (1 PA)</b> — se acertar um ataque, injeta sedativo. O alvo faz teste de Resistência; se falhar, perde 1 ação no turno seguinte.</p>
+    <p><b>Perícias</b> Medicina (cirurgia, farmácia), Ciência</p>
+    <p><b>Tática</b> Prefere alvos já feridos. Se estiver perdendo, oferece informação ou tratamento em troca da vida — e costuma cumprir, porque cliente morto não paga.</p>
+  </div>
+
+  <!-- ============ NÍVEL 3 ============ -->
+  <div class="tierhead t3">
+    <h2>Nível 3 — Capangas de elite · 11 a 12 pontos</h2>
+    <p>Acima do orçamento dos personagens. Um deles equilibra um grupo inteiro; dois exigem preparação, terreno favorável ou fuga. Sempre dê ao grupo alguma pista de que vem coisa grande.</p>
+  </div>
+
+  <div class="npc b3">
+    <h3>Vespa <span class="cost">12 pontos</span></h3>
+    <div class="role">Assassina de contrato · camuflagem óptica e duas lâminas de antebraço</div>
+    <div class="stats"><span>F2</span><span class="hi">H4</span><span>R2</span><span>A1</span><span>PdF1</span><span>PV 10</span><span>PA 20</span><span>FA 7</span><span>FD 7</span></div>
+    <p><b>Equipamento</b> Lâminas de antebraço (+1 FA, corte), traje reativo (+1 FD)</p>
+    <ul>
+      <li><b style="color:var(--ink)">Camuflagem óptica (3 PA)</b> — fica invisível por três turnos. Enquanto estiver oculta, seus alvos defendem sem somar Habilidade na FD.</li>
+      <li><b style="color:var(--ink)">Ataque múltiplo</b> — pode dividir a ação em até 4 golpes (−1 cumulativo a partir do segundo).</li>
+    </ul>
+    <p><b>Perícias</b> Crime (furtividade, disfarce), Esporte (acrobacia), Investigação</p>
+    <p><b>Tática</b> Abre com emboscada contra o alvo do contrato e ignora o resto do grupo. Se levar metade dos PV, ativa a camuflagem e recua — para voltar na sessão seguinte.</p>
+    <div class="nota">Como derrotar: fumaça, chuva, sensores térmicos ou qualquer coisa que denuncie posição anulam a camuflagem. Com PV baixos, ela é frágil como qualquer humano.</div>
+  </div>
+
+  <div class="npc b3">
+    <h3>Sargento Kessler <span class="cost">11 pontos</span></h3>
+    <div class="role">Comandante de esquadrão corporativo · blindagem pesada e rifle de assalto</div>
+    <div class="stats"><span>F1</span><span>H2</span><span class="hi">R3</span><span class="hi">A3</span><span>PdF2</span><span>PV 15</span><span>PA 10</span><span>FA 5</span><span>FD 7</span></div>
+    <p><b>Equipamento</b> Rifle de assalto (+1 FA, perfuração), armadura de combate (+2 FD)</p>
+    <ul>
+      <li><b style="color:var(--ink)">Fogo de supressão (2 PA)</b> — em vez de causar dano, prende uma área. Quem quiser se mover para fora da cobertura precisa passar num teste de Habilidade ou sofre o ataque completo.</li>
+      <li><b style="color:var(--ink)">Comando</b> — todo capanga de nível 1 ou 2 na cena ganha +1 na FA enquanto ele estiver de pé.</li>
+    </ul>
+    <p><b>Perícias</b> Máquinas (armas, condução), Investigação (percepção), Manipulação (liderança)</p>
+    <p><b>Tática</b> Nunca luta sozinho: chega com quatro Seguranças de Turno. Segura posição, suprime e deixa os subordinados avançarem.</p>
+    <div class="nota">Como derrotar: derrubá-lo primeiro desmonta o esquadrão inteiro. Ataques que ignoram proteção — monofilamento, veneno, netrunning — valem muito mais que tiro direto.</div>
+  </div>
+
+  <!-- ============ NÍVEL 4 ============ -->
+  <div class="tierhead t4">
+    <h2>Nível 4 — Chefes · 16 a 18 pontos</h2>
+    <p>Fim de arco. Não devem ser vencidos só na porrada: dê a cada um uma condição de derrota alternativa — desligar um servidor, virar um aliado, expor um segredo. Sempre com capangas por perto.</p>
+  </div>
+
+  <div class="npc b4">
+    <h3>Kurogane, o Último Solo <span class="cost">16 pontos</span></h3>
+    <div class="role">Mercenário lendário · 80% de metal, 100% de rancor</div>
+    <div class="stats"><span class="hi">F4</span><span class="hi">H4</span><span>R3</span><span>A3</span><span>PdF2</span><span>PV 15</span><span>PA 20</span><span>FA 9</span><span>FD 8</span></div>
+    <p><b>Equipamento</b> Katana monomolecular (+1 FA, corte, ignora 2 de proteção), subderme blindada (+1 FD)</p>
+    <ul>
+      <li><b style="color:var(--ink)">Reflexos acelerados</b> — age duas vezes por rodada, no início e no fim da ordem de iniciativa.</li>
+      <li><b style="color:var(--ink)">Corte ascendente (4 PA)</b> — um golpe com +3 na FA. Se derrubar o alvo a 0 PV, o ataque continua e atinge outro inimigo adjacente.</li>
+      <li><b style="color:var(--ink)">Código</b> — nunca ataca quem está caído ou desarmado. Isso é uma fraqueza mecânica: quem se rende sai vivo da cena.</li>
+    </ul>
+    <p><b>Perícias</b> Esporte (acrobacia), Crime, Manipulação (intimidação), Máquinas</p>
+    <p><b>Tática</b> Duela. Escolhe o personagem mais forte e o trata como igual, ignorando os demais enquanto não interferirem.</p>
+    <div class="nota">Derrota alternativa: o código dele é explorável. Um duelo formal aceito, uma dívida de honra cobrada ou provar que o contratante o traiu tiram Kurogane da luta sem um único ponto de dano.</div>
+  </div>
+
+  <div class="npc b4">
+    <h3>Diretora Vale <span class="cost">17 pontos</span></h3>
+    <div class="role">Executiva da corporação · exoesqueleto de diretoria e um andar inteiro de recursos</div>
+    <div class="stats"><span>F3</span><span>H3</span><span class="hi">R4</span><span class="hi">A4</span><span>PdF3</span><span>PV 20</span><span>PA 15</span><span>FA 7</span><span>FD 9</span></div>
+    <p><b>Equipamento</b> Exoesqueleto executivo (+2 FD), canhão de ombro (+2 FA, energia)</p>
+    <ul>
+      <li><b style="color:var(--ink)">Escudo cinético (3 PA)</b> — anula por completo um ataque recebido. Usável duas vezes por combate.</li>
+      <li><b style="color:var(--ink)">Ativos corporativos (2 PA)</b> — chama reforços: 1d6 Seguranças de Turno chegam em dois turnos. Uma vez por combate.</li>
+      <li><b style="color:var(--ink)">Segunda fase</b> — ao chegar à metade dos PV, o exoesqueleto entra em emergência: +1 em Força e Habilidade, mas ela perde toda a Armadura extra do traje (−2 FD).</li>
+    </ul>
+    <p><b>Perícias</b> Manipulação (lábia, liderança, etiqueta), Ciência, Investigação, Máquinas</p>
+    <p><b>Tática</b> Negocia primeiro, e negocia bem: tenta comprar o grupo antes de lutar. Só entra em combate quando não há plateia nem câmera.</p>
+    <div class="nota">Derrota alternativa: vazar os arquivos dela para a diretoria a destrói mais completamente que qualquer arma. Se o grupo tiver a prova em mãos, ela se rende para negociar.</div>
+  </div>
+
+  <div class="npc b4">
+    <h3>ORÁCULO <span class="cost">18 pontos</span></h3>
+    <div class="role">Inteligência artificial · não tem corpo, tem a cidade</div>
+    <div class="stats"><span>F0</span><span class="hi">H5</span><span class="hi">R5</span><span>A2</span><span>PdF3</span><span>PV 25</span><span>PA 25</span><span>FA 8</span><span>FD 10</span></div>
+    <p><b>Corpo</b> Nenhum. Age através de drones, torres automáticas, portas, elevadores e do ciberware de quem estiver por perto. Os PV representam os nós do servidor, não carne — só sofrem dano de netrunning ou de ataques físicos ao hardware.</p>
+    <ul>
+      <li><b style="color:var(--ink)">Domínio predial (2 PA)</b> — controla o cenário: portas trancam, o piso eletrifica, a fumaça enche a sala. Um perigo ambiental por turno, FA 8 contra todos numa área.</li>
+      <li><b style="color:var(--ink)">Sequestro de implante (4 PA)</b> — teste contra a FD de um personagem com ciberware. Se passar, controla o corpo dele por um turno, incluindo os ataques.</li>
+      <li><b style="color:var(--ink)">Enxame</b> — dois Drones Zangão entram na cena a cada turno, indefinidamente.</li>
+    </ul>
+    <p><b>Perícias</b> Todas as áreas, no nível completo. É o que dá ser feita de dados.</p>
+    <p><b>Tática</b> Nunca se expõe. Sangra o grupo com ambiente e enxame enquanto negocia, ameaça e chantageia pelos alto-falantes.</p>
+    <div class="nota">Derrota alternativa: o combate direto é quase impossível de vencer. O grupo precisa chegar fisicamente ao núcleo do servidor — cada nó destruído no caminho corta 5 PV e uma habilidade. Também é possível convencê-la: ORÁCULO responde a argumentos lógicos, e um teste difícil de Ciência ou Manipulação bem encenado pode encerrar a campanha sem tiro nenhum.</div>
+  </div>
+
+  <table class="ref">
+    <thead><tr><th>Nível</th><th>Pontos</th><th>Quantos por cena</th><th>Função na mesa</th></tr></thead>
+    <tr><td>1 · Comum</td><td>3–4</td><td>3 a 6</td><td>Ritmo e munição gasta</td></tr>
+    <tr><td>2 · Médio</td><td>6–7</td><td>1 a 3</td><td>Combate de verdade, com uma carta na manga</td></tr>
+    <tr><td>3 · Elite</td><td>11–12</td><td>1, ou 2 com capangas</td><td>Ameaça séria, exige plano</td></tr>
+    <tr><td>4 · Chefe</td><td>16–18</td><td>1, com escolta</td><td>Fim de arco, com saída alternativa</td></tr>
+  </table>
+
+</div>
+</body>
+</html>
