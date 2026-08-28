@@ -1,0 +1,35 @@
+/* Tema global — reaproveita a linguagem visual do material de mesa
+   (material/*.html): ficha impressa, paleta com variaveis, rotulos
+   monoespacados em uppercase, secoes com borda superior colorida.
+   Decisao registrada em IAcontext.md: CSS puro, sem Tailwind. */
+
+:root {
+  --ink: #101418;
+  --hair: #c9ced6;
+  --hair-soft: #e3e7ec;
+  --mute: #6e7884;
+  --cyan: #0090a8;
+  --magenta: #c4007a;
+  --amber: #8a6a00;
+  --red: #b3261e;
+  --green: #0a7a4a;
+  --paper: #ffffff;
+  --bg: #eef1f4;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.5;
+}
+
+code,
+.mono {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}

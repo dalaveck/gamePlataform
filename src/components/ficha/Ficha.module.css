@@ -1,0 +1,344 @@
+.pagina {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 22px 16px 64px;
+}
+
+.toolbar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.botao {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  border-radius: 2px;
+  cursor: pointer;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: #fff;
+}
+
+.botao:hover {
+  background: var(--magenta);
+  border-color: var(--magenta);
+}
+
+.botaoFantasma {
+  composes: botao;
+  background: transparent;
+  color: var(--ink);
+}
+
+.botaoFantasma:hover {
+  background: var(--ink);
+  color: #fff;
+}
+
+.folha {
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  padding: 22px 24px 26px;
+}
+
+.topo {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.marca h1 {
+  font-size: 34px;
+  letter-spacing: -1px;
+  margin: 0;
+  line-height: 0.95;
+}
+
+.marca .sub {
+  color: var(--magenta);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+.marca .etiqueta {
+  color: var(--mute);
+  font-size: 10px;
+  letter-spacing: 0.6px;
+  margin-top: 6px;
+  text-transform: uppercase;
+}
+
+.saldo {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 12px;
+  padding: 8px 12px;
+  border: 1px solid var(--hair);
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+.saldoOk {
+  composes: saldo;
+  color: var(--green);
+  border-color: var(--green);
+}
+
+.saldoErro {
+  composes: saldo;
+  color: var(--red);
+  border-color: var(--red);
+  background: #fff4f3;
+}
+
+.erros {
+  margin: 12px 0 0;
+  padding: 8px 12px;
+  border-left: 3px solid var(--red);
+  background: #fff4f3;
+  font-size: 12px;
+  color: var(--red);
+}
+
+.erros ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+}
+
+.secao {
+  margin-top: 18px;
+  border: 1px solid var(--hair);
+  border-radius: 2px;
+  padding: 12px 14px 14px;
+}
+
+.secao > h2 {
+  margin: 0 0 10px;
+  font-size: 11px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.nota {
+  font-size: 9px;
+  letter-spacing: 0.3px;
+  color: var(--mute);
+  text-transform: none;
+  font-family: inherit;
+  font-style: italic;
+}
+
+.cCyan {
+  border-top: 3px solid var(--cyan);
+}
+.cCyan > h2 {
+  color: var(--cyan);
+}
+.cAmber {
+  border-top: 3px solid var(--amber);
+}
+.cAmber > h2 {
+  color: var(--amber);
+}
+.cMagenta {
+  border-top: 3px solid var(--magenta);
+}
+.cMagenta > h2 {
+  color: var(--magenta);
+}
+.cGreen {
+  border-top: 3px solid var(--green);
+}
+.cGreen > h2 {
+  color: var(--green);
+}
+
+.linha {
+  display: grid;
+  gap: 18px;
+}
+.duas {
+  grid-template-columns: 1fr 1fr;
+}
+.tres {
+  grid-template-columns: repeat(3, 1fr);
+}
+.quatro {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.campo {
+  display: flex;
+  flex-direction: column-reverse;
+}
+.campo label {
+  font-size: 8.5px;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  color: var(--mute);
+  margin-top: 2px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+.campo input,
+.campo textarea,
+.campo select {
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--ink);
+  border: none;
+  border-bottom: 1px solid var(--hair);
+  background: transparent;
+  padding: 3px 2px;
+  width: 100%;
+  outline: none;
+  resize: none;
+}
+.campo input:focus,
+.campo textarea:focus,
+.campo select:focus {
+  border-bottom-color: var(--magenta);
+  background: #fff8fc;
+}
+.campo textarea {
+  border: 1px solid var(--hair-soft);
+  border-radius: 2px;
+  padding: 6px;
+  line-height: 1.45;
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+}
+.tabela th {
+  font-size: 8.5px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--mute);
+  text-align: left;
+  padding: 0 4px 5px;
+  border-bottom: 1.5px solid var(--ink);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-weight: 600;
+}
+.tabela td {
+  border-bottom: 1px solid var(--hair-soft);
+  padding: 4px;
+}
+.tabela input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 5px 4px;
+  font-size: 12.5px;
+  font-family: inherit;
+  outline: none;
+  color: var(--ink);
+}
+.tabela input:focus {
+  background: #fffbe8;
+}
+.numCel {
+  text-align: center;
+  width: 64px;
+}
+.formula {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 10px;
+  color: var(--amber);
+  letter-spacing: 0.3px;
+  text-transform: none;
+}
+.total {
+  font-weight: 700;
+}
+
+.catalogo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--hair-soft);
+  font-size: 13px;
+}
+.item:last-child {
+  border-bottom: none;
+}
+.item input[type="checkbox"] {
+  margin-top: 2px;
+}
+.itemNome {
+  font-weight: 600;
+}
+.itemEfeito {
+  color: var(--mute);
+  font-size: 12px;
+}
+.preco {
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--ink);
+  padding: 2px 7px;
+  border-radius: 2px;
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.periciaLinha {
+  display: grid;
+  grid-template-columns: 1fr auto 2fr;
+  gap: 8px;
+  align-items: center;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--hair-soft);
+  font-size: 13px;
+}
+.periciaLinha:last-child {
+  border-bottom: none;
+}
+.periciaLinha input[type="text"] {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid var(--hair);
+  background: transparent;
+  padding: 3px 2px;
+  font-family: inherit;
+  font-size: 12.5px;
+}
+
+@media (max-width: 700px) {
+  .topo {
+    flex-direction: column;
+  }
+  .duas,
+  .tres,
+  .quatro {
+    grid-template-columns: 1fr;
+  }
+  .periciaLinha {
+    grid-template-columns: 1fr;
+  }
+}
