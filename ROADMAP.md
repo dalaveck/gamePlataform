@@ -46,13 +46,14 @@ Objetivo: o conteúdo hoje escrito à mão no HTML vira dado estruturado consumi
 - [x] `data/arquetipos.js` — vampiro, hacker, atleta, meio andróide: habilidades disponíveis e
       desvantagem obrigatória de cada um.
 - [x] `data/mapa/regioes.js` — as 41 regiões (nome + tema), transcritas do prompt original.
+- [x] `data/pericias.js` — as 11 áreas fixas (`AREAS_PERICIA`), usadas pela ficha (Fase 1.5).
 - [ ] `data/mapa/localidades.js` — só as 3 regiões de exemplo do prompt original estão preenchidas
       (12 localidades). Faltam as localidades das outras 38 regiões — ver comentário no topo do
       arquivo. Fica para a Fase 3 (motor do Mestre), que é quem consome esse dado.
-- [ ] Importador: o `.json` salvo pelas fichas HTML deve ser aceito como personagem válido pelo app
-      (mesma função de validação da Fase 0). Ainda não há gerador de ficha nesta base de código.
-- [ ] Exportador: o app deve conseguir gerar de volta um `.json` compatível com a ficha HTML, para
-      quem quiser imprimir.
+- [ ] Importador de compatibilidade: o `.json` posicional salvo pelas fichas HTML antigas
+      (`material/ficha-3dt-cyberpunk*.html`) ainda não é aceito pelo app — a ficha da Fase 1.5 tem
+      seu próprio formato `.json` nomeado (salvar/carregar já funcionam nesse novo formato).
+      Mapear o array posicional do HTML para esse formato fica para depois, se for necessário.
 
 ### 0.5.4 — Regras da casa (variante cyberpunk) ✅
 A campanha usa variantes que **divergem do 3D&T Alpha oficial**. O motor suporta as duas,
@@ -82,11 +83,50 @@ pela ficha quanto pelo modo de jogo.
       (pode ativar / ativar). O efeito mecânico específico de cada habilidade (duração, condições
       impostas, alvos válidos) continua descrito em `data/habilidades.js` como texto — resolução
       automática desses efeitos específicos fica para a Fase 4 (combate automatizado).
-- [x] Testes unitários (Vitest) cobrindo as duas variantes — `npm test`, 33 testes.
+- [x] Testes unitários (Vitest) cobrindo as duas variantes (`npm test`; ver Fase 1.5 para a
+      contagem atual, que cresceu com os ajustes de perícia e as funções base de combate).
 
-Ainda não implementado nesta fase (não bloqueiam a Fase 2, mas ficam registrados): UI de
-sessão/ficha/combate, `engine/narrator/*` completo (só o esqueleto de dados existe), e o
-importador/exportador de `.json` da ficha HTML citado em 0.5.3.
+Ainda não implementado nesta fase (não bloqueiam a Fase 2, mas ficam registrados):
+`engine/narrator/*` completo (só o esqueleto de dados existe) e o importador de compatibilidade
+com o `.json` posicional da ficha HTML antiga citado em 0.5.3.
+
+---
+
+## Fase 1.5 — UI de Ficha de Personagem ✅
+Objetivo: primeira UI real do app (a Fase 1 só tinha o motor, sem tela nenhuma) — criação/edição de
+ficha em React, reaproveitando o motor de regras e os catálogos de dados. Prioridade decidida pelo
+usuário antes da Fase 2 (sessão multiplayer).
+- [x] Decisão de estilização: **CSS puro** (CSS Modules + variáveis globais em
+      `src/styles/tema.css`), reaproveitando a paleta e a linguagem visual já usada em
+      `material/*.html` — sem introduzir Tailwind como dependência nova.
+- [x] `src/hooks/usePersonagem.js` — estado da ficha em edição; saldo de pontos, validação e
+      recursos derivados (PV/PA máx.) recalculados a cada mudança via `engine/personagem.js`.
+- [x] `src/components/ficha/` — `FichaPersonagem.jsx` (container + toolbar salvar/carregar/limpar)
+      e as seções: Características, Recursos, Dinheiro/Anotações, Equipamento/Ataques/Defesa
+      (com FA/FD base calculados ao vivo via `combate.js`), Arquétipo/Habilidades (catálogo,
+      filtrado por arquétipo escolhido + gerais), Perícias (11 áreas fixas), Vantagens/Desvantagens
+      (catálogo, com aviso do teto de 3 pontos).
+- [x] Salvar/carregar ficha em `.json` (formato novo, nomeado — não é o array posicional do HTML
+      antigo, ver nota em 0.5.3).
+- [x] Correção de lacuna encontrada no motor da Fase 1: `calcularSaldoPontos` não contabilizava o
+      custo de perícias. Adicionado `CUSTO_PERICIA.ESPECIALIZACOES` em `regras.js` e a soma de
+      custo de perícias em `engine/personagem.js`, com validação (não pode combinar "área completa"
+      com especializações soltas na mesma área; máximo de 3 especializações soltas por área).
+      `testarPericia` (`engine/testes.js`) também foi atualizado para a nova forma de
+      `pericias: [{area, completa, especializacoes}]` em vez de uma lista plana de strings.
+- [x] Adicionado `calcularForcaAtaqueBase` / `calcularForcaDefesaBase` em `engine/combate.js`
+      (mesma fórmula das versões com dado, sem rolar 1d6) — mesma convenção já usada em
+      `data/npcs.js` ("FA/FD já somadas, sem o 1d6"), reaproveitada pela ficha para mostrar totais
+      ao vivo sem duplicar a fórmula na UI.
+- [x] Testes: 40 testes Vitest (`npm test`), cobrindo os ajustes de perícia e as novas funções
+      base de combate. Build (`npm run build`) e checagem visual manual (Playwright headless)
+      sem erros de console.
+
+Não implementado nesta fase (fica para depois, não bloqueia a Fase 2): importador do `.json`
+posicional da ficha HTML antiga; múltiplas fichas por conta (hoje é uma ficha em memória, sem
+persistência entre sessões do navegador — isso é trabalho de `SaveSystem`/Fase 6).
+
+---
 
 ## Fase 2 — Estrutura de Sessão/Sala ⬜
 Objetivo: permitir que várias pessoas entrem na mesma "mesa" via link/código.

@@ -18,25 +18,54 @@ function validarVariante(variante) {
 }
 
 /**
- * Forca de Ataque.
- * Alpha:      Forca (ou PdF, a distancia) + Habilidade + 1d
- * Cyberpunk:  Habilidade + Forca (ou PdF, a distancia) + Equipamento + 1d
+ * Forca de Ataque, sem o 1d6 — mesma convencao de src/data/npcs.js ("FA/FD
+ * ja somadas, sem o 1d6 — role o dado e some"). Usado para mostrar totais
+ * ao vivo (ex.: na ficha) sem simular uma rolagem.
+ * Alpha:      Forca (ou PdF, a distancia) + Habilidade
+ * Cyberpunk:  Habilidade + Forca (ou PdF, a distancia) + Equipamento
  */
-export function calcularForcaAtaque({
+export function calcularForcaAtaqueBase({
   habilidade = 0,
   forca = 0,
   poderDeFogo = 0,
   aDistancia = false,
   equipamento = 0,
   variante = VARIANTE_PADRAO,
-  aleatorio = Math.random,
 } = {}) {
   validarVariante(variante);
   const atributoPrincipal = aDistancia ? poderDeFogo : forca;
-  const dado = rolar1d6(aleatorio);
   const bonusEquipamento = variante === VARIANTES.CYBERPUNK ? equipamento : 0;
-  const total = habilidade + atributoPrincipal + bonusEquipamento + dado;
-  return { total, dado, variante };
+  return habilidade + atributoPrincipal + bonusEquipamento;
+}
+
+/**
+ * Forca de Ataque.
+ * Alpha:      Forca (ou PdF, a distancia) + Habilidade + 1d
+ * Cyberpunk:  Habilidade + Forca (ou PdF, a distancia) + Equipamento + 1d
+ */
+export function calcularForcaAtaque({ aleatorio = Math.random, ...opcoes } = {}) {
+  const dado = rolar1d6(aleatorio);
+  const total = calcularForcaAtaqueBase(opcoes) + dado;
+  return { total, dado, variante: opcoes.variante ?? VARIANTE_PADRAO };
+}
+
+/**
+ * Forca de Defesa, sem o 1d6 — ver calcularForcaAtaqueBase.
+ * Alpha:      Armadura + Habilidade
+ * Cyberpunk:  Resistencia + Habilidade + Equipamento
+ */
+export function calcularForcaDefesaBase({
+  habilidade = 0,
+  armadura = 0,
+  resistencia = 0,
+  equipamento = 0,
+  variante = VARIANTE_PADRAO,
+} = {}) {
+  validarVariante(variante);
+  if (variante === VARIANTES.CYBERPUNK) {
+    return resistencia + habilidade + equipamento;
+  }
+  return armadura + habilidade;
 }
 
 /**
@@ -44,23 +73,10 @@ export function calcularForcaAtaque({
  * Alpha:      Armadura + Habilidade + 1d
  * Cyberpunk:  Resistencia + Habilidade + Equipamento + 1d
  */
-export function calcularForcaDefesa({
-  habilidade = 0,
-  armadura = 0,
-  resistencia = 0,
-  equipamento = 0,
-  variante = VARIANTE_PADRAO,
-  aleatorio = Math.random,
-} = {}) {
-  validarVariante(variante);
+export function calcularForcaDefesa({ aleatorio = Math.random, ...opcoes } = {}) {
   const dado = rolar1d6(aleatorio);
-  let total;
-  if (variante === VARIANTES.CYBERPUNK) {
-    total = resistencia + habilidade + equipamento + dado;
-  } else {
-    total = armadura + habilidade + dado;
-  }
-  return { total, dado, variante };
+  const total = calcularForcaDefesaBase(opcoes) + dado;
+  return { total, dado, variante: opcoes.variante ?? VARIANTE_PADRAO };
 }
 
 /**

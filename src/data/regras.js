@@ -20,6 +20,9 @@ export const TETO_PONTOS_DESVANTAGENS = Object.freeze({
 
 export const CUSTO_PERICIA = Object.freeze({
   AREA_COMPLETA: 2,
+  // Ate 3 especializacoes soltas de uma area, por 1 ponto total (nao por
+  // especializacao) — ver IAcontext.md secao 4.
+  ESPECIALIZACOES: 1,
   ESPECIALIZACOES_MAX: 3,
 });
 

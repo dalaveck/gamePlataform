@@ -1,7 +1,9 @@
 import { describe, it, expect } from "vitest";
 import {
   calcularForcaAtaque,
+  calcularForcaAtaqueBase,
   calcularForcaDefesa,
+  calcularForcaDefesaBase,
   calcularPVMax,
   calcularPMMax,
   calcularPAMax,
@@ -46,6 +48,42 @@ describe("calcularForcaAtaque", () => {
       aleatorio: dadoFixo(6),
     });
     expect(total).toBe(1 + 3 + 1 + 6);
+  });
+});
+
+describe("calcularForcaAtaqueBase / calcularForcaDefesaBase (sem 1d6)", () => {
+  it("bate com calcularForcaAtaque menos o dado", () => {
+    const base = calcularForcaAtaqueBase({
+      habilidade: 2,
+      forca: 3,
+      equipamento: 1,
+      variante: VARIANTES.CYBERPUNK,
+    });
+    const { total, dado } = calcularForcaAtaque({
+      habilidade: 2,
+      forca: 3,
+      equipamento: 1,
+      variante: VARIANTES.CYBERPUNK,
+      aleatorio: dadoFixo(5),
+    });
+    expect(total - dado).toBe(base);
+  });
+
+  it("bate com calcularForcaDefesa menos o dado", () => {
+    const base = calcularForcaDefesaBase({
+      habilidade: 1,
+      resistencia: 2,
+      equipamento: 1,
+      variante: VARIANTES.CYBERPUNK,
+    });
+    const { total, dado } = calcularForcaDefesa({
+      habilidade: 1,
+      resistencia: 2,
+      equipamento: 1,
+      variante: VARIANTES.CYBERPUNK,
+      aleatorio: dadoFixo(5),
+    });
+    expect(total - dado).toBe(base);
   });
 });
 

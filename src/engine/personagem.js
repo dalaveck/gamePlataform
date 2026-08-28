@@ -7,6 +7,7 @@ import {
   VARIANTE_PADRAO,
   PONTOS_CRIACAO,
   TETO_PONTOS_DESVANTAGENS,
+  CUSTO_PERICIA,
 } from "../data/regras.js";
 import { calcularPVMax, calcularPMMax, calcularPAMax } from "./combate.js";
 
@@ -30,6 +31,20 @@ function somarCustoVantagens(personagem) {
   return (personagem.vantagens ?? []).reduce((soma, v) => soma + (v.custoPontos ?? 0), 0);
 }
 
+/**
+ * Cada entrada de personagem.pericias e { area, completa, especializacoes }.
+ * Area completa custa CUSTO_PERICIA.AREA_COMPLETA; ate
+ * CUSTO_PERICIA.ESPECIALIZACOES_MAX especializacoes soltas da mesma area
+ * custam CUSTO_PERICIA.ESPECIALIZACOES no total (nao por especializacao).
+ */
+function somarCustoPericias(personagem) {
+  return (personagem.pericias ?? []).reduce((soma, p) => {
+    if (p.completa) return soma + CUSTO_PERICIA.AREA_COMPLETA;
+    if ((p.especializacoes ?? []).length > 0) return soma + CUSTO_PERICIA.ESPECIALIZACOES;
+    return soma;
+  }, 0);
+}
+
 function somarPontosDesvantagens(personagem, variante) {
   const bruto = (personagem.desvantagens ?? []).reduce((soma, d) => soma + (d.custoPontos ?? 0), 0);
   const teto = TETO_PONTOS_DESVANTAGENS[variante];
@@ -45,6 +60,7 @@ export function calcularSaldoPontos(personagem, variante = VARIANTE_PADRAO) {
   const gastoCaracteristicas = somarCaracteristicas(personagem);
   const gastoHabilidades = somarCustoHabilidades(personagem);
   const gastoVantagens = somarCustoVantagens(personagem);
+  const gastoPericias = somarCustoPericias(personagem);
   const pontosDesvantagens = somarPontosDesvantagens(personagem, variante);
 
   return (
@@ -52,7 +68,8 @@ export function calcularSaldoPontos(personagem, variante = VARIANTE_PADRAO) {
     pontosDesvantagens -
     gastoCaracteristicas -
     gastoHabilidades -
-    gastoVantagens
+    gastoVantagens -
+    gastoPericias
   );
 }
 
@@ -67,6 +84,15 @@ export function validarPersonagem(personagem, variante = VARIANTE_PADRAO) {
     const valor = personagem[chave] ?? 0;
     if (valor < 0 || valor > 5) {
       erros.push(`Caracteristica ${chave} fora da faixa 0-5: ${valor}.`);
+    }
+  }
+
+  for (const p of personagem.pericias ?? []) {
+    if (p.completa && (p.especializacoes ?? []).length > 0) {
+      erros.push(`Pericia ${p.area}: area completa nao combina com especializacoes soltas.`);
+    }
+    if ((p.especializacoes ?? []).length > CUSTO_PERICIA.ESPECIALIZACOES_MAX) {
+      erros.push(`Pericia ${p.area}: no maximo ${CUSTO_PERICIA.ESPECIALIZACOES_MAX} especializacoes soltas.`);
     }
   }
 

@@ -38,6 +38,22 @@ describe("calcularSaldoPontos (cyberpunk, 9 pontos)", () => {
     };
     expect(calcularSaldoPontos(personagem, VARIANTES.CYBERPUNK)).toBe(9 - 2 - 1);
   });
+
+  it("pericias custam 2 pts (area completa) ou 1 pt (especializacoes soltas)", () => {
+    const personagem = {
+      forca: 0,
+      habilidade: 0,
+      resistencia: 0,
+      armadura: 0,
+      poderDeFogo: 0,
+      pericias: [
+        { area: "Crime", completa: true },
+        { area: "Máquinas", completa: false, especializacoes: ["netrunning", "eletrônica"] },
+        { area: "Arte", completa: false, especializacoes: [] }, // nao comprada, custo 0
+      ],
+    };
+    expect(calcularSaldoPontos(personagem, VARIANTES.CYBERPUNK)).toBe(9 - 2 - 1);
+  });
 });
 
 describe("validarPersonagem", () => {
@@ -64,6 +80,32 @@ describe("validarPersonagem", () => {
 
   it("rejeita raca/vantagem unica na variante cyberpunk", () => {
     const personagem = { forca: 0, habilidade: 0, resistencia: 0, armadura: 0, poderDeFogo: 0, raca: "humano-variante" };
+    const resultado = validarPersonagem(personagem, VARIANTES.CYBERPUNK);
+    expect(resultado.valido).toBe(false);
+  });
+
+  it("rejeita area completa combinada com especializacoes soltas", () => {
+    const personagem = {
+      forca: 0,
+      habilidade: 0,
+      resistencia: 0,
+      armadura: 0,
+      poderDeFogo: 0,
+      pericias: [{ area: "Crime", completa: true, especializacoes: ["furto"] }],
+    };
+    const resultado = validarPersonagem(personagem, VARIANTES.CYBERPUNK);
+    expect(resultado.valido).toBe(false);
+  });
+
+  it("rejeita mais de 3 especializacoes soltas na mesma area", () => {
+    const personagem = {
+      forca: 0,
+      habilidade: 0,
+      resistencia: 0,
+      armadura: 0,
+      poderDeFogo: 0,
+      pericias: [{ area: "Crime", completa: false, especializacoes: ["a", "b", "c", "d"] }],
+    };
     const resultado = validarPersonagem(personagem, VARIANTES.CYBERPUNK);
     expect(resultado.valido).toBe(false);
   });

@@ -26,7 +26,7 @@ sistema completo de jogo.
 | Decisão | Escolha | Motivo |
 |---|---|---|
 | Frontend | React (JSX) + Vite | Continuidade com o gerador de fichas já existente; web puro, sem overhead de Flutter Web |
-| Estilização | CSS puro ou Tailwind (a definir na implementação) | Consistência visual, tema "RPG/anime" |
+| Estilização | **CSS puro** (CSS Modules + variáveis globais em `src/styles/tema.css`) — decidido na Fase 1.5 | Reaproveita a paleta e a linguagem visual já validada em `material/*.html` (fundo claro, ficha impressa, rótulos monoespaçados uppercase, seções com borda superior colorida); evita introduzir Tailwind como dependência nova sem necessidade |
 | Backend / multiplayer | Firebase (Firestore + Auth anônima) | Não exige servidor próprio; salas em tempo real via listeners; fácil de hospedar (Vercel/Netlify + Firebase) |
 | Dados do sistema (raças, vantagens, perícias, desvantagens) | Extraídos do manual oficial em PDF | Fidelidade às regras; ver `data/` no projeto da ficha |
 | Dados/rolagens | 1d6 (padrão 3D&T) | Confirmado no manual |
@@ -184,19 +184,62 @@ criado um repositório novo.
   no prompt original). `src/data/mapa/localidades.js` só tem as 3 regiões de exemplo (12
   localidades) — as outras 38 regiões ainda precisam de localidades, deixado para a Fase 3.
 - `src/engine/` — `dice.js`, `combate.js`, `testes.js`, `personagem.js`, `habilidades.js`. Motor
-  puro, sem dependência de React, com 33 testes Vitest em `src/engine/__tests__/` (`npm test`).
+  puro, sem dependência de React, com 40 testes Vitest em `src/engine/__tests__/` (`npm test`).
 - **Decisão**: `engine/habilidades.js` não simula o efeito mecânico específico de cada habilidade
   (são ~30, cada uma com uma regra narrativa diferente). Ele só resolve o custo em PA (pode
   ativar / ativar). O efeito de cada uma fica como texto em `data/habilidades.js`, para o
   mestre/motor narrar — resolução mecânica automática completa é Fase 4.
-- `src/App.jsx` é só um placeholder confirmando que o motor está acessível — **não há UI de
-  ficha/sessão/combate ainda** (isso é Fase 2 em diante). Isso é intencional: o
-  `prompt-vscode-sistema-3dt.md` pede explicitamente para implementar só a Fase 1 (motor) antes de
-  avançar.
-- `src/components/`, `src/services/`, `src/hooks/` existem como pastas vazias (esqueleto da
-  arquitetura) — sem conteúdo ainda, ficam para as próximas fases (sessão/Firebase = Fase 2).
 - `src/engine/narrator/` **não foi criado ainda** — é Fase 3, fora do escopo desta sessão.
 
+### Atualização — Fase 1.5 (UI de ficha de personagem)
+Depois da Fase 1, o usuário pediu para publicar o app (ver seção 10) e priorizar a UI de ficha
+antes da sessão multiplayer. O que mudou:
+- `src/App.jsx` **não é mais um placeholder** — renderiza `<FichaPersonagem />`. Primeira UI real
+  do app.
+- `src/hooks/usePersonagem.js` — hook com o estado da ficha em edição (características, buffs,
+  recursos atuais, dinheiro, equipamento, ataques/defesas dinâmicos, arquétipo, habilidades,
+  vantagens, desvantagens, perícias, anotações) e as funções para editá-lo. Saldo de pontos,
+  validação e PV/PA máximos são recalculados a cada mudança chamando `engine/personagem.js`
+  diretamente — o hook não duplica nenhuma regra, só orquestra estado.
+- `src/components/ficha/` — deixou de ser uma pasta vazia. `FichaPersonagem.jsx` é o container
+  (toolbar salvar/carregar/limpar, cabeçalho, banner de saldo/erros) e delega a cada seção
+  (`SecaoCaracteristicas`, `SecaoRecursos`, `SecaoCombate`, `SecaoArquetipoHabilidades`,
+  `SecaoPericias`, `SecaoVantagensDesvantagens`, `SecaoDinheiroAnotacoes`). Estilo em
+  `Ficha.module.css` (CSS Modules), compartilhado entre as seções.
+- **Correção retroativa na Fase 1**: `calcularSaldoPontos` não contava o custo de perícias — foi
+  corrigido (ver `ROADMAP.md` Fase 1.5) junto com uma mudança de forma de dado: `personagem.pericias`
+  passou de lista de strings para `[{area, completa, especializacoes}]`. Isso quebra qualquer
+  personagem de teste/exemplo que ainda use a forma antiga — não há dados salvos reais para
+  migrar ainda (o app não tinha persistência), então não foi necessário shim de compatibilidade.
+- `src/engine/combate.js` ganhou `calcularForcaAtaqueBase`/`calcularForcaDefesaBase` (mesma fórmula,
+  sem rolar o 1d6) para a ficha mostrar totais ao vivo — mesma convenção de "sem o 1d6" que
+  `data/npcs.js` já usava nos dados do bestiário.
+- `src/data/pericias.js` (novo) — `AREAS_PERICIA`, as 11 áreas fixas do manual.
+- Export/import de ficha usa um `.json` novo, nomeado (`{v, variante, personagem}}`) — **não** é
+  compatível com o `.json` posicional que os botões "Salvar/Carregar" de `material/ficha-3dt-*.html`
+  geram (aquele é um array de valores na ordem do DOM). Migrar um desses arquivos antigos para o
+  app ainda não é suportado (ver ROADMAP 0.5.3).
+- Verificação: `npm test` (40 testes), `npm run build`, e checagem visual manual com Playwright
+  headless (instalado com `--no-save`, não é dependência do projeto) — sem erros de console,
+  cálculo de saldo conferido preenchendo uma ficha de exemplo.
+- `src/services/` continua vazia — é Firebase/sessão, Fase 2.
+
+## 10. Deploy — gametest.rondobyte.com.br
+
+Decidido com o usuário: hospedagem na **Vercel** (conectada ao repositório GitHub), domínio
+`rondobyte.com.br` com DNS gerenciado na **Hostinger**. A Vercel detecta Vite automaticamente, sem
+`vercel.json` necessário. Fluxo (feito pelo usuário no painel de cada serviço — esta sessão não tem
+acesso a nenhum dos dois):
+1. Conectar `dalaveck/gamePlataform` num projeto novo na Vercel.
+2. Produção segue o branch padrão do repo (`main`) — mergear a PR de cada fase para produção
+   atualizar. Outros branches/PRs geram Preview Deployments automáticos.
+3. Settings → Domains → adicionar `gametest.rondobyte.com.br`; a Vercel indica o valor exato do
+   CNAME (tipicamente `cname.vercel-dns.com`).
+4. Criar esse CNAME na Zona DNS da Hostinger (hPanel → Domínios → `rondobyte.com.br`), host
+   `gametest`.
+5. SSL é automático (Let's Encrypt) assim que o DNS propaga.
+
 ### Próximo passo sugerido
-Seguir `ROADMAP.md`: terminar 0.5.3 (localidades das 38 regiões restantes, importador/exportador
-de `.json` da ficha) e então Fase 2 (sessão/sala com Firebase).
+Seguir `ROADMAP.md`: Fase 2 (sessão/sala com Firebase) é a próxima fase de feature. Deploy
+(seção 10 acima) é independente e pode ser feito a qualquer momento — cada push em `main` já fica
+publicado automaticamente depois do primeiro setup.

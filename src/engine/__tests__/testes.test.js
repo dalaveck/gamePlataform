@@ -16,15 +16,39 @@ describe("testar", () => {
 });
 
 describe("testarPericia", () => {
-  it("soma +2 quando o personagem tem a pericia", () => {
-    const personagem = { habilidade: 1, pericias: ["Crime"] };
-    const resultado = testarPericia(personagem, "Crime", { dificuldade: 0, aleatorio: () => 0 });
+  it("soma +2 quando a area foi comprada completa", () => {
+    const personagem = { habilidade: 1, pericias: [{ area: "Crime", completa: true }] };
+    const resultado = testarPericia(personagem, "Crime", null, { dificuldade: 0, aleatorio: () => 0 });
     expect(resultado.total).toBe(1 + 2 + 1);
   });
 
-  it("nao soma bonus de pericia quando o personagem nao tem", () => {
+  it("soma +2 quando a especializacao solta foi comprada, mesmo sem a area completa", () => {
+    const personagem = {
+      habilidade: 1,
+      pericias: [{ area: "Máquinas", completa: false, especializacoes: ["netrunning"] }],
+    };
+    const resultado = testarPericia(personagem, "Máquinas", "netrunning", {
+      dificuldade: 0,
+      aleatorio: () => 0,
+    });
+    expect(resultado.total).toBe(1 + 2 + 1);
+  });
+
+  it("nao soma bonus quando a especializacao testada nao foi comprada", () => {
+    const personagem = {
+      habilidade: 1,
+      pericias: [{ area: "Máquinas", completa: false, especializacoes: ["netrunning"] }],
+    };
+    const resultado = testarPericia(personagem, "Máquinas", "eletrônica", {
+      dificuldade: 0,
+      aleatorio: () => 0,
+    });
+    expect(resultado.total).toBe(1 + 1);
+  });
+
+  it("nao soma bonus quando o personagem nao tem a pericia", () => {
     const personagem = { habilidade: 1, pericias: [] };
-    const resultado = testarPericia(personagem, "Crime", { dificuldade: 0, aleatorio: () => 0 });
+    const resultado = testarPericia(personagem, "Crime", null, { dificuldade: 0, aleatorio: () => 0 });
     expect(resultado.total).toBe(1 + 1);
   });
 });
